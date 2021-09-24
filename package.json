@@ -1,0 +1,50 @@
+{
+  "name": "react-native-upload",
+  "version": "1.0.0",
+  "description": "A React-Native Component to upload image/video and preview",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "react-native",
+    "image",
+    "video",
+    "compress",
+    "upload",
+    "preview",
+    "ui"
+  ],
+  "files": [
+    "dist",
+    "index.d.ts"
+  ],
+  "author": {
+    "name": "Limoer96",
+    "url": "https://limoer.cc"
+  },
+  "homepage": "https://github.com/Limoer96/react-native-upload",
+  "bugs": "https://github.com/Limoer96/react-native-upload/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Limoer96/react-native-upload"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fruits-chain/react-native": "^0.0.2",
+    "react-native-fast-image": "^8.5.8",
+    "react-native-image-crop-picker": "^0.36.3",
+    "react-native-image-zoom-viewer": "^3.0.1",
+    "react-native-video": "^5.1.1",
+    "react-native-video-helper": "^1.5.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-native": "^0.65.1"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.24",
+    "@types/react-native": "^0.65.1",
+    "@types/react-native-video": "^5.0.9"
+  }
+}
