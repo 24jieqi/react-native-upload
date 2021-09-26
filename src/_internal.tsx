@@ -9,7 +9,6 @@ import React, {
 } from 'react'
 import { Dimensions, Image, Platform, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 import ImagePicker, { Options, Image as ImageType, Video, ImageOrVideo } from 'react-native-image-crop-picker'
-import images from './images'
 import { Toast } from '@fruits-chain/react-native'
 import FullImage from './components/ImagePreview'
 import VideoPlay from './components/VideoPreview'
@@ -306,7 +305,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
           activeOpacity={0.7}
           style={[styles.flex, styles.deleteIconWrapper]}
           onPress={() => removeImage(item)}>
-          <Image source={images.DeleteIcon} style={styles.deleteIcon} />
+          <Image source={require('./images/icon_close.png')} style={styles.deleteIcon} />
         </TouchableOpacity>
         <Comp item={item} index={imgIndex} onPress={handlePress} />
       </View>
@@ -315,7 +314,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   const isFull = value.length >= maxCount
   const uploadIcon = (
     <TouchableOpacity style={[styles.flex, styles.marginStyle, styles.bgcolor, styles.item]} onPress={handlePressAdd}>
-      <Image source={images.AddIcon} style={styles.addIcon} />
+      <Image source={require('./images/icon_add.png')} style={styles.addIcon} />
       <Text style={styles.tipText}>{tipText || '图片/视频'}</Text>
     </TouchableOpacity>
   )

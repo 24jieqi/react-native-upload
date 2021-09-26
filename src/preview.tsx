@@ -4,7 +4,6 @@ import { Dimensions, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import { View } from 'react-native'
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
-import imgs from './images'
 import FastImage from 'react-native-fast-image'
 import { getThumbnailImageUrl } from './utils'
 
@@ -64,7 +63,7 @@ const UploadPreview: React.FC<IUploadPreview> = ({ list = [] }) => {
                 />
                 {isVideo ? (
                   <Flex justify="center" align="center" style={styles.playIconWrapper}>
-                    <Image source={imgs.PlayIcon} />
+                    <Image source={require('./images/icon_play.png')} />
                   </Flex>
                 ) : null}
               </TouchableOpacity>

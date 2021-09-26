@@ -3,7 +3,6 @@ import { View, Modal, StyleSheet, Dimensions } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer'
 import { IImageInfo } from 'react-native-image-zoom-viewer/built/image-viewer.type'
 import { ActivityIndicator } from '@fruits-chain/react-native'
-import imgs from '../images'
 
 const screenHeight = Dimensions.get('screen').height
 
@@ -25,7 +24,7 @@ const ImagePreview: React.FC<IProps> = ({ visible, photos, onVisibleChange, inde
           enableImageZoom
           onClick={handleClose}
           index={index}
-          failImageSource={imgs.IconFailed}
+          failImageSource={require('../images/icon_failed.png')}
           loadingRender={() => <ActivityIndicator color="#fff" />}
         />
       </View>
