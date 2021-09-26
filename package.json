@@ -23,11 +23,11 @@
     "name": "Limoer96",
     "url": "https://limoer.cc"
   },
-  "homepage": "https://github.com/Limoer96/react-native-upload",
-  "bugs": "https://github.com/Limoer96/react-native-upload/issues",
+  "homepage": "https://github.com/hjfruit/react-native-upload2",
+  "bugs": "https://github.com/hjfruit/react-native-upload2/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Limoer96/react-native-upload"
+    "url": "https://github.com/hjfruit/react-native-upload2"
   },
   "license": "MIT",
   "dependencies": {
