@@ -2,12 +2,12 @@ import { Flex, Modal } from '@fruits-chain/react-native'
 import React, { useRef, useState } from 'react'
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native'
 import Divider from './components/divider'
-import UploadInternal, { OverrideOptions, UploadInstance, UploadProps, IUploadSource } from './internal'
-import UploadPreview from './preview'
+import UploadInternal, { OverrideOptions, UploadInstance, UploadProps, IUploadSource } from './_internal'
+import UploadPreview from './Preview'
 
 export interface ISource extends IUploadSource {}
 
-interface IUpload extends React.FC<Omit<UploadProps, 'useCamera'>> {
+interface IUpload extends React.FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
   Preview: typeof UploadPreview
 }
 

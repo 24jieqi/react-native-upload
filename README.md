@@ -35,7 +35,7 @@ const UploadPage: React.FC = () => {
   const [images, setImages] = useState([])
   return (
     <View>
-      <Upload tipText={langs.picsAndVideo} maxCount={10} list={images} onChange={(val) => setImages(val)} />
+      <Upload uploadAction={...} tipText={langs.picsAndVideo} maxCount={10} list={images} onChange={(val) => setImages(val)} />
       <Upload.Preview list={images} />
     </View>
   )

@@ -2,7 +2,7 @@ import React from 'react'
 import { Flex, ActivityIndicator } from '@fruits-chain/react-native'
 import { Image, Text, View, ImageBackground, Platform, Dimensions, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native'
-import { IUploadSource } from './internal'
+import { IUploadSource } from './_internal'
 import imgs from './images'
 import FastImage from 'react-native-fast-image'
 
@@ -20,7 +20,6 @@ export const ItemLoading: React.FC<IItemProps> = ({ item }) => {
     </ImageBackground>
   )
 }
-
 interface IItemProps {
   item: IUploadSource
   onPress?: (item: IUploadSource, index: number) => void

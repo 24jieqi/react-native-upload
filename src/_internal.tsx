@@ -14,9 +14,9 @@ import { Toast } from '@fruits-chain/react-native'
 import FullImage from './components/ImagePreview'
 import VideoPlay from './components/VideoPreview'
 import RNVideoHelper from 'react-native-video-helper'
-import Items from './item'
+import Items from './Item'
 import { ISource } from '.'
-import { FileVO } from './preview'
+import { FileVO } from './Preview'
 
 export interface IUploadSource {
   key: string // 当前资源的唯一标识
