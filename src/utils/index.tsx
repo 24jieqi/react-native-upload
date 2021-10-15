@@ -4,3 +4,7 @@ export function getThumbnailImageUrl(url: string = '', width = 80, height = 80) 
   }
   return `${url}?x-image-process=image/resize,m_fill,h_${height},w_${width}`
 }
+
+export function isValidVideo(mimeType: string) {
+  return mimeType.includes('video') && mimeType.includes('mp4')
+}

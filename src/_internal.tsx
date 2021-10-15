@@ -9,7 +9,6 @@ import React, {
 } from 'react'
 import { Dimensions, Image, Platform, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 import ImagePicker, { Options, Image as ImageType, Video, ImageOrVideo } from 'react-native-image-crop-picker'
-import { Toast } from '@fruits-chain/react-native'
 import FullImage from './components/ImagePreview'
 import VideoPlay from './components/VideoPreview'
 import RNVideoHelper from 'react-native-video-helper'
@@ -45,18 +44,41 @@ export interface UploadProps {
    * @description onChange在异步过程中被多次调用，如果onChange有props或依赖，需要注意，见：https://overreacted.io/zh-hans/a-complete-guide-to-useeffect/
    */
   onChange?: (list: IUploadSource[]) => void
+  /**
+   * 上传出错时的回调
+   */
   onUploadError?: (msg?: any) => void
+  /**
+   * 最大上传数量
+   */
   maxCount?: number
+  /**
+   * 上传可点击组件文本
+   */
   tipText?: string
+  /**
+   * 是否进行裁剪
+   */
   cropping?: boolean
   /**
-   * @deprecated
+   * 上传文件类型
    */
-  previewOnly?: boolean
   mediaType?: 'photo' | 'video' | 'any'
+  /**
+   * 是否支持多选上传
+   */
   multiple?: boolean
+  /**
+   * 是否使用相机拍摄
+   */
   useCamera?: boolean
+  /**
+   * 点击新增
+   */
   onPressAdd: () => void
+  /**
+   * 上传地址（需要封装成UploadAction的形式）
+   */
   uploadAction: UploadAction
 }
 

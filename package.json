@@ -31,7 +31,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@fruits-chain/react-native": "^0.0.2",
     "react-native-fast-image": "^8.5.8",
     "react-native-image-crop-picker": "^0.36.3",
     "react-native-image-zoom-viewer": "^3.0.1",
