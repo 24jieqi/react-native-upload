@@ -15,6 +15,8 @@ import RNVideoHelper from 'react-native-video-helper'
 import Items from './Item'
 import { ISource } from '.'
 import { FileVO } from './Preview'
+import { Toast } from '@fruits-chain/react-native'
+import { isValidVideo } from './utils'
 
 export interface IUploadSource {
   key: string // 当前资源的唯一标识
@@ -82,24 +84,17 @@ export interface UploadProps {
   uploadAction: UploadAction
 }
 
-export interface OverrideOptions {
-  mediaType?: 'photo' | 'video' | 'any'
-  multiple?: boolean
-  useCamera?: boolean
-}
-
-function isValidVideo(type: string) {
-  return type.includes('video') && type.includes('mp4')
-}
+export type OverrideOptions = Pick<UploadProps, 'mediaType' | 'useCamera' | 'multiple'>
 
 let keyIndex = 1
-let toastKey: number
 // 除去边距后每行显示四个元素
 const itemWidth = (Dimensions.get('screen').width - 64) / 4
 
 function getFileKey() {
   return `_upload_v2-${Date.now()}-${keyIndex++}`
 }
+
+let toastKey: any
 
 export function formatUploadList(list: FileVO[]) {
   return list.map((item) => {
