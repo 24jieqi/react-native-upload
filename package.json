@@ -30,21 +30,28 @@
     "url": "https://github.com/hjfruit/react-native-upload2"
   },
   "license": "MIT",
-  "dependencies": {
+  "dependencies": {},
+  "peerDependencies": {
+    "@fruits-chain/react-native": "^0.0.5",
+    "react": "^17.0.2",
+    "react-native": "^0.65.1",
     "react-native-fast-image": "^8.5.8",
     "react-native-image-crop-picker": "^0.36.3",
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-video": "^5.1.1",
     "react-native-video-helper": "^1.5.0"
   },
-  "peerDependencies": {
-    "@fruits-chain/react-native": "^0.0.5",
-    "react": "^17.0.2",
-    "react-native": "^0.65.1"
-  },
   "devDependencies": {
     "@types/react": "^17.0.24",
     "@types/react-native": "^0.65.1",
-    "@types/react-native-video": "^5.0.9"
+    "@types/react-native-video": "^5.0.9",
+    "@fruits-chain/react-native": "^0.0.5",
+    "react": "^17.0.2",
+    "react-native": "^0.65.1",
+    "react-native-fast-image": "^8.5.8",
+    "react-native-image-crop-picker": "^0.36.3",
+    "react-native-image-zoom-viewer": "^3.0.1",
+    "react-native-video": "^5.1.1",
+    "react-native-video-helper": "^1.5.0"
   }
 }
