@@ -1,5 +1,5 @@
-import { Flex, Modal } from '@fruits-chain/react-native'
 import React, { useRef, useState } from 'react'
+import { Flex, Modal } from '@fruits-chain/react-native'
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native'
 import Divider from './components/divider'
 import UploadInternal, { OverrideOptions, UploadInstance, UploadProps, IUploadSource } from './_internal'

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Flex, ActivityIndicator } from '@fruits-chain/react-native'
 import { Image, Text, View, ImageBackground, Platform, Dimensions, StyleSheet } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import { TouchableOpacity } from 'react-native'
 import { IUploadSource } from './_internal'
-import FastImage from 'react-native-fast-image'
 
 const itemWidth = (Dimensions.get('screen').width - 64) / 4
 
@@ -48,7 +48,7 @@ export const ItemDone: React.FC<IItemProps> = ({ item, onPress, index }) => {
       />
       {isVideo ? (
         <Flex justify="center" align="center" style={[styles.playIconWrapper]}>
-          <Image source={require('./images/icon_play.png')} />
+          <Image source={require('./images/icon_play.png')} style={styles.playIcon} />
         </Flex>
       ) : null}
     </TouchableOpacity>
@@ -102,5 +102,9 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+  },
+  playIcon: {
+    width: 24,
+    height: 24,
   },
 })

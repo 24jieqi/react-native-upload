@@ -1,10 +1,9 @@
 import { Flex } from '@fruits-chain/react-native'
 import React, { useState } from 'react'
-import { Dimensions, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import { View } from 'react-native'
+import { Dimensions, Image, TouchableOpacity, StyleSheet, View } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
-import FastImage from 'react-native-fast-image'
 import { getThumbnailImageUrl } from './utils'
 
 export interface FileVO {

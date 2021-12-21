@@ -1,6 +1,6 @@
 {
   "name": "react-native-upload2",
-  "version": "1.0.4",
+  "version": "1.0.0",
   "description": "A React-Native Component to upload image/video and preview",
   "main": "dist/index.js",
   "scripts": {

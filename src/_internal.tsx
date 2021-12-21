@@ -9,14 +9,14 @@ import React, {
 } from 'react'
 import { Dimensions, Image, Platform, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 import ImagePicker, { Options, Image as ImageType, Video, ImageOrVideo } from 'react-native-image-crop-picker'
-import FullImage from './components/ImagePreview'
-import VideoPlay from './components/VideoPreview'
 import RNVideoHelper from 'react-native-video-helper'
+import { Toast } from '@fruits-chain/react-native'
+import ImagePreview from './components/ImagePreview'
 import Items from './Item'
 import { ISource } from '.'
 import { FileVO } from './Preview'
-import { Toast } from '@fruits-chain/react-native'
 import { isValidVideo } from './utils'
+import VideoPreview from './components/VideoPreview'
 
 export interface IUploadSource {
   key: string // 当前资源的唯一标识
@@ -351,13 +351,17 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         {itemList}
         {isFull ? null : uploadIcon}
       </View>
-      <FullImage
+      <ImagePreview
         index={currImageIndex}
         visible={showImagePreview}
         onVisibleChange={(visible) => setShowImagePreview(visible)}
         photos={imageUrls}
       />
-      <VideoPlay videoUrl={videoUrl} show={showVideoPreview} setShow={(show?: boolean) => setShowVideoPreview(show)} />
+      <VideoPreview
+        videoUrl={videoUrl}
+        show={showVideoPreview}
+        setShow={(show?: boolean) => setShowVideoPreview(show)}
+      />
     </>
   )
 }
