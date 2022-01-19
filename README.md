@@ -1,4 +1,4 @@
-# react-native-upload2
+# @fruits-chain/react-native-upload
 
 > 一个图片/视频上传的 React-Native 组件
 
@@ -10,10 +10,10 @@
 
 ## 安装
 
-1. 安装`react-native-upload2`
+1. 安装`@fruits-chain/react-native-upload`
 
 ```bash
-$ yarn add react-native-upload2
+$ yarn add @fruits-chain/react-native-upload
 ```
 
 2. `iOS`
@@ -30,7 +30,7 @@ pod install
 ```js
 import React, { Component } from 'react'
 import { render } from 'react-dom'
-import Upload from 'react-native-upload2'
+import Upload from '@fruits-chain/react-native-upload'
 const UploadPage: React.FC = () => {
   const [images, setImages] = useState([])
   return (
