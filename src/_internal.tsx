@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import React, {
   forwardRef,
   ForwardRefRenderFunction,
@@ -11,12 +12,12 @@ import { Platform } from 'react-native'
 import ImagePicker, { Options, Image as ImageType, Video, ImageOrVideo } from 'react-native-image-crop-picker'
 import RNVideoHelper from 'react-native-video-helper'
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
+import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import ImagePreview from './components/ImagePreview'
-import { ISource } from '.'
 import { FileVO } from './Preview'
 import { isValidVideo } from './utils'
 import VideoPreview from './components/VideoPreview'
-import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
+import { ISource } from '.'
 
 export interface IUploadSource {
   key: string // 当前资源的唯一标识
@@ -134,7 +135,6 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   const prev = useRef(list) // 受控情形下对外传入的资源列表拷贝
   const [value, setValue] = useState<IUploadSource[]>(typeof list === 'undefined' ? defaultList : list)
   const valueCopy = useRef<IUploadSource[]>([]) // 组件内资源备份
-  const [loading, setLoading] = useState(false) // 是否正在上传准备中
   // 对外暴露接口
   useImperativeHandle(ref, () => ({
     open: chooseImageAndUpload,
@@ -251,12 +251,17 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     const optionAction = isCamera ? ImagePicker.openCamera : ImagePicker.openPicker
     optionAction(options)
       .then((i: ImageType | ImageType[] | Video) => {
-        setLoading(true)
+        toastKey = Toast.loading({
+          message: '准备中...',
+          duration: 0,
+        })
         const images = multiple && !isCamera ? [...(i as ImageType[])] : [i as ImageType | Video]
         return workBeforeUpload(images)
       })
       .then((files: IUploadTempSource[]) => {
-        setLoading(false)
+        setTimeout(() => {
+          toastKey.close()
+        }, 0)
         // 上传文件数量限制
         let currentFiles = [...files]
         if (files.length + value.length > maxCount) {
@@ -265,7 +270,13 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         const nextFiles: IUploadSource[] = [] // 设置图片
         for (const file of currentFiles) {
           const fileKey = getFileKey()
-          nextFiles.push({ key: fileKey, name: file.name, filepath: file.uri, type: file.type, status: 'loading' })
+          nextFiles.push({
+            key: fileKey,
+            name: file.name,
+            filepath: file.uri,
+            type: file.type,
+            status: 'loading',
+          })
           const body = new FormData()
           body.append('file', file as any)
           upload(body, fileKey, uploadAction)
@@ -306,23 +317,17 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
       setValueIfNeeded(valueCopy.current)
       onChange && onChange(valueCopy.current)
       const formData = new FormData()
-      formData.append('file', { name: current.name, uri: current.filepath, type: current.type } as any)
+      formData.append('file', {
+        name: current.name,
+        uri: current.filepath,
+        type: current.type,
+      } as any)
       upload(formData, current.key, uploadAction)
     }
   }
   const imageUrls = value
     .filter((source) => !source.filepath.includes('.mp4'))
     .map((item) => ({ url: item.filepath, id: item.key }))
-  useEffect(() => {
-    if (loading) {
-      toastKey = Toast({
-        message: '视频压缩中...',
-        duration: 0,
-      })
-    } else if (toastKey) {
-      toastKey.close()
-    }
-  }, [loading])
   return (
     <>
       <Uploader
