@@ -1,4 +1,4 @@
-import { Flex } from '@fruits-chain/react-native'
+import { Flex } from '@fruits-chain/react-native-xiaoshu'
 import React, { useState } from 'react'
 import { Dimensions, Image, TouchableOpacity, StyleSheet, View } from 'react-native'
 import FastImage from 'react-native-fast-image'

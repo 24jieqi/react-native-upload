@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, TouchableOpacity, View, StyleSheet } from 'react-native'
-import { ActivityIndicator } from '@fruits-chain/react-native'
+import { Modal, TouchableOpacity, View, StyleSheet, ActivityIndicator } from 'react-native'
 import Video from 'react-native-video'
 
 interface IProps {

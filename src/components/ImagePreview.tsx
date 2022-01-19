@@ -1,8 +1,7 @@
 import React from 'react'
-import { View, Modal, StyleSheet, Dimensions } from 'react-native'
+import { View, Modal, StyleSheet, Dimensions, ActivityIndicator } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer'
 import { IImageInfo } from 'react-native-image-zoom-viewer/built/image-viewer.type'
-import { ActivityIndicator } from '@fruits-chain/react-native'
 
 const screenHeight = Dimensions.get('screen').height
 

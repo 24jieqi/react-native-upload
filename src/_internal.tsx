@@ -7,20 +7,20 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { Dimensions, Image, Platform, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
+import { Platform } from 'react-native'
 import ImagePicker, { Options, Image as ImageType, Video, ImageOrVideo } from 'react-native-image-crop-picker'
 import RNVideoHelper from 'react-native-video-helper'
-import { Toast } from '@fruits-chain/react-native'
+import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import ImagePreview from './components/ImagePreview'
-import Items from './Item'
 import { ISource } from '.'
 import { FileVO } from './Preview'
 import { isValidVideo } from './utils'
 import VideoPreview from './components/VideoPreview'
+import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 
 export interface IUploadSource {
   key: string // 当前资源的唯一标识
-  path?: string // 本地资源路径
+  filepath: string // 本地资源路径
   name?: string // 名称
   type?: string // 类型
   status?: 'loading' | 'done' | 'error' // 资源状态
@@ -87,20 +87,18 @@ export interface UploadProps {
 export type OverrideOptions = Pick<UploadProps, 'mediaType' | 'useCamera' | 'multiple'>
 
 let keyIndex = 1
-// 除去边距后每行显示四个元素
-const itemWidth = (Dimensions.get('screen').width - 64) / 4
 
 function getFileKey() {
   return `_upload_v2-${Date.now()}-${keyIndex++}`
 }
 
-let toastKey: any
+let toastKey: ToastMethods
 
 export function formatUploadList(list: FileVO[]) {
   return list.map((item) => {
     return {
       key: getFileKey(),
-      path: item.fileUrl,
+      filepath: item.fileUrl,
       name: item.filename,
       status: 'done',
       origin: item,
@@ -197,7 +195,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
       })
       return { uri: `file://${compressedUri}`, name, type }
     } catch (e) {
-      Toast.info('视频压缩失败！', 1)
+      Toast.fail('视频压缩失败！')
       return {
         uri,
         name,
@@ -216,7 +214,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
       const name = parts[parts.length - 1]
       const type = image.mime
       if (type.includes('video') && !type.includes('mp4')) {
-        Toast.info('上传视频只支持mp4格式', 1.5)
+        Toast('上传视频只支持mp4格式')
         continue
       }
       if (Platform.OS === 'android' && isValidVideo(type)) {
@@ -267,7 +265,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         const nextFiles: IUploadSource[] = [] // 设置图片
         for (const file of currentFiles) {
           const fileKey = getFileKey()
-          nextFiles.push({ key: fileKey, name: file.name, path: file.uri, type: file.type, status: 'loading' })
+          nextFiles.push({ key: fileKey, name: file.name, filepath: file.uri, type: file.type, status: 'loading' })
           const body = new FormData()
           body.append('file', file as any)
           upload(body, fileKey, uploadAction)
@@ -281,7 +279,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         if (e.code && e.code === 'E_PICKER_CANCELLED') {
           return
         }
-        Toast.info('文件上传失败！', 1)
+        Toast('文件上传失败！')
       })
   }
   function handlePressAdd() {
@@ -290,67 +288,52 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   function handlePress(item: ISource, index: number) {
     if (item.status === 'done') {
       // 预览逻辑
-      const isVideo = item.path && item.path.endsWith('.mp4')
+      const isVideo = item.filepath && item.filepath.endsWith('.mp4')
       if (isVideo) {
-        setVideoUrl(item.path)
+        setVideoUrl(item.filepath)
         setShowVideoPreview(true)
       } else {
         setCurrImageIndex(index)
         setShowImagePreview(true)
       }
-    } else if (item.status === 'error') {
-      // 上传重试逻辑
-      const current = valueCopy.current.find((one) => one.key === item.key)
-      if (current) {
-        current.status = 'loading'
-        setValueIfNeeded(valueCopy.current)
-        onChange && onChange(valueCopy.current)
-        const formData = new FormData()
-        formData.append('file', { name: current.name, uri: current.path, type: current.type } as any)
-        upload(formData, current.key, uploadAction)
-      }
     }
   }
-  const itemList = value.map((item, index) => {
-    const { status } = item
-    const Comp = Items[status]
-    // 图片类型所在的文本
-    const imgIndex = value.filter((source) => !source.path.includes('.mp4')).findIndex((one) => one.key === item.key)
-    return (
-      <View style={[styles.marginStyle]} key={index}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={[styles.flex, styles.deleteIconWrapper]}
-          onPress={() => removeImage(item)}>
-          <Image source={require('./images/icon_close.png')} style={styles.deleteIcon} />
-        </TouchableOpacity>
-        <Comp item={item} index={imgIndex} onPress={handlePress} />
-      </View>
-    )
-  })
-  const isFull = value.length >= maxCount
-  const uploadIcon = (
-    <TouchableOpacity style={[styles.flex, styles.marginStyle, styles.bgcolor, styles.item]} onPress={handlePressAdd}>
-      <Image source={require('./images/icon_add.png')} style={styles.addIcon} />
-      <Text style={styles.tipText}>{tipText || '图片/视频'}</Text>
-    </TouchableOpacity>
-  )
+  function handleReupload(item: ISource) {
+    // 上传重试逻辑
+    const current = valueCopy.current.find((one) => one.key === item.key)
+    if (current) {
+      current.status = 'loading'
+      setValueIfNeeded(valueCopy.current)
+      onChange && onChange(valueCopy.current)
+      const formData = new FormData()
+      formData.append('file', { name: current.name, uri: current.filepath, type: current.type } as any)
+      upload(formData, current.key, uploadAction)
+    }
+  }
   const imageUrls = value
-    .filter((source) => !source.path.includes('.mp4'))
-    .map((item) => ({ url: item.path, id: item.key }))
+    .filter((source) => !source.filepath.includes('.mp4'))
+    .map((item) => ({ url: item.filepath, id: item.key }))
   useEffect(() => {
     if (loading) {
-      toastKey = Toast.info('视频压缩中...', 0) // 设置为0表示不自动清除
+      toastKey = Toast({
+        message: '视频压缩中...',
+        duration: 0,
+      })
     } else if (toastKey) {
-      Toast.remove(toastKey)
+      toastKey.close()
     }
   }, [loading])
   return (
     <>
-      <View style={[styles.flexWrapper]}>
-        {itemList}
-        {isFull ? null : uploadIcon}
-      </View>
+      <Uploader
+        onPressImage={handlePress}
+        maxCount={maxCount}
+        onPressDelete={(item) => removeImage(item)}
+        onPressUpload={handlePressAdd}
+        onPressError={handleReupload}
+        list={value}
+        uploadText={tipText}
+      />
       <ImagePreview
         index={currImageIndex}
         visible={showImagePreview}
@@ -371,64 +354,3 @@ const UploadInternal = forwardRef<any, UploadProps>(_UploadInternal) as (
 ) => React.ReactElement
 
 export default UploadInternal
-
-const styles = StyleSheet.create({
-  bgcolor: { backgroundColor: '#F7F7F7' },
-  videoView: {
-    backgroundColor: 'rgba(0,0,0,0.8)',
-  },
-  item: {
-    width: itemWidth,
-    height: itemWidth,
-    borderRadius: 5,
-  },
-  flexWrapper: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  onlyUploadIcon: {
-    justifyContent: 'center',
-  },
-  flex: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  marginStyle: {
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  addIcon: {
-    width: 24,
-    height: 24,
-  },
-  loadingContainer: {
-    width: 24,
-    height: 24,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  tipText: {
-    marginTop: 1,
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#999999',
-    textAlign: 'center',
-  },
-  deleteIconWrapper: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    zIndex: 1,
-  },
-  deleteIcon: {
-    width: 16,
-    height: 16,
-  },
-  loadingText: {
-    fontSize: 12,
-    lineHeight: 17,
-    color: '#5D626B',
-    marginTop: 10,
-  },
-})

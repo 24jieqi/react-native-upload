@@ -1,7 +1,7 @@
 {
-  "name": "react-native-upload2",
-  "version": "1.1.1",
-  "description": "A React-Native Component to upload image/video and preview",
+  "name": "@fruits-chain/react-native-upload",
+  "version": "1.0.0",
+  "description": "A React-Native UI Component to upload image/video and preview",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc"
@@ -30,9 +30,8 @@
     "url": "https://github.com/hjfruit/react-native-upload2"
   },
   "license": "MIT",
-  "dependencies": {},
   "peerDependencies": {
-    "@fruits-chain/react-native": "^0.0.5",
+    "@fruits-chain/react-native-xiaoshu": "^0.0.15",
     "react": "^17.0.2",
     "react-native": "^0.65.1",
     "react-native-fast-image": "^8.5.8",
@@ -42,10 +41,10 @@
     "react-native-video-helper": "^1.5.0"
   },
   "devDependencies": {
+    "@fruits-chain/react-native-xiaoshu": "^0.0.15",
     "@types/react": "^17.0.24",
     "@types/react-native": "^0.65.1",
     "@types/react-native-video": "^5.0.9",
-    "@fruits-chain/react-native": "^0.0.5",
     "react": "^17.0.2",
     "react-native": "^0.65.1",
     "react-native-fast-image": "^8.5.8",
@@ -53,5 +52,6 @@
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-video": "^5.1.1",
     "react-native-video-helper": "^1.5.0"
-  }
+  },
+  "dependencies": {}
 }
