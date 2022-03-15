@@ -3,7 +3,7 @@
 > 一个图片/视频上传的 React-Native 组件
 
 - 基于[react-native-image-crop-picker](https://github.com/ivpusic/react-native-image-crop-picker)
-- 支持图片/视频压缩（Android & iOS）
+- 支持图片/视频压缩（Android & iOS）使用[react-native-compressor](https://github.com/Shobbak/react-native-compressor)
 - 支持资源多选，支持单个上传失败重试
 - 支持多图片预览
 - 支持视频预览
