@@ -8,25 +8,20 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { Platform } from 'react-native'
-import ImagePicker, { Options, Image as ImageType, Video, ImageOrVideo } from 'react-native-image-crop-picker'
-import RNVideoHelper from 'react-native-video-helper'
+import ImagePicker, {
+  Options,
+  Image as ImageType,
+  Video as VideoType,
+  ImageOrVideo,
+} from 'react-native-image-crop-picker'
+import { Image, Video } from 'react-native-compressor'
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import ImagePreview from './components/ImagePreview'
-import { FileVO } from './Preview'
-import { isValidVideo } from './utils'
+import { exec, isVideo } from './utils'
 import VideoPreview from './components/VideoPreview'
+import { FileVO, UploadItem } from './interface'
 import { ISource } from '.'
-
-export interface IUploadSource {
-  key: string // 当前资源的唯一标识
-  filepath: string // 本地资源路径
-  name?: string // 名称
-  type?: string // 类型
-  status?: 'loading' | 'done' | 'error' // 资源状态
-  origin?: FileVO // 远程上传结果
-}
 
 interface IUploadTempSource {
   uri: string
@@ -41,12 +36,12 @@ export interface UploadInstance {
 type UploadAction = ({ data }: { data: FormData }) => Promise<FileVO>
 
 export interface UploadProps {
-  list?: IUploadSource[]
-  defaultList?: IUploadSource[]
+  list?: UploadItem[]
+  defaultList?: UploadItem[]
   /**
    * @description onChange在异步过程中被多次调用，如果onChange有props或依赖，需要注意，见：https://overreacted.io/zh-hans/a-complete-guide-to-useeffect/
    */
-  onChange?: (list: IUploadSource[]) => void
+  onChange?: (list: UploadItem[]) => void
   /**
    * 上传出错时的回调
    */
@@ -83,6 +78,14 @@ export interface UploadProps {
    * 上传地址（需要封装成UploadAction的形式）
    */
   uploadAction: UploadAction
+  /**
+   * cropping模式下选取图片的宽度（默认300）
+   */
+  width?: number
+  /**
+   * cropping模式下选取图片的高度（默认300）
+   */
+  height?: number
 }
 
 export type OverrideOptions = Pick<UploadProps, 'mediaType' | 'useCamera' | 'multiple'>
@@ -103,7 +106,8 @@ export function formatUploadList(list: FileVO[]) {
       name: item.filename,
       status: 'done',
       origin: item,
-    } as IUploadSource
+      type: '',
+    } as UploadItem
   })
 }
 
@@ -125,6 +129,8 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     multiple = true,
     onPressAdd,
     uploadAction,
+    width = 300,
+    height = 300,
   },
   ref,
 ) => {
@@ -132,29 +138,26 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   const [currImageIndex, setCurrImageIndex] = useState(0) // 当前预览图片的索引
   const [showVideoPreview, setShowVideoPreview] = useState(false) // 视频预览与否
   const [videoUrl, setVideoUrl] = useState('') // 当前预览图片的url
-  const prev = useRef(list) // 受控情形下对外传入的资源列表拷贝
-  const [value, setValue] = useState<IUploadSource[]>(typeof list === 'undefined' ? defaultList : list)
-  const valueCopy = useRef<IUploadSource[]>([]) // 组件内资源备份
+  const [value, setValue] = useState<UploadItem[]>(typeof list === 'undefined' ? defaultList : list)
+  const valueCopy = useRef<UploadItem[]>([]) // 组件内资源备份
   // 对外暴露接口
   useImperativeHandle(ref, () => ({
     open: chooseImageAndUpload,
   }))
   // 受控情形下的内外数据同步
   useEffect(() => {
-    if (prev.current === list) {
-      return
+    if (typeof list !== 'undefined') {
+      setValue(list)
+      valueCopy.current = list
     }
-    setValue(list)
-    valueCopy.current = list
-    prev.current = list
   }, [list])
   // 受控模式下不再设置内部value
-  function setValueIfNeeded(value: IUploadSource[]) {
+  function setValueIfNeeded(value: UploadItem[]) {
     if (typeof list === 'undefined') {
       setValue(value)
     }
   }
-  function removeImage(item: IUploadSource) {
+  function removeImage(item: UploadItem) {
     const results = valueCopy.current.filter((it) => it.key !== item.key)
     valueCopy.current = results
     setValueIfNeeded(results)
@@ -176,56 +179,51 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
           }
         }
         setValueIfNeeded(valueCopy.current)
-        onChange && onChange(valueCopy.current)
+        exec(onChange, valueCopy.current)
       })
       .catch((msg) => {
-        onUploadError && onUploadError(msg)
+        exec(onUploadError, msg)
         const current = valueCopy.current.find((file) => file.key === key)
         if (current) {
           current.status = 'error'
         }
         setValueIfNeeded(valueCopy.current)
-        onChange && onChange(valueCopy.current)
+        exec(onChange, valueCopy.current)
       })
   }
-  async function compressVideo(uri: string, name: string, type: string) {
+  async function compressVideo(uri: string, type: string) {
     try {
-      const compressedUri = await RNVideoHelper.compress(uri, {
-        quality: 'high',
-      })
-      return { uri: `file://${compressedUri}`, name, type }
-    } catch (e) {
-      Toast.fail('视频压缩失败！')
-      return {
-        uri,
-        name,
-        type,
+      if (isVideo(type)) {
+        return await Video.compress(uri, { compressionMethod: 'auto' })
+      } else {
+        return await Image.compress(uri, { compressionMethod: 'auto' })
       }
-    }
+    } catch (error) {}
   }
   async function workBeforeUpload(images: ImageOrVideo[]) {
     const result: IUploadTempSource[] = []
     if (!images || !images.length) {
       return result
     }
+    toastKey = Toast.loading({
+      message: '压缩中...',
+      duration: 0,
+    })
     for (const image of images) {
       const parts = image.path.split('/')
       const uri = image.path
       const name = parts[parts.length - 1]
       const type = image.mime
       if (type.includes('video') && !type.includes('mp4')) {
-        Toast('上传视频只支持mp4格式')
+        Toast('只支持mp4格式的视频')
         continue
       }
-      if (Platform.OS === 'android' && isValidVideo(type)) {
-        result.push(await compressVideo(uri, name, type))
-      } else {
-        result.push({
-          uri,
-          name,
-          type,
-        })
-      }
+      const filepath = await compressVideo(uri, type)
+      result.push({
+        name,
+        uri: filepath,
+        type,
+      })
     }
     return result
   }
@@ -235,27 +233,19 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     const options: Options = {
       multiple: isCamera ? false : multiple,
       maxFiles: maxCount,
-      width: 300,
-      height: 300,
+      width,
+      height,
       includeBase64: true,
       cropping,
       cropperChooseText: '确认',
       cropperCancelText: '取消',
       mediaType,
-      compressVideoPreset: 'MediumQuality',
-      compressImageMaxWidth: 1280,
-      compressImageMaxHeight: 1280,
-      compressImageQuality: 0.5,
       ...config,
     }
     const optionAction = isCamera ? ImagePicker.openCamera : ImagePicker.openPicker
     optionAction(options)
-      .then((i: ImageType | ImageType[] | Video) => {
-        toastKey = Toast.loading({
-          message: '准备中...',
-          duration: 0,
-        })
-        const images = multiple && !isCamera ? [...(i as ImageType[])] : [i as ImageType | Video]
+      .then((i: ImageType | ImageType[] | VideoType) => {
+        const images = multiple && !isCamera ? [...(i as ImageType[])] : [i as ImageType | VideoType]
         return workBeforeUpload(images)
       })
       .then((files: IUploadTempSource[]) => {
@@ -267,7 +257,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         if (files.length + value.length > maxCount) {
           currentFiles = currentFiles.slice(0, maxCount - value.length)
         }
-        const nextFiles: IUploadSource[] = [] // 设置图片
+        const nextFiles: UploadItem[] = [] // 设置图片
         for (const file of currentFiles) {
           const fileKey = getFileKey()
           nextFiles.push({
@@ -283,7 +273,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         }
         valueCopy.current = [...value, ...nextFiles]
         setValueIfNeeded(valueCopy.current)
-        onChange && onChange(valueCopy.current)
+        exec(onChange, valueCopy.current)
       })
       .catch((e) => {
         // 用户手动取消提示错误
@@ -315,7 +305,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     if (current) {
       current.status = 'loading'
       setValueIfNeeded(valueCopy.current)
-      onChange && onChange(valueCopy.current)
+      exec(onChange, valueCopy.current)
       const formData = new FormData()
       formData.append('file', {
         name: current.name,

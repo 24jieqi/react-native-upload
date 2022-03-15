@@ -1,10 +1,11 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, FC } from 'react'
 import { Selector } from '@fruits-chain/react-native-xiaoshu'
-import UploadInternal, { UploadInstance, UploadProps, IUploadSource } from './_internal'
+import UploadInternal, { UploadInstance, UploadProps, formatUploadList } from './_internal'
 import UploadPreview from './Preview'
+import { UploadItem, FileVO } from './interface'
 
-export interface ISource extends IUploadSource {}
-interface IUpload extends React.FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
+export interface ISource extends UploadItem {}
+interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
   Preview: typeof UploadPreview
 }
 
@@ -60,5 +61,8 @@ const Upload: IUpload = (props) => {
 
 Upload.Preview = UploadPreview
 Upload.displayName = 'Upload'
+
+export type { UploadItem, FileVO }
+export { formatUploadList }
 
 export default Upload

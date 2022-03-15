@@ -4,21 +4,8 @@ import { Dimensions, Image, TouchableOpacity, StyleSheet, View } from 'react-nat
 import FastImage from 'react-native-fast-image'
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
+import { FileVO } from './interface'
 import { getThumbnailImageUrl } from './utils'
-
-export interface FileVO {
-  /** 文件ID */
-  fileId?: string
-
-  /** 文件上传时间 */
-  fileUploadTime?: string
-
-  /** 文件地址 */
-  fileUrl?: string
-
-  /** 文件名称 */
-  filename?: string
-}
 
 interface IUploadPreview {
   list: FileVO[]
@@ -57,7 +44,10 @@ const UploadPreview: React.FC<IUploadPreview> = ({ list = [] }) => {
             <View style={[styles.itemMargin, index % 4 === 3 ? { marginRight: 0 } : null]} key={index}>
               <TouchableOpacity onPress={() => handlePreview(file)}>
                 <FastImage
-                  source={{ uri: getThumbnailImageUrl(file.fileUrl), priority: FastImage.priority.high }}
+                  source={{
+                    uri: getThumbnailImageUrl(file.fileUrl),
+                    priority: FastImage.priority.high,
+                  }}
                   style={styles.item as any}
                 />
                 {isVideo ? (

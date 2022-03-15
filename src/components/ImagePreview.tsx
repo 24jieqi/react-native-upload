@@ -16,7 +16,7 @@ const ImagePreview: React.FC<IProps> = ({ visible, photos, onVisibleChange, inde
     onVisibleChange(false)
   }
   return (
-    <Modal visible={visible} transparent={true} statusBarTranslucent>
+    <Modal visible={visible} transparent statusBarTranslucent>
       <View style={styles.modalView}>
         <ImageViewer
           imageUrls={photos}
