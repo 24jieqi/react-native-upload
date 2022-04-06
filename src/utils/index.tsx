@@ -13,6 +13,11 @@ export function isValidVideo(mimeType: string) {
   return isVideo(mimeType) && mimeType.includes('mp4')
 }
 
+export function getFileExt(mimeType: string) {
+  const typeArr = mimeType.split('.')
+  return '.' + typeArr[typeArr.length - 1]
+}
+
 export function exec(func: ((...param: any) => any) | undefined, ...params: any[]) {
   if (typeof func === 'function') {
     return func(...params)

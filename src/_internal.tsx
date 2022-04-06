@@ -8,32 +8,34 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import ImagePicker, {
+import {
   Options,
   Image as ImageType,
   Video as VideoType,
   ImageOrVideo,
+  openCamera,
+  openPicker,
 } from 'react-native-image-crop-picker'
-import { Image, Video } from 'react-native-compressor'
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
+import cloneDeep from 'lodash/cloneDeep'
+import { compressorImage, compressorVideo } from './utils/helper'
 import ImagePreview from './components/ImagePreview'
 import { exec, isVideo } from './utils'
 import VideoPreview from './components/VideoPreview'
-import { FileVO, UploadItem } from './interface'
+import { FileVO, IUploadTempSource, UploadItem } from './interface'
+import useUploadResume, { getFileKey } from './useUploadResume'
 import { ISource } from '.'
-
-interface IUploadTempSource {
-  uri: string
-  name: string
-  type: string
-}
-
 export interface UploadInstance {
   open: (config?: OverrideOptions) => void
 }
 
-type UploadAction = ({ data }: { data: FormData }) => Promise<FileVO>
+export interface UploadActionParams {
+  data: FormData
+  file: IUploadTempSource
+}
+
+export type UploadAction = ({ data, file }: UploadActionParams) => Promise<FileVO>
 
 export interface UploadProps {
   list?: UploadItem[]
@@ -86,15 +88,24 @@ export interface UploadProps {
    * cropping模式下选取图片的高度（默认300）
    */
   height?: number
+  /**
+   * 是否支持续传（false: 不使用 true: 任何情况下都是用 number: 只有压缩后大于number MB的文件才使用）
+   */
+  allowResume?: boolean | number
+  /**
+   * 获取上传当前图片上传进度动作
+   */
+  progressAction?: (fileHash: string) => Promise<{
+    fileUrl: string
+    size: number
+  }>
+  /**
+   * 是否开启压缩
+   */
+  compress?: boolean
 }
 
 export type OverrideOptions = Pick<UploadProps, 'mediaType' | 'useCamera' | 'multiple'>
-
-let keyIndex = 1
-
-function getFileKey() {
-  return `_upload_v2-${Date.now()}-${keyIndex++}`
-}
 
 let toastKey: ToastMethods
 
@@ -131,6 +142,9 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     uploadAction,
     width = 300,
     height = 300,
+    allowResume = false,
+    progressAction,
+    compress = true,
   },
   ref,
 ) => {
@@ -138,6 +152,11 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   const [currImageIndex, setCurrImageIndex] = useState(0) // 当前预览图片的索引
   const [showVideoPreview, setShowVideoPreview] = useState(false) // 视频预览与否
   const [videoUrl, setVideoUrl] = useState('') // 当前预览图片的url
+  const { getFileBeforeUpload, uploadFile } = useUploadResume({
+    uploadAction,
+    progressAction,
+    allowResume,
+  })
   const [value, setValue] = useState<UploadItem[]>(typeof list === 'undefined' ? defaultList : list)
   const valueCopy = useRef<UploadItem[]>([]) // 组件内资源备份
   // 对外暴露接口
@@ -154,7 +173,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   // 受控模式下不再设置内部value
   function setValueIfNeeded(value: UploadItem[]) {
     if (typeof list === 'undefined') {
-      setValue(value)
+      setValue(cloneDeep(value))
     }
   }
   function removeImage(item: UploadItem) {
@@ -163,50 +182,22 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     setValueIfNeeded(results)
     onChange && onChange(results)
   }
-  function upload(data: FormData, key: string, uploadAction: UploadAction) {
-    uploadAction({
-      data,
-    })
-      .then((result) => {
-        // 文件上传成功
-        const current = valueCopy.current.find((file) => file.key === key)
-        if (current) {
-          current.origin = result
-          if (!result?.fileUrl) {
-            current.status = 'error'
-          } else {
-            current.status = 'done'
-          }
-        }
-        setValueIfNeeded(valueCopy.current)
-        exec(onChange, valueCopy.current)
-      })
-      .catch((msg) => {
-        exec(onUploadError, msg)
-        const current = valueCopy.current.find((file) => file.key === key)
-        if (current) {
-          current.status = 'error'
-        }
-        setValueIfNeeded(valueCopy.current)
-        exec(onChange, valueCopy.current)
-      })
-  }
-  async function compressVideo(uri: string, type: string) {
+  async function _compress(uri: string, type: string) {
     try {
       if (isVideo(type)) {
-        return await Video.compress(uri, { compressionMethod: 'auto' })
+        return await compressorVideo(uri, false)
       } else {
-        return await Image.compress(uri, { compressionMethod: 'auto' })
+        return await compressorImage(uri, false)
       }
     } catch (error) {}
   }
-  async function workBeforeUpload(images: ImageOrVideo[]) {
+  async function compressWork(images: ImageOrVideo[]) {
     const result: IUploadTempSource[] = []
     if (!images || !images.length) {
       return result
     }
     toastKey = Toast.loading({
-      message: '压缩中...',
+      message: '处理中...',
       duration: 0,
     })
     for (const image of images) {
@@ -218,12 +209,21 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         Toast('只支持mp4格式的视频')
         continue
       }
-      const filepath = await compressVideo(uri, type)
-      result.push({
-        name,
-        uri: filepath,
-        type,
-      })
+      if (!compress) {
+        result.push({
+          name,
+          uri,
+          type,
+        })
+      } else {
+        const filepath = await _compress(uri, type)
+        // 需要在这里做操作
+        result.push({
+          name,
+          uri: filepath,
+          type,
+        })
+      }
     }
     return result
   }
@@ -242,42 +242,48 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
       mediaType,
       ...config,
     }
-    const optionAction = isCamera ? ImagePicker.openCamera : ImagePicker.openPicker
+    const optionAction = isCamera ? openCamera : openPicker
     optionAction(options)
       .then((i: ImageType | ImageType[] | VideoType) => {
+        // 文件压缩
         const images = multiple && !isCamera ? [...(i as ImageType[])] : [i as ImageType | VideoType]
-        return workBeforeUpload(images)
+        let result = images
+        if (value.length + images.length > maxCount) {
+          result = result.slice(0, maxCount - value.length)
+        }
+        return compressWork(result)
       })
-      .then((files: IUploadTempSource[]) => {
+      .then(async (res) => {
+        // 断点续传逻辑
+        const res1 = await Promise.all(res.map((item) => getFileBeforeUpload(item)))
+        return res1
+      })
+      .then((files: UploadItem[]) => {
         setTimeout(() => {
           toastKey.close()
         }, 0)
-        // 上传文件数量限制
-        let currentFiles = [...files]
-        if (files.length + value.length > maxCount) {
-          currentFiles = currentFiles.slice(0, maxCount - value.length)
-        }
-        const nextFiles: UploadItem[] = [] // 设置图片
-        for (const file of currentFiles) {
-          const fileKey = getFileKey()
-          nextFiles.push({
-            key: fileKey,
-            name: file.name,
-            filepath: file.uri,
-            type: file.type,
-            status: 'loading',
-          })
-          const body = new FormData()
-          body.append('file', file as any)
-          upload(body, fileKey, uploadAction)
-        }
-        valueCopy.current = [...value, ...nextFiles]
+        valueCopy.current = [...value, ...files]
         setValueIfNeeded(valueCopy.current)
         exec(onChange, valueCopy.current)
+        return valueCopy.current.filter((f) => f.status === 'loading')
+      })
+      .then(async (filesToUpload) => {
+        for (const file of filesToUpload) {
+          const uploadRes = await uploadFile(file)
+          if (uploadRes.status === 'error') {
+            exec(onUploadError, '文件上传失败')
+          }
+          const idx = valueCopy.current.findIndex((file) => file.key === uploadRes.key)
+          if (~idx) {
+            valueCopy.current[idx] = uploadRes
+          }
+          setValueIfNeeded(cloneDeep(valueCopy.current))
+          exec(onChange, valueCopy.current)
+        }
       })
       .catch((e) => {
         // 用户手动取消提示错误
-        if (e.code && e.code === 'E_PICKER_CANCELLED') {
+        if (e?.code && e?.code === 'E_PICKER_CANCELLED') {
           return
         }
         Toast('文件上传失败！')
@@ -299,21 +305,29 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
       }
     }
   }
-  function handleReupload(item: ISource) {
-    // 上传重试逻辑
-    const current = valueCopy.current.find((one) => one.key === item.key)
-    if (current) {
-      current.status = 'loading'
-      setValueIfNeeded(valueCopy.current)
-      exec(onChange, valueCopy.current)
-      const formData = new FormData()
-      formData.append('file', {
-        name: current.name,
-        uri: current.filepath,
-        type: current.type,
-      } as any)
-      upload(formData, current.key, uploadAction)
+  async function handleReupload(item: ISource) {
+    const currIndex = valueCopy.current.findIndex((one) => one.key === item.key)
+    if (!~currIndex) {
+      return
     }
+    const res = await getFileBeforeUpload({
+      uri: valueCopy.current[currIndex].uri,
+      name: '',
+      type: valueCopy.current[currIndex].type,
+    })
+    valueCopy.current[currIndex] = res
+    setValueIfNeeded(cloneDeep(valueCopy.current))
+    exec(onChange, valueCopy.current)
+    if (res.status === 'done') {
+      return
+    }
+    const uploadRes = await uploadFile(res)
+    if (uploadRes.status === 'error') {
+      exec(onUploadError, '文件上传失败')
+    }
+    valueCopy.current[currIndex] = uploadRes
+    setValueIfNeeded(cloneDeep(valueCopy.current))
+    exec(onChange, valueCopy.current)
   }
   const imageUrls = value
     .filter((source) => !source.filepath.includes('.mp4'))

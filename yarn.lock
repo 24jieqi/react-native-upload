@@ -685,12 +685,18 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@fruits-chain/react-native-xiaoshu@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-xiaoshu/-/react-native-xiaoshu-0.1.8.tgz#9206ee75dea2e39479f72487d16c09208065f30e"
-  integrity sha512-VYVo0qGjkLlOttj+hx6fPd7xul4lqtZf11jFxNTfFIOcceVy+9vG51tCMcvP4/VSOotVwPrjsRpB16Wqt+jkLA==
+"@fruits-chain/design-tokens-bailu@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/design-tokens-bailu/-/design-tokens-bailu-0.0.5.tgz#79e6f7ce7025304642b012f9f52dffa884862a2c"
+  integrity sha512-/jG8kWMrAbugTZo7U34bXKzsnqhB01yfr15an7aJl2W9mgZeOvmWp83C2qe57+Anqxj7EZiwV/Z3UzAy5w7Nww==
+
+"@fruits-chain/react-native-xiaoshu@^0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-xiaoshu/-/react-native-xiaoshu-0.2.8.tgz#02c7d05099588783a7229232978a4a37aaca2ad7"
+  integrity sha512-inmSJoCW3UxWgawXKYqIGT/fisFOA5F8g4Ui/oGmAp1NYXGLTgS8Ouo+XGLQq80I47IEFs30tBrmbcXGPEhdRA==
   dependencies:
-    color "^4.2.0"
+    "@fruits-chain/design-tokens-bailu" "^0.0.5"
+    color "^4.2.1"
     lodash "^4.17.21"
     rn-placeholder "^3.0.3"
 
@@ -929,6 +935,11 @@
   integrity sha512-c3mAZEuK0lvBp8tmuL74XRKn1+y2dcwOUpH7x4WrF6gk1GIgiluDRgMYQtw2OFcBvAJWlt6ASU3tSqxp0Uu0Aw==
   dependencies:
     "@types/istanbul-lib-report" "*"
+
+"@types/lodash@^4.14.181":
+  version "4.14.181"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.181.tgz#d1d3740c379fda17ab175165ba04e2d03389385d"
+  integrity sha512-n3tyKthHJbkiWhDZs3DkhkCzt2MexYHXlX0td5iMplyfwketaOeKboEVBqzceH7juqvEg3q5oUoBFxSLu7zFag==
 
 "@types/node@*":
   version "17.0.2"
@@ -1215,6 +1226,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+base-64@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
+  integrity sha1-eAqZyE59YAJgNhURxId2E78k9rs=
+
 base64-js@^1.1.2, base64-js@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
@@ -1482,10 +1498,10 @@ color-string@^1.9.0:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
 
-color@^4.2.0:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/color/-/color-4.2.1.tgz#498aee5fce7fc982606c8875cab080ac0547c884"
-  integrity sha512-MFJr0uY4RvTQUKvPq7dh9grVOTYSFeXja2mBXioCGjnjJoXrAp9jJ1NQTDR73c9nwBSAQiNKloKl5zq9WB9UPw==
+color@^4.2.1:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/color/-/color-4.2.3.tgz#d781ecb5e57224ee43ea9627560107c0e0c6463a"
+  integrity sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==
   dependencies:
     color-convert "^2.0.1"
     color-string "^1.9.0"
@@ -1982,7 +1998,7 @@ get-value@^2.0.3, get-value@^2.0.6:
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
 
-glob@^7.1.3:
+glob@^7.1.3, glob@^7.1.6:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.0.tgz#d15535af7732e02e948f4c41628bd910293f6023"
   integrity sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==
@@ -3286,6 +3302,14 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-blob-util@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/react-native-blob-util/-/react-native-blob-util-0.15.0.tgz#b75755e0169d7e3aed865a835c38fe584d2aa56a"
+  integrity sha512-hXUoh1eHe25sREQkblpXGQKe1rr8uE1QgEVQIBeF4MbCfscPOCB6YYlsQ9PvJp0dXHCE/H1g//WvkM7wQukJeQ==
+  dependencies:
+    base-64 "0.1.0"
+    glob "^7.1.6"
+
 react-native-compressor@^1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/react-native-compressor/-/react-native-compressor-1.5.2.tgz#be0cb4baa12d2595af503c245f3fee6ccfa9ff91"
@@ -3312,11 +3336,6 @@ react-native-image-zoom-viewer@^3.0.1:
   integrity sha512-la6s5DNSuq4GCRLsi5CZ29FPjgTpdCuGIRdO5T9rUrAtxrlpBPhhSnHrbmPVxsdtOUvxHacTh2Gfa9+RraMZQA==
   dependencies:
     react-native-image-pan-zoom "^2.1.12"
-
-react-native-video-helper@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-video-helper/-/react-native-video-helper-1.5.0.tgz#0b3206318987c48b7d41f4522bb4974152c3dfb7"
-  integrity sha512-37wViz4kpxg7IYXwtuBtvr/A78JXXj7/fKgY6QMEo5QbGDVo8T6lhBLq22xXAYMilGE8/OGHhjMY00TaoFHiLA==
 
 react-native-video@^5.1.1:
   version "5.2.0"
