@@ -18,7 +18,7 @@ import {
 } from 'react-native-image-crop-picker'
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
-import cloneDeep from 'lodash/cloneDeep'
+import { cloneDeep } from 'lodash'
 import { compressorImage, compressorVideo } from './utils/helper'
 import ImagePreview from './components/ImagePreview'
 import { exec, isVideo } from './utils'
@@ -26,6 +26,7 @@ import VideoPreview from './components/VideoPreview'
 import { FileVO, IUploadTempSource, UploadItem } from './interface'
 import useUploadResume, { getFileKey } from './useUploadResume'
 import { ISource } from '.'
+
 export interface UploadInstance {
   open: (config?: OverrideOptions) => void
 }
@@ -33,6 +34,7 @@ export interface UploadInstance {
 export interface UploadActionParams {
   data: FormData
   file: IUploadTempSource
+  resume: boolean
 }
 
 export type UploadAction = ({ data, file }: UploadActionParams) => Promise<FileVO>
@@ -292,7 +294,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   function handlePressAdd() {
     onPressAdd()
   }
-  function handlePress(item: ISource, index: number) {
+  function handlePress(item: ISource, index: number, list: ISource[]) {
     if (item.status === 'done') {
       // 预览逻辑
       const isVideo = item.filepath && item.filepath.endsWith('.mp4')
@@ -300,7 +302,9 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         setVideoUrl(item.filepath)
         setShowVideoPreview(true)
       } else {
-        setCurrImageIndex(index)
+        const imgFileList = list.filter((file) => !file.filepath.endsWith('.mp4'))
+        const currentIndex = imgFileList.findIndex((img) => img.key === item.key)
+        setCurrImageIndex(currentIndex)
         setShowImagePreview(true)
       }
     }

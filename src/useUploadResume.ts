@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-named-as-default,import/namespace,import/no-named-as-default-member
 import ReactNativeBlobUtil from 'react-native-blob-util'
 import { buildCachePath, buildUri, normalizePath } from './utils/helper'
 import { IUploadTempSource, UploadItem } from './interface'
@@ -6,7 +5,6 @@ import { UploadAction } from './_internal'
 import { getFileExt } from './utils'
 
 const { fs } = ReactNativeBlobUtil
-
 interface UploadResumeProps {
   allowResume?: boolean | number
   uploadAction?: UploadAction
@@ -40,6 +38,7 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
     const filePath = normalizePath(file.uri)
     const fileInfo = await fs.stat(filePath)
     file.size = fileInfo.size
+    file.resume = fileShouldResume(file.size, allowResume)
     file.name = fileInfo.filename
     file.hash = await fs.hash(filePath, 'sha256')
     let uploadedInfo: {
@@ -68,7 +67,7 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
       return file
     }
     // 文件未上传或者不满足断点续传的条件
-    if (file.offset === 0 || !fileShouldResume(file.size, allowResume)) {
+    if (file.offset === 0 || !file.resume) {
       file.sliceUri = f.uri
       file.status = 'loading'
       return file
@@ -83,15 +82,19 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
     if (file.status && file.status === 'done') {
       return file
     }
-    const data: any = new FormData()
-    const fileObj = {
+    const data = new FormData()
+    const fileObj: any = {
       uri: file.sliceUri,
       name: file.name,
       type: file.type,
     }
     data.append(`${file.hash}.${file.size}.${file.offset}`, fileObj)
     try {
-      const res = await uploadAction({ data, file: fileObj })
+      const res = await uploadAction({
+        data,
+        file: fileObj,
+        resume: file.resume,
+      })
       file.status = 'done'
       file.origin = res
       return file

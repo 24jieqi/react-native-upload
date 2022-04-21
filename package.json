@@ -34,7 +34,8 @@
     "@fruits-chain/react-native-xiaoshu": "^0.2.8",
     "react": "^17.0.2",
     "react-native": "^0.65.1",
-    "react-native-blob-util": "^0.15.0"
+    "react-native-blob-util": "^0.15.0",
+    "react-native-fs": "^2.19.0"
   },
   "devDependencies": {
     "@fruits-chain/react-native-xiaoshu": "^0.2.8",
@@ -44,14 +45,15 @@
     "@types/react-native-video": "^5.0.9",
     "react": "^17.0.2",
     "react-native": "^0.65.1",
-    "react-native-blob-util": "^0.15.0"
+    "react-native-blob-util": "^0.15.0",
+    "typescript": "^4.6.3"
   },
   "dependencies": {
     "lodash": "^4.17.21",
+    "react-native-compressor": "^1.5.2",
     "react-native-fast-image": "^8.5.8",
     "react-native-image-crop-picker": "^0.36.3",
     "react-native-image-zoom-viewer": "^3.0.1",
-    "react-native-video": "^5.1.1",
-    "react-native-compressor": "^1.5.2"
+    "react-native-video": "^5.1.1"
   }
 }
