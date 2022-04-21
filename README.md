@@ -97,6 +97,10 @@ interface UploadItem {
    * 当次文件偏移
    */
   offset?: number
+  /**
+   * 当前文件是否需要断点续传
+   */
+  resume?: boolean
 }
 
 export type UploadAction = ({ data, file }: UploadActionParams) => Promise<FileVO>

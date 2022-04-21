@@ -294,7 +294,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   function handlePressAdd() {
     onPressAdd()
   }
-  function handlePress(item: ISource, index: number, list: ISource[]) {
+  function handlePress(item: ISource, _: number, list: ISource[]) {
     if (item.status === 'done') {
       // 预览逻辑
       const isVideo = item.filepath && item.filepath.endsWith('.mp4')
