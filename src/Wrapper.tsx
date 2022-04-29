@@ -1,23 +1,21 @@
-import React, { useMemo, useRef, FC } from 'react'
 import { Selector } from '@fruits-chain/react-native-xiaoshu'
-import UploadInternal, {
-  UploadInstance,
-  UploadProps,
-  formatUploadList,
-  UploadActionParams,
-  UploadAction,
-} from './_internal'
-import UploadPreview from './Preview'
-import UploadWrapper from './Wrapper'
-import { UploadItem, FileVO, IUploadTempSource } from './interface'
+import React, { useMemo, useRef } from 'react'
+import { Insets, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
+import UploadInternal, { UploadInstance, UploadProps } from './_internal'
 
-export interface ISource extends UploadItem {}
-interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
-  Preview: typeof UploadPreview
-  Wrapper: typeof UploadWrapper
+interface UploadWrapperProps extends Omit<UploadProps, 'useCamera' | 'onPressAdd' | 'showUi'> {
+  wrapperStyle?: StyleProp<ViewStyle>
+  hitSlop?: Insets
+  activeOpacity?: number
 }
 
-const Upload: IUpload = (props) => {
+const UploadWrapper: React.FC<UploadWrapperProps> = ({
+  children,
+  wrapperStyle = {},
+  hitSlop,
+  activeOpacity = 0.2,
+  ...props
+}) => {
   const upload = useRef<UploadInstance>(null)
   const options = useMemo(() => {
     const result = [
@@ -64,14 +62,12 @@ const Upload: IUpload = (props) => {
       }
     })
   }
-  return <UploadInternal {...props} ref={upload} onPressAdd={handlePressAdd} />
+  return (
+    <TouchableOpacity hitSlop={hitSlop} activeOpacity={activeOpacity} style={wrapperStyle} onPress={handlePressAdd}>
+      {children}
+      <UploadInternal {...props} showUi={false} ref={upload} />
+    </TouchableOpacity>
+  )
 }
 
-Upload.Preview = UploadPreview
-Upload.Wrapper = UploadWrapper
-Upload.displayName = 'Upload'
-
-export type { UploadItem, FileVO, UploadActionParams, UploadAction, IUploadTempSource }
-export { formatUploadList }
-
-export default Upload
+export default UploadWrapper

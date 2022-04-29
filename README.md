@@ -38,6 +38,15 @@ const UploadPage: React.FC = () => {
     <View>
       <Upload uploadAction={...} tipText={langs.picsAndVideo} maxCount={10} list={images} onChange={(val) => setImages(val)} />
       <Upload.Preview list={images} />
+      // tip: 使用`Upload.Wrapper`的方式不会渲染默认操作UI，可进行自定义显示
+      <Upload.Wrapper uploadAction={...} tipText={langs.picsAndVideo} maxCount={10} list={images} onChange={(val) => setImages(val)} >
+        <Text>上传文件</Text>
+      </Upload.Wrapper>
+      <View>
+        {
+          images.map(image => ...)
+        }
+      </View>
     </View>
   )
 }
@@ -68,6 +77,7 @@ const UploadPage: React.FC = () => {
 | allowResume?    | `boolean or number`                                            | 是否支持续传（传入`number`时表示只有压缩后大于`number`字节的文件会开启续传 | false  | 1.2.0 |
 | progressAction? | (fileHash: string) => Promise<{fileUrl: string; size: number}> | 获取上传当前图片上传进度                                                   | -      | 1.2.0 |
 | compress?       | boolean                                                        | 是否开启压缩                                                               | true   | 1.2.0 |
+| showUi?         | boolean                                                        | 是否显示 UI                                                                | true   | 1.3.0 |
 
 ```ts
 interface UploadItem {

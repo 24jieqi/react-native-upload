@@ -77,7 +77,7 @@ export interface UploadProps {
   /**
    * 点击新增
    */
-  onPressAdd: () => void
+  onPressAdd?: () => void
   /**
    * 上传地址（需要封装成UploadAction的形式）
    */
@@ -105,6 +105,10 @@ export interface UploadProps {
    * 是否开启压缩
    */
   compress?: boolean
+  /**
+   * 是否显示UI
+   */
+  showUi?: boolean
 }
 
 export type OverrideOptions = Pick<UploadProps, 'mediaType' | 'useCamera' | 'multiple'>
@@ -147,6 +151,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     allowResume = false,
     progressAction,
     compress = true,
+    showUi = true,
   },
   ref,
 ) => {
@@ -336,7 +341,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   const imageUrls = value
     .filter((source) => !source.filepath.includes('.mp4'))
     .map((item) => ({ url: item.filepath, id: item.key }))
-  return (
+  return showUi ? (
     <>
       <Uploader
         onPressImage={handlePress}
@@ -359,7 +364,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         setShow={(show?: boolean) => setShowVideoPreview(show)}
       />
     </>
-  )
+  ) : null
 }
 
 const UploadInternal = forwardRef<any, UploadProps>(_UploadInternal) as (

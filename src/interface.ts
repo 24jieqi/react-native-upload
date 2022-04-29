@@ -3,7 +3,7 @@ export interface FileVO {
   fileId?: string
 
   /** 文件上传时间 */
-  fileUploadTime?: string
+  fileUploadTime?: string | number
 
   /** 文件地址 */
   fileUrl?: string
