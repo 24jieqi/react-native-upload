@@ -60,7 +60,7 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
       file.status = 'done'
       file.origin = {
         fileId: file.hash,
-        fileUploadTime: '',
+        fileUploadTime: null,
         filename: file.name,
         fileUrl: uploadedInfo.fileUrl,
       }

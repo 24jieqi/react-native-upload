@@ -119,8 +119,8 @@ interface FileVO {
   /** 文件ID */
   fileId?: string
 
-  /** 文件上传时间 */
-  fileUploadTime?: string
+  /** 文件上传时间戳 */
+  fileUploadTime?: number
 
   /** 文件地址 */
   fileUrl?: string
