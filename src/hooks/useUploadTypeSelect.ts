@@ -15,7 +15,7 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
   function handlePressAdd() {
     ActionSheet({
       cancelText: '取消',
-      title: '选择',
+      title: '选择上传方式',
       actions,
     })
       .then(({ index }) => {
@@ -30,12 +30,14 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
             uploadInstance.current.open({
               useCamera: false,
             })
+            break
           case 2:
             uploadInstance.current.open({
               useCamera: true,
               multiple: false,
               mediaType: 'video',
             })
+            break
           default:
             break
         }
