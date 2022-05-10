@@ -1,8 +1,8 @@
 import ReactNativeBlobUtil from 'react-native-blob-util'
-import { buildCachePath, buildUri, normalizePath } from './utils/helper'
-import { IUploadTempSource, UploadItem } from './interface'
-import { UploadAction } from './_internal'
-import { getFileExt } from './utils'
+import { buildCachePath, buildUri, normalizePath } from '../utils/helper'
+import { IUploadTempSource, UploadItem } from '../interface'
+import { UploadAction } from '../_internal'
+import { getFileExt } from '../utils'
 
 const { fs } = ReactNativeBlobUtil
 interface UploadResumeProps {

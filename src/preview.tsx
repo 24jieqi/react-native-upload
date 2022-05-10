@@ -10,7 +10,7 @@ import { getThumbnailImageUrl } from './utils'
 interface IUploadPreview {
   list: FileVO[]
 }
-// 除去边距后每行显示四个元素
+// 每行固定展示4个
 const itemWidth = (Dimensions.get('screen').width - 56) / 4
 
 const UploadPreview: React.FC<IUploadPreview> = ({ list = [] }) => {

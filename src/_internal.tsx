@@ -24,7 +24,7 @@ import ImagePreview from './components/ImagePreview'
 import { exec, isVideo } from './utils'
 import VideoPreview from './components/VideoPreview'
 import { FileVO, IUploadTempSource, UploadItem } from './interface'
-import useUploadResume, { getFileKey } from './useUploadResume'
+import useUploadResume, { getFileKey } from './hooks/useUploadResume'
 import { ISource } from '.'
 
 export interface UploadInstance {

@@ -1,15 +1,9 @@
-import React, { useMemo, useRef, FC } from 'react'
-import { Selector } from '@fruits-chain/react-native-xiaoshu'
-import UploadInternal, {
-  UploadInstance,
-  UploadProps,
-  formatUploadList,
-  UploadActionParams,
-  UploadAction,
-} from './_internal'
+import React, { FC } from 'react'
+import UploadInternal, { UploadProps, formatUploadList, UploadActionParams, UploadAction } from './_internal'
 import UploadPreview from './Preview'
 import UploadWrapper from './Wrapper'
 import { UploadItem, FileVO, IUploadTempSource } from './interface'
+import useUploadTypeSelect from './hooks/useUploadTypeSelect'
 
 export interface ISource extends UploadItem {}
 interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
@@ -18,53 +12,8 @@ interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
 }
 
 const Upload: IUpload = (props) => {
-  const upload = useRef<UploadInstance>(null)
-  const options = useMemo(() => {
-    const result = [
-      {
-        label: '拍摄照片',
-        value: 'photo',
-      },
-      {
-        label: '相册选择',
-        value: 'album',
-      },
-    ]
-    if (props.mediaType !== 'photo') {
-      result.push({
-        label: '拍摄视频',
-        value: 'video',
-      })
-    }
-    return result
-  }, [props.mediaType])
-  function handlePressAdd() {
-    Selector({
-      title: '选择',
-      options,
-    }).then((type) => {
-      switch (type) {
-        case 'album':
-          upload.current.open({
-            useCamera: false,
-          })
-          break
-        case 'photo':
-          upload.current.open({
-            useCamera: true,
-            multiple: false,
-          })
-          break
-        case 'video':
-          upload.current.open({
-            useCamera: true,
-            multiple: false,
-            mediaType: 'video',
-          })
-      }
-    })
-  }
-  return <UploadInternal {...props} ref={upload} onPressAdd={handlePressAdd} />
+  const { uploadInstance, handlePressAdd } = useUploadTypeSelect(props.mediaType)
+  return <UploadInternal {...props} ref={uploadInstance} onPressAdd={handlePressAdd} />
 }
 
 Upload.Preview = UploadPreview
