@@ -77,8 +77,8 @@ const UploadPreview: React.FC<IUploadPreview> = ({ list = [] }) => {
 
 const styles = StyleSheet.create({
   itemMargin: {
-    marginRight: 8,
-    marginBottom: 8,
+    marginRight: 12,
+    marginBottom: 12,
   },
   item: {
     width: itemWidth,
