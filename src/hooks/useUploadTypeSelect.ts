@@ -15,7 +15,6 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
   function handlePressAdd() {
     ActionSheet({
       cancelText: '取消',
-      title: '选择上传方式',
       actions,
     })
       .then(({ index }) => {

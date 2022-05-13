@@ -33,7 +33,13 @@ const UploadPreview: React.FC<IUploadPreview> = ({ list = [] }) => {
     .map((item) => ({ url: item.fileUrl, id: item.fileId }))
   return (
     <>
-      <Uploader onPressImage={handlePreview} showUpload={false} deletable={false} list={formatUploadList(list)} />
+      <Uploader
+        imageGap={12}
+        onPressImage={handlePreview}
+        showUpload={false}
+        deletable={false}
+        list={formatUploadList(list)}
+      />
       <ImagePreview
         index={currImageIndex}
         visible={showImagePreview}

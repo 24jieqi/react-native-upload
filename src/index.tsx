@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import UploadInternal, { UploadProps, formatUploadList, UploadActionParams, UploadAction } from './_internal'
-import UploadPreview from './Preview'
+import UploadPreview from './Prev'
 import UploadWrapper from './Wrapper'
 import { UploadItem, FileVO, IUploadTempSource } from './interface'
 import useUploadTypeSelect from './hooks/useUploadTypeSelect'

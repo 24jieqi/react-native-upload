@@ -344,6 +344,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   return showUi ? (
     <>
       <Uploader
+        imageGap={12}
         onPressImage={handlePress}
         maxCount={maxCount}
         onPressDelete={(item) => removeImage(item)}
