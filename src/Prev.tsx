@@ -4,12 +4,13 @@ import { formatUploadList } from '.'
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
 import { FileVO, UploadItem } from './interface'
+import { UploadProps } from './_internal'
 
-interface IUploadPreview {
+interface IUploadPreview extends Pick<UploadProps, 'imagesPerRow'> {
   list: FileVO[]
 }
 
-const UploadPreview: React.FC<IUploadPreview> = ({ list = [] }) => {
+const UploadPreview: React.FC<IUploadPreview> = ({ list = [], imagesPerRow = 4 }) => {
   const [showImagePreview, setShowImagePreview] = useState(false) // 图片预览与否
   const [currImageIndex, setCurrImageIndex] = useState(0) // 当前预览图片的索引
   const [showVideoPreview, setShowVideoPreview] = useState(false) // 视频预览与否
@@ -34,7 +35,7 @@ const UploadPreview: React.FC<IUploadPreview> = ({ list = [] }) => {
   return (
     <>
       <Uploader
-        imageGap={12}
+        colCount={imagesPerRow}
         onPressImage={handlePreview}
         showUpload={false}
         deletable={false}

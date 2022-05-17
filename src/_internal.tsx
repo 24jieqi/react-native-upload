@@ -109,6 +109,10 @@ export interface UploadProps {
    * 是否显示UI
    */
   showUi?: boolean
+  /**
+   * 每行显示的图片数 default: 4
+   */
+  imagesPerRow?: number
 }
 
 export type OverrideOptions = Pick<UploadProps, 'mediaType' | 'useCamera' | 'multiple'>
@@ -152,6 +156,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     progressAction,
     compress = true,
     showUi = true,
+    imagesPerRow = 4,
   },
   ref,
 ) => {
@@ -344,7 +349,6 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   return showUi ? (
     <>
       <Uploader
-        imageGap={12}
         onPressImage={handlePress}
         maxCount={maxCount}
         onPressDelete={(item) => removeImage(item)}
@@ -352,6 +356,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         onPressError={handleReupload}
         list={value}
         uploadText={tipText}
+        colCount={imagesPerRow}
       />
       <ImagePreview
         index={currImageIndex}

@@ -31,14 +31,14 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@fruits-chain/react-native-xiaoshu": "^0.2.8",
+    "@fruits-chain/react-native-xiaoshu": "^0.2.47",
     "react": "^17.0.2",
     "react-native": "^0.65.1",
     "react-native-blob-util": "^0.15.0",
     "react-native-fs": "^2.19.0"
   },
   "devDependencies": {
-    "@fruits-chain/react-native-xiaoshu": "^0.2.8",
+    "@fruits-chain/react-native-xiaoshu": "^0.2.47",
     "@types/lodash": "^4.14.181",
     "@types/react": "^17.0.24",
     "@types/react-native": "^0.65.1",
