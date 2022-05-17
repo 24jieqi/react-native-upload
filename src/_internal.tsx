@@ -26,6 +26,7 @@ import VideoPreview from './components/VideoPreview'
 import { FileVO, IUploadTempSource, UploadItem } from './interface'
 import useUploadResume, { getFileKey } from './hooks/useUploadResume'
 import { ISource } from '.'
+import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
 
 export interface UploadInstance {
   open: (config?: OverrideOptions) => void
@@ -113,6 +114,10 @@ export interface UploadProps {
    * 每行显示的图片数 default: 4
    */
   imagesPerRow?: number
+  /**
+   * regular模式下，设置固定上传个数及文案
+   */
+  count?: number | RegularCount[]
 }
 
 export type OverrideOptions = Pick<UploadProps, 'mediaType' | 'useCamera' | 'multiple'>
@@ -157,6 +162,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     compress = true,
     showUi = true,
     imagesPerRow = 4,
+    count,
   },
   ref,
 ) => {
@@ -348,16 +354,28 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
     .map((item) => ({ url: item.filepath, id: item.key }))
   return showUi ? (
     <>
-      <Uploader
-        onPressImage={handlePress}
-        maxCount={maxCount}
-        onPressDelete={(item) => removeImage(item)}
-        onPressUpload={handlePressAdd}
-        onPressError={handleReupload}
-        list={value}
-        uploadText={tipText}
-        colCount={imagesPerRow}
-      />
+      {typeof count === 'undefined' ? (
+        <Uploader
+          onPressImage={handlePress}
+          maxCount={maxCount}
+          onPressDelete={(item) => removeImage(item)}
+          onPressUpload={handlePressAdd}
+          onPressError={handleReupload}
+          list={value}
+          uploadText={tipText}
+          colCount={imagesPerRow}
+        />
+      ) : (
+        <Uploader.Regular
+          onPressImage={handlePress}
+          count={count}
+          onPressDelete={(item) => removeImage(item)}
+          onPressUpload={handlePressAdd}
+          onPressError={handleReupload}
+          list={value}
+          colCount={imagesPerRow}
+        />
+      )}
       <ImagePreview
         index={currImageIndex}
         visible={showImagePreview}
