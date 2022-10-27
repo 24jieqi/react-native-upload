@@ -48,7 +48,11 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
     ActionSheet({
       cancelText: '取消',
       actions,
-    }).catch(() => {})
+    })
+      .then(({ item }) => {
+        item.callback?.()
+      })
+      .catch(() => {})
   }
   return {
     uploadInstance,
