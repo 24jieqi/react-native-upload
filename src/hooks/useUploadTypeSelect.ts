@@ -1,14 +1,46 @@
 import { ActionSheet } from '@fruits-chain/react-native-xiaoshu'
+import { Action } from '@fruits-chain/react-native-xiaoshu/lib/typescript/action-sheet/interface'
 import { useMemo, useRef } from 'react'
 import { MediaType } from '../interface'
 import { UploadInstance } from '../_internal'
 
 const useUploadTypeSelect = (mediaType: MediaType) => {
   const uploadInstance = useRef<UploadInstance>()
-  const actions: string[] = useMemo(() => {
-    const result = ['拍摄照片', '相册选择']
-    if (mediaType !== 'photo') {
-      result.push('拍摄视频')
+  const actions = useMemo(() => {
+    const result: Action[] = [
+      {
+        name: '拍摄照片',
+        callback() {
+          uploadInstance.current.open({
+            useCamera: true,
+            multiple: false,
+          })
+        },
+      },
+      {
+        name: '相册选择',
+        callback() {
+          uploadInstance.current.open({
+            useCamera: false,
+          })
+        },
+      },
+      {
+        name: '拍摄视频',
+        callback() {
+          uploadInstance.current.open({
+            useCamera: true,
+            multiple: false,
+            mediaType: 'video',
+          })
+        },
+      },
+    ]
+    if (mediaType === 'photo') {
+      result.splice(2, 1)
+    }
+    if (mediaType === 'video') {
+      result.splice(0, 1)
     }
     return result
   }, [mediaType])
@@ -16,32 +48,7 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
     ActionSheet({
       cancelText: '取消',
       actions,
-    })
-      .then(({ index }) => {
-        switch (index) {
-          case 0:
-            uploadInstance.current.open({
-              useCamera: true,
-              multiple: false,
-            })
-            break
-          case 1:
-            uploadInstance.current.open({
-              useCamera: false,
-            })
-            break
-          case 2:
-            uploadInstance.current.open({
-              useCamera: true,
-              multiple: false,
-              mediaType: 'video',
-            })
-            break
-          default:
-            break
-        }
-      })
-      .catch(() => {})
+    }).catch(() => {})
   }
   return {
     uploadInstance,

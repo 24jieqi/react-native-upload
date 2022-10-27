@@ -282,7 +282,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         }, 0)
         valueCopy.current = [...value, ...files]
         setValueIfNeeded(valueCopy.current)
-        exec(onChange, valueCopy.current)
+        exec(onChange, cloneDeep(valueCopy.current))
         return valueCopy.current.filter((f) => f.status === 'loading')
       })
       .then(async (filesToUpload) => {
@@ -295,8 +295,8 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
           if (~idx) {
             valueCopy.current[idx] = uploadRes
           }
-          setValueIfNeeded(cloneDeep(valueCopy.current))
-          exec(onChange, valueCopy.current)
+          setValueIfNeeded(valueCopy.current)
+          exec(onChange, cloneDeep(valueCopy.current))
         }
       })
       .catch((e) => {
@@ -336,8 +336,8 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
       type: valueCopy.current[currIndex].type,
     })
     valueCopy.current[currIndex] = res
-    setValueIfNeeded(cloneDeep(valueCopy.current))
-    exec(onChange, valueCopy.current)
+    setValueIfNeeded(valueCopy.current)
+    exec(onChange, cloneDeep(valueCopy.current))
     if (res.status === 'done') {
       return
     }
@@ -346,8 +346,8 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
       exec(onUploadError, '文件上传失败')
     }
     valueCopy.current[currIndex] = uploadRes
-    setValueIfNeeded(cloneDeep(valueCopy.current))
-    exec(onChange, valueCopy.current)
+    setValueIfNeeded(valueCopy.current)
+    exec(onChange, cloneDeep(valueCopy.current))
   }
   const imageUrls = value
     .filter((source) => !source.filepath.includes('.mp4'))
