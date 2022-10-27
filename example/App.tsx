@@ -15,7 +15,6 @@ import Upload, {
 } from '@fruits-chain/react-native-upload';
 import {Card, Form, Provider, Space} from '@fruits-chain/react-native-xiaoshu';
 import axios from 'axios';
-import {cloneDeep} from 'lodash';
 import React, {useState} from 'react';
 import {SafeAreaView, StatusBar, Text} from 'react-native';
 
@@ -67,7 +66,7 @@ const MainComponent = () => {
               list={files}
               uploadAction={uploadImage}
               onChange={list => {
-                setFiles(cloneDeep(list));
+                setFiles(list);
               }}>
               <Text style={{padding: 4, color: '#0065fe'}}>点击上传</Text>
             </Upload.Wrapper>
