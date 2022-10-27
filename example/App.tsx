@@ -38,10 +38,6 @@ export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
 
 const MainComponent = () => {
   const [files, setFiles] = useState<UploadItem[]>([]);
-  console.log(
-    'files',
-    files.map(f => f.status),
-  );
   return (
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
       <StatusBar barStyle="dark-content" />
