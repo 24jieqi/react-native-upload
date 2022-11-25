@@ -637,6 +637,13 @@
     pirates "^4.0.0"
     source-map-support "^0.5.16"
 
+"@babel/runtime@*":
+  version "7.20.1"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.1.tgz#1148bb33ab252b165a06698fde7576092a78b4a9"
+  integrity sha512-mrzLkl6U9YLF8qpqI7TB82PESyEGjm/0Ly91jG575eVxMMlb8fYfOXFZIJ8XfLrJZQbm7dlKry2bJmXBUEkdFg==
+  dependencies:
+    regenerator-runtime "^0.13.10"
+
 "@babel/runtime@^7.8.4":
   version "7.16.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.5.tgz#7f3e34bf8bdbbadf03fbb7b1ea0d929569c9487a"
@@ -685,21 +692,30 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@fruits-chain/design-tokens-bailu@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/design-tokens-bailu/-/design-tokens-bailu-0.0.6.tgz#978a5d55ca8fe3bc222df917871d634390e11a73"
-  integrity sha512-Km8GrJCCJmdnbSUuZuI6quw5qKF6I8igqn7W4AceoJGULhTv1i06MlkspAkmbG3apbx0+tYsWUBpM4uC+FqaVw==
+"@fruits-chain/design-tokens-bailu@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/design-tokens-bailu/-/design-tokens-bailu-0.0.7.tgz#08242570a4c2695d9869a1276989cda371ea8504"
+  integrity sha512-kAWVggw+hCIv6ZajJPZZi/qWlkDNfklLSqp8Xqv1Dgt/psqEDVKRh2KTV0Xw47xrZ/r2EW0LOdorcjrxE1JSYQ==
 
-"@fruits-chain/react-native-xiaoshu@^0.2.47":
-  version "0.2.47"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-xiaoshu/-/react-native-xiaoshu-0.2.47.tgz#da296d74c9e24fe1e6268af92e88135e0f4dc6ba"
-  integrity sha512-QtuF+oRwSs7IHPtISVvzFGKmCdNnExfROSipXAPhjyfmvgTF23P76GDWfIZri7tfjP1pdsMLN4m8fG+wIE8fGw==
+"@fruits-chain/icons-react-native@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/icons-react-native/-/icons-react-native-0.0.7.tgz#2359b8e367e634f3473962c3e1bf28b0a447834c"
+  integrity sha512-xVdeXS4MFgeO401yx7klNgvpXS/kNaXgwAKxvEhy+e9AONSFOO9UtcPrMoLlGpkGpJrtzatRyS1ZsO3N/nNjbQ==
   dependencies:
-    "@fruits-chain/design-tokens-bailu" "^0.0.6"
+    "@babel/runtime" "*"
+    lodash "*"
+
+"@fruits-chain/react-native-xiaoshu@^0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-xiaoshu/-/react-native-xiaoshu-0.3.8.tgz#6b6b74350dd4ec4eea5cab563cecd5be7ba24094"
+  integrity sha512-nEyfU1BXRP+bG5qPzlHtK/L5PWWrZroMYmvC+pWLCMyVyrE1R4XebFuvql3sqPhx9KQOcp5eRo+kEn4lkLemxg==
+  dependencies:
+    "@fruits-chain/design-tokens-bailu" "^0.0.7"
+    "@fruits-chain/icons-react-native" "^0.0.7"
     color "^3.2.1"
     lodash "^4.17.21"
-    react-is "^18.1.0"
-    react-native-popover-view "^5.0.1"
+    react-is "^18.2.0"
+    react-native-popover-view "^5.1.6"
     rn-placeholder "^3.0.3"
 
 "@hapi/hoek@^9.0.0":
@@ -1709,7 +1725,7 @@ depd@~1.1.2:
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
 
-deprecated-react-native-prop-types@^2.2.0:
+deprecated-react-native-prop-types@^2.2.0, deprecated-react-native-prop-types@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.3.0.tgz#c10c6ee75ff2b6de94bb127f142b814e6e08d9ab"
   integrity sha512-pWD0voFtNYxrVqvBMYf5gq3NA2GCpfodS1yNynTPc93AYA/KEMGeWDqqeUB6R2Z9ZofVhks2aeJXiuQqKNpesA==
@@ -2531,7 +2547,7 @@ lodash.throttle@^4.1.1:
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
 
-lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.21:
+lodash@*, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -3278,7 +3294,7 @@ prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@*:
+prop-types@*, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -3327,10 +3343,10 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-is@^18.1.0:
-  version "18.1.0"
-  resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.1.0.tgz#61aaed3096d30eacf2a2127118b5b41387d32a67"
-  integrity sha512-Fl7FuabXsJnV5Q1qIOQwx/sagGF18kogb4gpfcG4gjLBWO0WDiiz1ko/ExayuxE7InyQkBLkxRFG5oxY6Uu3Kg==
+react-is@^18.2.0:
+  version "18.2.0"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
+  integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
 react-native-blob-util@^0.15.0:
   version "0.15.0"
@@ -3358,10 +3374,10 @@ react-native-fs@^2.19.0:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-react-native-image-crop-picker@^0.36.3:
-  version "0.36.4"
-  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.36.4.tgz#13a659fc296bea695a88a36de9eacd1e4aebc9b8"
-  integrity sha512-FOWkYbCEh78V5/aK9HqMSvRnQJtelGwj0UOu1zhE49gO6e4YoKKNBvA15jweAMM/kPA+omDXBIgJaruonoEXGA==
+react-native-image-crop-picker@^0.38.1:
+  version "0.38.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.38.1.tgz#5973b4a8b55835b987e6be2064de411e849ac005"
+  integrity sha512-cF5UQnWplzHCeiCO+aiGS/0VomWaLmFf3nSsgTMPfY+8+99h8N/eHQvVdSF7RsGw50B8394wGeGyqHjjp8YRWw==
 
 react-native-image-pan-zoom@^2.1.12:
   version "2.1.12"
@@ -3375,10 +3391,13 @@ react-native-image-zoom-viewer@^3.0.1:
   dependencies:
     react-native-image-pan-zoom "^2.1.12"
 
-react-native-popover-view@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-popover-view/-/react-native-popover-view-5.0.1.tgz#dc85548f6e9468dda8fc3b8ae42c1094893c2679"
-  integrity sha512-8Hk8+azF5gYY0kpQthJ1n+0S1CQt4C67ODPRFdqLboAGUtja8Yv9svQBCSQZz2hrb4u2yjMrXq1SWbEBcSuIFQ==
+react-native-popover-view@^5.1.6:
+  version "5.1.7"
+  resolved "https://registry.yarnpkg.com/react-native-popover-view/-/react-native-popover-view-5.1.7.tgz#12f1df9b7c142ab8fa1a3ded2919a4164823be45"
+  integrity sha512-Xa+zKYp9x62UNezT8o9SnqQaBQEHdGwGHZnFnA2bsXLneVRvvlBopNwMNj+p7N65qnPf3mmzWj+57ThtM1qFuw==
+  dependencies:
+    deprecated-react-native-prop-types "^2.3.0"
+    prop-types "^15.8.1"
 
 react-native-video@^5.1.1:
   version "5.2.1"
@@ -3468,6 +3487,11 @@ regenerate@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.2.tgz#b9346d8827e8f5a32f7ba29637d398b69014848a"
   integrity sha512-zrceR/XhGYU/d/opr2EKO7aRHUeiBI8qjtfHqADTwZd6Szfy16la6kqD0MIUs5z5hx6AaKa+PixpPrR289+I0A==
+
+regenerator-runtime@^0.13.10:
+  version "0.13.11"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
+  integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
 
 regenerator-runtime@^0.13.2, regenerator-runtime@^0.13.4:
   version "0.13.9"

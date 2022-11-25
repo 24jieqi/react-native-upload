@@ -4,13 +4,17 @@ import { useMemo, useRef } from 'react'
 import { MediaType } from '../interface'
 import { UploadInstance } from '../_internal'
 
+interface ExtendedAction extends Action {
+  onPress?: () => void
+}
+
 const useUploadTypeSelect = (mediaType: MediaType) => {
   const uploadInstance = useRef<UploadInstance>()
   const actions = useMemo(() => {
-    const result: Action[] = [
+    const result: ExtendedAction[] = [
       {
         name: '拍摄照片',
-        callback() {
+        onPress() {
           uploadInstance.current.open({
             useCamera: true,
             multiple: false,
@@ -19,7 +23,7 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
       },
       {
         name: '相册选择',
-        callback() {
+        onPress() {
           uploadInstance.current.open({
             useCamera: false,
           })
@@ -27,7 +31,7 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
       },
       {
         name: '拍摄视频',
-        callback() {
+        onPress() {
           uploadInstance.current.open({
             useCamera: true,
             multiple: false,
@@ -49,8 +53,8 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
       cancelText: '取消',
       actions,
     })
-      .then(({ item }) => {
-        item.callback?.()
+      .then(({ item }: { item: ExtendedAction }) => {
+        item.onPress?.()
       })
       .catch(() => {})
   }
