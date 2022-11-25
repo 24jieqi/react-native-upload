@@ -800,25 +800,25 @@
     "@babel/runtime" "*"
     lodash "*"
 
-"@fruits-chain/react-native-upload@^1.3.15":
-  version "1.3.15"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-1.3.15.tgz#6002e70bf61f38517db4efb3b2644c9dec6ea0ef"
-  integrity sha512-kHSf4C7Sy6n/EVN6iuast4x3JkbeREGNcrhj27sLMsmBH9Ahz9dvXCa9G1OWvWOaZPYpuq7/mwl/Dem0kWOOIA==
+"@fruits-chain/react-native-upload@^1.3.16":
+  version "1.3.16"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-1.3.16.tgz#fe344c5c840ac7d588ca200c067339482758c4b5"
+  integrity sha512-VCx9/ITM0I/MFG5xvXEqqPD+IzwP2RZry5Ybz/q3PWRFMyuTHzw44gk3/0ZrCiekUz7FiFkqSMHvN4Gwe8ZHmw==
   dependencies:
     lodash "^4.17.21"
     react-native-image-zoom-viewer "^3.0.1"
 
-"@fruits-chain/react-native-xiaoshu@^0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-xiaoshu/-/react-native-xiaoshu-0.3.6.tgz#467e3cc63098d3c68c40fd08ea60e6e21283f430"
-  integrity sha512-6y43LHJjAIjX/gIcdMHhAc7eVp0fzAR+fd+R31/PfSOpi0jP3zt4dnvTpP2c9MNxzSkMTCYbg2eCpfsKF1vCPg==
+"@fruits-chain/react-native-xiaoshu@^0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-xiaoshu/-/react-native-xiaoshu-0.3.8.tgz#6b6b74350dd4ec4eea5cab563cecd5be7ba24094"
+  integrity sha512-nEyfU1BXRP+bG5qPzlHtK/L5PWWrZroMYmvC+pWLCMyVyrE1R4XebFuvql3sqPhx9KQOcp5eRo+kEn4lkLemxg==
   dependencies:
     "@fruits-chain/design-tokens-bailu" "^0.0.7"
     "@fruits-chain/icons-react-native" "^0.0.7"
     color "^3.2.1"
     lodash "^4.17.21"
     react-is "^18.2.0"
-    react-native-popover-view "^5.1.5"
+    react-native-popover-view "^5.1.6"
     rn-placeholder "^3.0.3"
 
 "@hapi/hoek@^9.0.0":
@@ -5921,10 +5921,10 @@ react-native-image-zoom-viewer@^3.0.1:
   dependencies:
     react-native-image-pan-zoom "^2.1.12"
 
-react-native-popover-view@^5.1.5:
-  version "5.1.6"
-  resolved "https://registry.yarnpkg.com/react-native-popover-view/-/react-native-popover-view-5.1.6.tgz#902a53b0367927e8f7cce93a308c7c9956dd4663"
-  integrity sha512-oUs30WCb30eZ7+KbllA9dj/kw/JujAFKKkh54m+VqkwI6Jo1F2510TXBxs48rpt9C3f8mMDQKDjrmIlMYGLjEg==
+react-native-popover-view@^5.1.6:
+  version "5.1.7"
+  resolved "https://registry.yarnpkg.com/react-native-popover-view/-/react-native-popover-view-5.1.7.tgz#12f1df9b7c142ab8fa1a3ded2919a4164823be45"
+  integrity sha512-Xa+zKYp9x62UNezT8o9SnqQaBQEHdGwGHZnFnA2bsXLneVRvvlBopNwMNj+p7N65qnPf3mmzWj+57ThtM1qFuw==
   dependencies:
     deprecated-react-native-prop-types "^2.3.0"
     prop-types "^15.8.1"

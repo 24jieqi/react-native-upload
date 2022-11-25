@@ -11,8 +11,8 @@
     "pods": "pod-install --quiet"
   },
   "dependencies": {
-    "@fruits-chain/react-native-upload": "^1.3.15",
-    "@fruits-chain/react-native-xiaoshu": "^0.3.6",
+    "@fruits-chain/react-native-upload": "^1.3.16",
+    "@fruits-chain/react-native-xiaoshu": "^0.3.8",
     "axios": "0.27.2",
     "rc-field-form": "^1.27.3",
     "react": "18.1.0",
