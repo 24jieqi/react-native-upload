@@ -800,10 +800,10 @@
     "@babel/runtime" "*"
     lodash "*"
 
-"@fruits-chain/react-native-upload@^1.3.16":
-  version "1.3.16"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-1.3.16.tgz#fe344c5c840ac7d588ca200c067339482758c4b5"
-  integrity sha512-VCx9/ITM0I/MFG5xvXEqqPD+IzwP2RZry5Ybz/q3PWRFMyuTHzw44gk3/0ZrCiekUz7FiFkqSMHvN4Gwe8ZHmw==
+"@fruits-chain/react-native-upload@^1.3.17":
+  version "1.3.17"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-1.3.17.tgz#25ccbf207525344dcc1c4c483bc1b01c344325dd"
+  integrity sha512-2uonpSQ6Udyh6NirO90unhKjEbhBPoVN3tagPnF3ye9ZokzSHSZUbZo2bvu4ZeIh80uRPgD+/SsFmdwKBUFsvA==
   dependencies:
     lodash "^4.17.21"
     react-native-image-zoom-viewer "^3.0.1"
