@@ -13,7 +13,13 @@ import Upload, {
   UploadActionParams,
   UploadItem,
 } from '@fruits-chain/react-native-upload';
-import {Card, Form, Provider, Space} from '@fruits-chain/react-native-xiaoshu';
+import {
+  Card,
+  Form,
+  NoticeBar,
+  Provider,
+  Space,
+} from '@fruits-chain/react-native-xiaoshu';
 import axios from 'axios';
 import React, {useState} from 'react';
 import {SafeAreaView, StatusBar, Text} from 'react-native';
@@ -38,6 +44,12 @@ export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
 
 const MainComponent = () => {
   const [files, setFiles] = useState<UploadItem[]>([]);
+  function handleUpdateFile(_files: UploadItem[]) {
+    if (_files && _files.length) {
+      _files[0].deletable = false;
+    }
+    setFiles(_files);
+  }
   return (
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
       <StatusBar barStyle="dark-content" />
@@ -47,6 +59,17 @@ const MainComponent = () => {
             <Form.Item name="files" valuePropName="list">
               <Upload uploadAction={uploadImage} />
             </Form.Item>
+          </Card>
+          <Card title="基础文件上传（自定义可删除）">
+            <NoticeBar
+              message="上传的第一个文件无法删除"
+              style={{marginBottom: 8}}
+            />
+            <Upload
+              uploadAction={uploadImage}
+              list={files}
+              onChange={handleUpdateFile}
+            />
           </Card>
           <Card title="视频上传">
             <Form.Item name="videos" valuePropName="list">
