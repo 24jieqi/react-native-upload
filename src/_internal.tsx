@@ -16,6 +16,7 @@ import {
   openCamera,
   openPicker,
 } from 'react-native-image-crop-picker'
+import DocumentPicker from 'react-native-document-picker'
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import { cloneDeep } from 'lodash'
@@ -30,6 +31,7 @@ import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/
 
 export interface UploadInstance {
   open: (config?: OverrideOptions) => void
+  openDocument: () => void
 }
 
 export interface UploadActionParams {
@@ -141,7 +143,7 @@ export function formatUploadList(list: FileVO[]) {
  * internal upload component, do not use it!
  * @private
  */
-const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
+const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
   {
     list,
     onChange,
@@ -180,6 +182,7 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
   // 对外暴露接口
   useImperativeHandle(ref, () => ({
     open: chooseImageAndUpload,
+    openDocument: chooseDocumentAndUpload,
   }))
   // 受控情形下的内外数据同步
   useEffect(() => {
@@ -306,6 +309,35 @@ const _UploadInternal: ForwardRefRenderFunction<unknown, UploadProps> = (
         }
         Toast('文件上传失败！')
       })
+  }
+  async function chooseDocumentAndUpload() {
+    try {
+      // 1. 选择文件
+      const files = await DocumentPicker.pick({
+        allowMultiSelection: multiple,
+      })
+      //2. 断点续传
+      const result = await Promise.all(files.map((item) => getFileBeforeUpload(item)))
+      valueCopy.current = [...value, ...result]
+      setValueIfNeeded(valueCopy.current)
+      exec(onChange, cloneDeep(valueCopy.current))
+      const filesToUpload = valueCopy.current.filter((f) => f.status === 'loading')
+      // 2. 文件上传
+      for (const file of filesToUpload) {
+        const uploadRes = await uploadFile(file)
+        if (uploadRes.status === 'error') {
+          exec(onUploadError, '文件上传失败')
+        }
+        const idx = valueCopy.current.findIndex((file) => file.key === uploadRes.key)
+        if (~idx) {
+          valueCopy.current[idx] = uploadRes
+        }
+        setValueIfNeeded(valueCopy.current)
+        exec(onChange, cloneDeep(valueCopy.current))
+      }
+    } catch {
+      Toast('文件上传失败！')
+    }
   }
   function handlePressAdd() {
     onPressAdd()

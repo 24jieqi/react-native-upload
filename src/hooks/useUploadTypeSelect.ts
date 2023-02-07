@@ -11,7 +11,7 @@ interface ExtendedAction extends Action {
 const useUploadTypeSelect = (mediaType: MediaType) => {
   const uploadInstance = useRef<UploadInstance>()
   const actions = useMemo(() => {
-    const result: ExtendedAction[] = [
+    let result: ExtendedAction[] = [
       {
         name: '拍摄照片',
         onPress() {
@@ -39,12 +39,23 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
           })
         },
       },
+      {
+        name: '选择文件',
+        onPress() {
+          uploadInstance.current.openDocument()
+        },
+      },
     ]
-    if (mediaType === 'photo') {
-      result.splice(2, 1)
-    }
-    if (mediaType === 'video') {
-      result.splice(0, 1)
+    switch (mediaType) {
+      case 'photo':
+        result = result.slice(0, 2)
+        break
+      case 'video':
+        result = result.slice(1, 3)
+      case 'document':
+        result = result.slice(-1)
+      default:
+        break
     }
     return result
   }, [mediaType])
