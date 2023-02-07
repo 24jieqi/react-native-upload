@@ -43,6 +43,11 @@ export interface UploadItem {
    * 当前文件是否需要断点续传
    */
   resume?: boolean
+  /**
+   * 是否可删除
+   * @default true
+   */
+  deletable?: boolean
 }
 
 export interface IUploadTempSource {
