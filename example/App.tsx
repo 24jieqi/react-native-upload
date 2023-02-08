@@ -23,6 +23,7 @@ import {
 import axios from 'axios';
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StatusBar, Text} from 'react-native';
+import PdfViewer from './src/components/pdf-viewer';
 
 export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
   const data = new FormData();
@@ -71,6 +72,15 @@ const MainComponent = () => {
                 list={files}
                 onChange={handleUpdateFile}
               />
+            </Card>
+            <Card title="自定义PDF预览">
+              <Form.Item name="document" valuePropName="list">
+                <Upload
+                  uploadAction={uploadImage}
+                  mediaType="document"
+                  customPreview={{pdf: PdfViewer}}
+                />
+              </Form.Item>
             </Card>
             <Card title="视频上传">
               <Form.Item name="videos" valuePropName="list">
