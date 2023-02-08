@@ -19,7 +19,7 @@ const getFileExtension = (filename: string) => {
 
 export const buildUri = (p: string) => (/^file:\/\//.test(p) ? p : `file://${p}`)
 
-export const normalizePath = (p: string) => (p || '').replace(/^file:\/\//, '')
+export const normalizePath = (p: string) => decodeURIComponent((p || '').replace(/^file:\/\//, ''))
 
 const getMiniFilename = (filename: string) => {
   const filenames = filename.split('.')

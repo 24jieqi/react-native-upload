@@ -52,6 +52,7 @@ const useUploadTypeSelect = (mediaType: MediaType) => {
         break
       case 'video':
         result = result.slice(1, 3)
+        break
       case 'document':
         result = result.slice(-1)
       default:

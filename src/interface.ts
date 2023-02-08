@@ -57,3 +57,5 @@ export interface IUploadTempSource {
 }
 
 export type MediaType = 'photo' | 'video' | 'any' | 'document'
+
+export type ImageMediaType = 'photo' | 'video' | 'any'

@@ -21,13 +21,12 @@ import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import { cloneDeep } from 'lodash'
 import { compressorImage, compressorVideo } from './utils/helper'
-import ImagePreview from './components/ImagePreview'
 import { exec, isVideo } from './utils'
-import VideoPreview from './components/VideoPreview'
-import { FileVO, IUploadTempSource, UploadItem } from './interface'
+import { FileVO, ImageMediaType, IUploadTempSource, MediaType, UploadItem } from './interface'
 import useUploadResume, { getFileKey } from './hooks/useUploadResume'
 import { ISource } from '.'
 import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
+import Preview, { CustomPreview, PreviewInstance } from './components/Preview'
 
 export interface UploadInstance {
   open: (config?: OverrideOptions) => void
@@ -68,7 +67,7 @@ export interface UploadProps {
   /**
    * 上传文件类型
    */
-  mediaType?: 'photo' | 'video' | 'any'
+  mediaType?: MediaType
   /**
    * 是否支持多选上传
    */
@@ -120,9 +119,15 @@ export interface UploadProps {
    * regular模式下，设置固定上传个数及文案
    */
   count?: number | RegularCount[]
+  /**
+   * 自定义预览实现 key: 文件名后缀 value:自定义预览组件
+   */
+  customPreview?: CustomPreview
 }
 
-export type OverrideOptions = Pick<UploadProps, 'mediaType' | 'useCamera' | 'multiple'>
+export type OverrideOptions = Pick<UploadProps, 'useCamera' | 'multiple'> & {
+  mediaType?: ImageMediaType
+}
 
 let toastKey: ToastMethods
 
@@ -165,13 +170,11 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     showUi = true,
     imagesPerRow = 4,
     count,
+    customPreview,
   },
   ref,
 ) => {
-  const [showImagePreview, setShowImagePreview] = useState(false) // 图片预览与否
-  const [currImageIndex, setCurrImageIndex] = useState(0) // 当前预览图片的索引
-  const [showVideoPreview, setShowVideoPreview] = useState(false) // 视频预览与否
-  const [videoUrl, setVideoUrl] = useState('') // 当前预览图片的url
+  const previewRef = useRef<PreviewInstance>()
   const { getFileBeforeUpload, uploadFile } = useUploadResume({
     uploadAction,
     progressAction,
@@ -260,7 +263,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
       cropping,
       cropperChooseText: '确认',
       cropperCancelText: '取消',
-      mediaType,
+      mediaType: mediaType as ImageMediaType,
       ...config,
     }
     const optionAction = isCamera ? openCamera : openPicker
@@ -335,26 +338,20 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         setValueIfNeeded(valueCopy.current)
         exec(onChange, cloneDeep(valueCopy.current))
       }
-    } catch {
+    } catch (err) {
+      // 用户手动取消
+      if (err?.code === 'DOCUMENT_PICKER_CANCELED') {
+        return
+      }
       Toast('文件上传失败！')
     }
   }
   function handlePressAdd() {
     onPressAdd()
   }
-  function handlePress(item: ISource, _: number, list: ISource[]) {
+  function handlePress(item: ISource) {
     if (item.status === 'done') {
-      // 预览逻辑
-      const isVideo = item.filepath && item.filepath.endsWith('.mp4')
-      if (isVideo) {
-        setVideoUrl(item.filepath)
-        setShowVideoPreview(true)
-      } else {
-        const imgFileList = list.filter((file) => !file.filepath.endsWith('.mp4'))
-        const currentIndex = imgFileList.findIndex((img) => img.key === item.key)
-        setCurrImageIndex(currentIndex)
-        setShowImagePreview(true)
-      }
+      previewRef.current.preview(item)
     }
   }
   async function handleReupload(item: ISource) {
@@ -381,9 +378,6 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     setValueIfNeeded(valueCopy.current)
     exec(onChange, cloneDeep(valueCopy.current))
   }
-  const imageUrls = value
-    .filter((source) => !source.filepath.includes('.mp4'))
-    .map((item) => ({ url: item.filepath, id: item.key }))
   return showUi ? (
     <>
       {typeof count === 'undefined' ? (
@@ -408,17 +402,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
           colCount={imagesPerRow}
         />
       )}
-      <ImagePreview
-        index={currImageIndex}
-        visible={showImagePreview}
-        onVisibleChange={(visible) => setShowImagePreview(visible)}
-        photos={imageUrls}
-      />
-      <VideoPreview
-        videoUrl={videoUrl}
-        show={showVideoPreview}
-        setShow={(show?: boolean) => setShowVideoPreview(show)}
-      />
+      <Preview customPreview={customPreview} ref={previewRef} />
     </>
   ) : null
 }

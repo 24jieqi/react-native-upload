@@ -1,43 +1,40 @@
 import React, { useState } from 'react'
-import { Modal, TouchableOpacity, View, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import Video from 'react-native-video'
 
-interface IProps {
-  videoUrl: string
-  show: boolean // 显示模态窗口
-  setShow: (show: boolean) => void // 设置是否显示模态框
+interface VideoPreviewProps {
+  uri: string
 }
 
-const VideoPreview: React.FC<IProps> = ({ show, setShow, videoUrl }) => {
+const VideoPreview: React.FC<VideoPreviewProps> = ({ uri }) => {
   const [loading, setLoading] = useState(false)
   return (
-    <Modal visible={show} transparent statusBarTranslucent>
-      <TouchableOpacity style={styles.modalView} onPress={() => setShow(false)} activeOpacity={1}>
-        <Video
-          style={{ flex: 1 }}
-          resizeMode="contain"
-          playWhenInactive
-          source={{
-            uri: videoUrl,
-          }}
-          onLoadStart={() => setLoading(true)}
-          onLoad={() => setLoading(false)}
-        />
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator color="#fff" />
-          </View>
-        ) : null}
-      </TouchableOpacity>
-    </Modal>
+    <View style={styles.container}>
+      <Video
+        style={{ flex: 1 }}
+        resizeMode="contain"
+        playWhenInactive
+        source={{
+          uri,
+        }}
+        onLoadStart={() => setLoading(true)}
+        onLoad={() => setLoading(false)}
+      />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator color="#fff" />
+        </View>
+      ) : null}
+    </View>
   )
 }
 
 export default VideoPreview
 
 const styles = StyleSheet.create({
-  modalView: {
+  container: {
     flex: 1,
+    paddingBottom: 20,
     backgroundColor: '#000',
   },
   loadingContainer: {
