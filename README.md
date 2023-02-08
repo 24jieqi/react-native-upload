@@ -9,6 +9,7 @@
 - 支持多图片&视频预览
 - 可单独作为图片&视频的预览组件使用
 - 自定义上传 UI
+- 支持文档上传和各类型文档自定义预览
 
 ## 安装
 
@@ -44,6 +45,7 @@ import { render } from 'react-dom'
 import Upload from '@fruits-chain/react-native-upload'
 const UploadPage: React.FC = () => {
   const [images, setImages] = useState([])
+  const [document, setDoucument] = useState([])
   return (
     <View>
       <Upload uploadAction={...} tipText={langs.picsAndVideo} maxCount={10} list={images} onChange={(val) => setImages(val)} />
@@ -57,6 +59,8 @@ const UploadPage: React.FC = () => {
           images.map(image => ...)
         }
       </View>
+      // 文档上传
+      <Upload mediaType="document" uploadAction={...} tipText="文件" maxCount={10} list={document} onChange={(val) => setDocument(val)} />
     </View>
   )
 }
@@ -98,7 +102,9 @@ const UploadPage: React.FC = () => {
 | allowResume?    | `boolean or number`                                            | 是否支持续传（传入 `number`时表示只有压缩后大于 `number`字节的文件会开启续传 | false  | 1.2.0 |
 | progressAction? | (fileHash: string) => Promise<{fileUrl: string; size: number}> | 获取上传当前图片上传进度                                                     | -      | 1.2.0 |
 | compress?       | boolean                                                        | 是否开启压缩                                                                 | true   | 1.2.0 |
-| showUi?         | boolean                                                        | 是否显示 UI                                                                  | true   | 1.3.0 |
+| imagesPerRow?   | number                                                         | 每一行显示的个数                                                             | 4      | 1.3.8 |
+| count?          | `number or RegularCount[]`                                     | 固 regular 模式下，设置固定上传个数及文案                                    | -      | 1.3.9 |
+| customPreview?  | `CustomPreview`                                                | 自定义预览的组件映射 key: 文件名后缀 value:自定义预览组件                    | -      | 1.4.0 |
 
 ```ts
 interface UploadItem {
