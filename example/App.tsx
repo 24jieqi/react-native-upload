@@ -22,7 +22,7 @@ import {
 } from '@fruits-chain/react-native-xiaoshu';
 import axios from 'axios';
 import React, {useState} from 'react';
-import {SafeAreaView, StatusBar, Text} from 'react-native';
+import {SafeAreaView, ScrollView, StatusBar, Text} from 'react-native';
 
 export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
   const data = new FormData();
@@ -53,66 +53,68 @@ const MainComponent = () => {
   return (
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
       <StatusBar barStyle="dark-content" />
-      <Form>
-        <Space>
-          <Card title="基础文件上传">
-            <Form.Item name="files" valuePropName="list">
-              <Upload uploadAction={uploadImage} />
-            </Form.Item>
-          </Card>
-          <Card title="基础文件上传（自定义可删除）">
-            <NoticeBar
-              message="上传的第一个文件无法删除"
-              style={{marginBottom: 8}}
-            />
-            <Upload
-              uploadAction={uploadImage}
-              list={files}
-              onChange={handleUpdateFile}
-            />
-          </Card>
-          <Card title="视频上传">
-            <Form.Item name="videos" valuePropName="list">
+      <ScrollView>
+        <Form>
+          <Space>
+            <Card title="基础文件上传">
+              <Form.Item name="files" valuePropName="list">
+                <Upload uploadAction={uploadImage} />
+              </Form.Item>
+            </Card>
+            <Card title="基础文件上传（自定义可删除）">
+              <NoticeBar
+                message="上传的第一个文件无法删除"
+                style={{marginBottom: 8}}
+              />
               <Upload
                 uploadAction={uploadImage}
-                tipText="视频"
-                mediaType="video"
+                list={files}
+                onChange={handleUpdateFile}
               />
-            </Form.Item>
-          </Card>
-          <Card title="自定义上传">
-            <Upload.Wrapper
-              list={files}
-              uploadAction={uploadImage}
-              onChange={list => {
-                setFiles(list);
-              }}>
-              <Text style={{padding: 4, color: '#0065fe'}}>点击上传</Text>
-            </Upload.Wrapper>
-            {files.map(item => {
-              return (
-                <Text key={item.key}>fileUrl: {item.origin?.fileUrl}</Text>
-              );
-            })}
-          </Card>
-          <Card title="图片查看">
-            <Upload.Preview
-              list={[
-                {
-                  filename: 'xx.png',
-                  fileUrl:
-                    'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-                {
-                  filename: 'xx.png',
-                  fileUrl:
-                    'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-              ]}
-            />
-          </Card>
-        </Space>
-      </Form>
+            </Card>
+            <Card title="视频上传">
+              <Form.Item name="videos" valuePropName="list">
+                <Upload
+                  uploadAction={uploadImage}
+                  tipText="视频"
+                  mediaType="video"
+                />
+              </Form.Item>
+            </Card>
+            <Card title="自定义上传">
+              <Upload.Wrapper
+                list={files}
+                uploadAction={uploadImage}
+                onChange={list => {
+                  setFiles(list);
+                }}>
+                <Text style={{padding: 4, color: '#0065fe'}}>点击上传</Text>
+              </Upload.Wrapper>
+              {files.map(item => {
+                return (
+                  <Text key={item.key}>fileUrl: {item.origin?.fileUrl}</Text>
+                );
+              })}
+            </Card>
+            <Card title="图片查看">
+              <Upload.Preview
+                list={[
+                  {
+                    filename: 'xx.png',
+                    fileUrl:
+                      'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                  },
+                  {
+                    filename: 'xx.png',
+                    fileUrl:
+                      'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                  },
+                ]}
+              />
+            </Card>
+          </Space>
+        </Form>
+      </ScrollView>
     </SafeAreaView>
   );
 };
