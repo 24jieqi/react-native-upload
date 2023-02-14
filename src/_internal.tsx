@@ -21,7 +21,7 @@ import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import { cloneDeep } from 'lodash'
 import { compressorImage, compressorVideo } from './utils/helper'
-import { exec, isVideo } from './utils'
+import { exec, getImagePickerMediaType, isVideo } from './utils'
 import { FileVO, ImageMediaType, IUploadTempSource, MediaType, UploadItem } from './interface'
 import useUploadResume, { getFileKey } from './hooks/useUploadResume'
 import { ISource } from '.'
@@ -263,7 +263,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
       cropping,
       cropperChooseText: '确认',
       cropperCancelText: '取消',
-      mediaType: mediaType as ImageMediaType,
+      mediaType: getImagePickerMediaType(mediaType),
       ...config,
     }
     const optionAction = isCamera ? openCamera : openPicker
