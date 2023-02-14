@@ -77,8 +77,17 @@ const MainComponent = () => {
               <Form.Item name="document" valuePropName="list">
                 <Upload
                   uploadAction={uploadImage}
-                  mediaType="document"
+                  mediaType={['document']}
                   customPreview={{pdf: PdfViewer}}
+                />
+              </Form.Item>
+            </Card>
+            <Card title="图片/视频上传">
+              <Form.Item name="picAndVideos" valuePropName="list">
+                <Upload
+                  uploadAction={uploadImage}
+                  tipText="视频"
+                  mediaType={['video', 'photo']}
                 />
               </Form.Item>
             </Card>
@@ -87,7 +96,7 @@ const MainComponent = () => {
                 <Upload
                   uploadAction={uploadImage}
                   tipText="视频"
-                  mediaType="video"
+                  mediaType={['video']}
                 />
               </Form.Item>
             </Card>
