@@ -11,6 +11,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ uri }) => {
   return (
     <View style={styles.container}>
       <Video
+        controls
         style={{ flex: 1 }}
         resizeMode="contain"
         playWhenInactive

@@ -9,7 +9,7 @@ interface ExtendedAction extends Action {
 }
 
 function getMediaSelectorType(mediaType: MediaType): MediaSelectorType[] {
-  if (mediaType === 'any') {
+  if (!mediaType || mediaType === 'any') {
     return ['video', 'photo', 'document']
   }
   return mediaType
