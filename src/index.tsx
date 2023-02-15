@@ -1,9 +1,10 @@
 import React, { FC } from 'react'
-import UploadInternal, { UploadProps, formatUploadList, UploadActionParams, UploadAction } from './_internal'
+import UploadInternal, { UploadProps, UploadActionParams, UploadAction } from './_internal'
 import UploadPreview from './Prev'
 import UploadWrapper from './Wrapper'
 import { UploadItem, FileVO, IUploadTempSource } from './interface'
 import useUploadTypeSelect from './hooks/useUploadTypeSelect'
+import { formatUploadList } from './utils'
 
 export interface ISource extends UploadItem {}
 interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {

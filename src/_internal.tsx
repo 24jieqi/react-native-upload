@@ -23,7 +23,7 @@ import { cloneDeep } from 'lodash'
 import { compressorImage, compressorVideo } from './utils/helper'
 import { exec, getImagePickerMediaType, isVideo } from './utils'
 import { FileVO, ImageMediaType, IUploadTempSource, MediaType, UploadItem } from './interface'
-import useUploadResume, { getFileKey } from './hooks/useUploadResume'
+import useUploadResume from './hooks/useUploadResume'
 import { ISource } from '.'
 import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
 import Preview, { CustomPreview, PreviewInstance } from './components/Preview'
@@ -130,19 +130,6 @@ export type OverrideOptions = Pick<UploadProps, 'useCamera' | 'multiple'> & {
 }
 
 let toastKey: ToastMethods
-
-export function formatUploadList(list: FileVO[]) {
-  return list.map((item) => {
-    return {
-      key: getFileKey(),
-      filepath: item.fileUrl,
-      name: item.filename,
-      status: 'done',
-      origin: item,
-      type: '',
-    } as UploadItem
-  })
-}
 
 /**
  * internal upload component, do not use it!

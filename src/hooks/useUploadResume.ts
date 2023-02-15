@@ -2,7 +2,7 @@ import ReactNativeBlobUtil from 'react-native-blob-util'
 import { buildCachePath, buildUri, normalizePath } from '../utils/helper'
 import { IUploadTempSource, UploadItem } from '../interface'
 import { UploadAction } from '../_internal'
-import { getFileExt } from '../utils'
+import { getDocumentPlaceholderIconByMimeType, getFileExt, getFileKey } from '../utils'
 
 const { fs } = ReactNativeBlobUtil
 interface UploadResumeProps {
@@ -12,12 +12,6 @@ interface UploadResumeProps {
     fileUrl: string
     size: number
   }>
-}
-
-let keyIndex = 1
-
-export function getFileKey() {
-  return `_upload_v2-${Date.now()}-${keyIndex++}`
 }
 
 function fileShouldResume(size: number, allowResume: number | boolean) {
@@ -89,6 +83,12 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
       type: file.type,
     }
     data.append(`${file.hash}.${file.size}.${file.offset}`, fileObj)
+    const placeholderIcon = getDocumentPlaceholderIconByMimeType(file.type)
+    // 把本地资源路径拷贝至previewPath用于预览，使用placeholderIcon替换本地资源路径展示缩略图
+    if (placeholderIcon) {
+      file.previewPath = file.filepath
+      file.filepath = placeholderIcon
+    }
     try {
       const res = await uploadAction({
         data,

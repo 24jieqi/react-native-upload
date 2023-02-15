@@ -31,8 +31,14 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
   function closeModal() {
     setVisible(false)
   }
+  const path = useMemo(() => {
+    if (!currentFile) {
+      return
+    }
+    return currentFile?.previewPath || currentFile?.filepath
+  }, [currentFile])
   const Compnent = useMemo(() => {
-    if (!currentFile?.filepath) {
+    if (!path) {
       return
     }
     const mapper: {
@@ -45,11 +51,11 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
       ...customPreview,
     }
     for (const key of Object.keys(mapper)) {
-      if (currentFile.filepath.endsWith(`.${key}`)) {
+      if (path.endsWith(`.${key}`)) {
         return mapper[key]
       }
     }
-  }, [currentFile, customPreview])
+  }, [path, customPreview])
   return (
     <Popup.Page visible={visible} onPressOverlay={closeModal} destroyOnClosed round>
       <Popup.Header
@@ -61,7 +67,7 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
         onClose={closeModal}
       />
       {Compnent ? (
-        <Compnent uri={currentFile.filepath} />
+        <Compnent uri={path} />
       ) : (
         <Flex style={{ flex: 1 }} justify="center" align="center">
           <Empty text="此文件暂不支持预览" />

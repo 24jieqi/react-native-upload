@@ -13,11 +13,33 @@ export interface FileVO {
 }
 
 export interface UploadItem {
-  key: string // 当前资源的唯一标识
-  filepath: string // 本地资源路径
-  name?: string // 名称
-  type?: string // 类型
+  /**
+   * 当前资源的唯一标识
+   */
+  key: string
+  /**
+   * 资源路径或者预览占位图标路径
+   */
+  filepath: string
+  /**
+   * 资源预览的路径
+   */
+  previewPath?: string
+  /**
+   * 资源名称
+   */
+  name?: string
+  /**
+   * 资源的mime类型
+   */
+  type?: string
+  /**
+   * 资源上传状态
+   */
   status?: 'loading' | 'done' | 'error' // 资源状态
+  /**
+   * 上传对象
+   */
   origin?: FileVO // 远程上传结果
   /**
    * 本地文件资源路径
