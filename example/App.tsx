@@ -110,6 +110,7 @@ const MainComponent = () => {
                 <Text style={{padding: 4, color: '#0065fe'}}>点击上传</Text>
               </Upload.Wrapper>
               {files.map(item => {
+                console.log('item.origin?.fileUrl', item.origin?.fileUrl);
                 return (
                   <Text key={item.key}>fileUrl: {item.origin?.fileUrl}</Text>
                 );
@@ -127,6 +128,11 @@ const MainComponent = () => {
                     filename: 'xx.png',
                     fileUrl:
                       'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                  },
+                  {
+                    filename: '发票.pdf',
+                    fileUrl:
+                      'https://hjfruit-2.hjgpscm.com/0f/0fedf7dcb234375e438d0b253df5aef2cd77bf6ed58d4695b7e7b1ee2360c5ba.pdf',
                   },
                 ]}
               />
