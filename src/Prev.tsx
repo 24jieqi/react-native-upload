@@ -1,6 +1,6 @@
 import { Uploader } from '@fruits-chain/react-native-xiaoshu'
 import React, { useRef } from 'react'
-import { formatUploadList } from '.'
+import { formatUploadList } from './utils'
 import Preview, { CustomPreview, PreviewInstance } from './components/Preview'
 import { FileVO, UploadItem } from './interface'
 import { UploadProps } from './_internal'
