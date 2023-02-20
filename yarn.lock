@@ -718,6 +718,13 @@
     react-native-popover-view "^5.1.7"
     rn-placeholder "^3.0.3"
 
+"@fruits-chain/utils@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/utils/-/utils-1.0.1.tgz#01da9321835b91d6508722007d9fa6a23d5f260e"
+  integrity sha512-OZyVrHiNOQzA2HukrYTu1aj46r1q0Wrn89ehHGEDp72CN5t8N9UTZYQj9b6bFgYDVofBO2js40C1LGiWJhk5EA==
+  dependencies:
+    decimal.js-light "^2.5.1"
+
 "@hapi/hoek@^9.0.0":
   version "9.2.1"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.1.tgz#9551142a1980503752536b5050fd99f4a7f13b17"
@@ -1676,6 +1683,11 @@ decamelize@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
+
+decimal.js-light@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/decimal.js-light/-/decimal.js-light-2.5.1.tgz#134fd32508f19e208f4fb2f8dac0d2626a867934"
+  integrity sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg==
 
 decode-uri-component@^0.2.0:
   version "0.2.0"

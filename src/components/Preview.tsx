@@ -5,8 +5,9 @@ import { URL } from 'react-native-url-polyfill'
 import { UploadItem } from '../interface'
 import VideoPreview from './VideoPreview'
 import ImagePreview from './ImagePreview'
+import { BasicPreviewProps } from './interface'
 
-type PreviewComponent = React.ComponentType<{ uri: string }>
+type PreviewComponent = React.ComponentType<BasicPreviewProps>
 
 export interface CustomPreview {
   [key: string]: PreviewComponent
@@ -49,6 +50,9 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
       png: ImagePreview,
       jpg: ImagePreview,
       jpeg: ImagePreview,
+      PNG: ImagePreview,
+      JPG: ImagePreview,
+      JPEG: ImagePreview,
       ...customPreview,
     }
     const pathName = new URL(path).pathname
@@ -69,7 +73,7 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
         onClose={closeModal}
       />
       {Compnent ? (
-        <Compnent uri={path} />
+        <Compnent uri={path} onClose={() => setVisible(false)} />
       ) : (
         <Flex style={{ flex: 1 }} justify="center" align="center">
           <Empty text="此文件暂不支持预览" />

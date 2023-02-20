@@ -1,13 +1,13 @@
 import React from 'react'
 import { ActivityIndicator } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer'
-interface ImagePreviewProps {
-  uri: string
-}
+import { BasicPreviewProps } from './interface'
+interface ImagePreviewProps extends BasicPreviewProps {}
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({ uri }) => {
+const ImagePreview: React.FC<ImagePreviewProps> = ({ uri, onClose }) => {
   return (
     <ImageViewer
+      onClick={onClose}
       imageUrls={[{ url: uri }]}
       renderIndicator={() => null}
       enableImageZoom

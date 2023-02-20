@@ -80,6 +80,6 @@ export interface IUploadTempSource {
 
 export type MediaSelectorType = 'photo' | 'video' | 'document'
 
-export type MediaType = MediaSelectorType[] | 'any'
+export type MediaType = MediaSelectorType[] | MediaSelectorType | 'any'
 
 export type ImageMediaType = 'photo' | 'video' | 'any'

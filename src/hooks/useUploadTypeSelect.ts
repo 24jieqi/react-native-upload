@@ -1,5 +1,6 @@
 import { ActionSheet } from '@fruits-chain/react-native-xiaoshu'
 import { Action } from '@fruits-chain/react-native-xiaoshu/lib/typescript/action-sheet/interface'
+import { isArray } from '@fruits-chain/utils'
 import { useMemo, useRef } from 'react'
 import { MediaType, MediaSelectorType } from '../interface'
 import { UploadInstance } from '../_internal'
@@ -9,10 +10,16 @@ interface ExtendedAction extends Action {
 }
 
 function getMediaSelectorType(mediaType: MediaType): MediaSelectorType[] {
+  // 如果是数组，直接返回
+  if (isArray(mediaType as MediaSelectorType[])) {
+    return mediaType as MediaSelectorType[]
+  }
+  // 如果未传入或者传入any，返回全部类型
   if (!mediaType || mediaType === 'any') {
     return ['video', 'photo', 'document']
   }
-  return mediaType
+  // 返回当前用户选择的类型
+  return [mediaType as MediaSelectorType]
 }
 
 const useUploadTypeSelect = (mediaType: MediaType) => {

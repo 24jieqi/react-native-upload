@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import Video from 'react-native-video'
+import { BasicPreviewProps } from './interface'
 
-interface VideoPreviewProps {
-  uri: string
-}
+interface VideoPreviewProps extends BasicPreviewProps {}
 
 const VideoPreview: React.FC<VideoPreviewProps> = ({ uri }) => {
   const [loading, setLoading] = useState(false)
