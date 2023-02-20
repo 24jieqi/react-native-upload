@@ -111,7 +111,7 @@ const MainComponent = () => {
                 <Upload
                   uploadAction={uploadImage}
                   tipText="视频"
-                  mediaType={['video']}
+                  mediaType="video"
                 />
               </Form.Item>
             </Card>
