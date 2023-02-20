@@ -10,6 +10,7 @@
 
 import Upload, {
   FileVO,
+  formatUploadList,
   UploadActionParams,
   UploadItem,
 } from '@fruits-chain/react-native-upload';
@@ -55,10 +56,24 @@ const MainComponent = () => {
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
       <StatusBar barStyle="dark-content" />
       <ScrollView>
-        <Form>
+        <Form
+          initialValues={{
+            files1: formatUploadList([
+              {
+                filename: 'xx.png',
+                fileUrl:
+                  'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+              },
+            ]),
+          }}>
           <Space>
             <Card title="基础文件上传">
               <Form.Item name="files" valuePropName="list">
+                <Upload uploadAction={uploadImage} />
+              </Form.Item>
+            </Card>
+            <Card title="基础文件上传，初始带图片">
+              <Form.Item name="files1" valuePropName="list">
                 <Upload uploadAction={uploadImage} />
               </Form.Item>
             </Card>
@@ -118,6 +133,7 @@ const MainComponent = () => {
             </Card>
             <Card title="图片查看">
               <Upload.Preview
+                customPreview={{pdf: PdfViewer}}
                 list={[
                   {
                     filename: 'xx.png',
