@@ -1,6 +1,7 @@
 import { Text, StyleSheet } from 'react-native'
 import { Empty, Flex, Popup } from '@fruits-chain/react-native-xiaoshu'
 import React, { forwardRef, PropsWithChildren, useImperativeHandle, useMemo, useState } from 'react'
+import { URL } from 'react-native-url-polyfill'
 import { UploadItem } from '../interface'
 import VideoPreview from './VideoPreview'
 import ImagePreview from './ImagePreview'
@@ -50,8 +51,9 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
       jpeg: ImagePreview,
       ...customPreview,
     }
+    const pathName = new URL(path).pathname
     for (const key of Object.keys(mapper)) {
-      if (path.endsWith(`.${key}`)) {
+      if (pathName.endsWith(`.${key}`)) {
         return mapper[key]
       }
     }
