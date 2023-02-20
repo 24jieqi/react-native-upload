@@ -33,6 +33,8 @@ $ yarn add @fruits-chain/react-native-upload
 
    [react-native-fast-image](https://github.com/DylanVann/react-native-fast-image) 高效图片组件
 
+   [react-native-document-picker](https://github.com/rnmods/react-native-document-picker) 文档选择
+
    ⭐️[@fruits-chain/react-native-xiaoshu](https://github.com/hjfruit/react-native-xiaoshu) RN 基础组件库，提供模式选择器和图片列表渲染等组件
 
 3. 根据依赖库指引进行设置，带“\*”的表示需要设置配置权限
