@@ -20,7 +20,7 @@ import DocumentPicker from 'react-native-document-picker'
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import { cloneDeep } from 'lodash'
-import { compressorImage, compressorVideo } from './utils/helper'
+import { compressorImage, compressorVideo, getResolvedPath } from './utils/helper'
 import { exec, getImagePickerMediaType, isVideo } from './utils'
 import { FileVO, ImageMediaType, IUploadTempSource, MediaType, UploadItem } from './interface'
 import useUploadResume from './hooks/useUploadResume'
@@ -306,13 +306,15 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
       const files = await DocumentPicker.pick({
         allowMultiSelection: multiple,
       })
-      //2. 断点续传
-      const result = await Promise.all(files.map((item) => getFileBeforeUpload(item)))
+      // 2. 文件另存
+      const resolvedFiles = await Promise.all(files.map((item) => getResolvedPath(item)))
+      // 3. 断点续传
+      const result = await Promise.all(resolvedFiles.map((item) => getFileBeforeUpload(item)))
       valueCopy.current = [...value, ...result]
       setValueIfNeeded(valueCopy.current)
       exec(onChange, cloneDeep(valueCopy.current))
       const filesToUpload = valueCopy.current.filter((f) => f.status === 'loading')
-      // 2. 文件上传
+      // 4. 文件上传
       for (const file of filesToUpload) {
         const uploadRes = await uploadFile(file)
         if (uploadRes.status === 'error') {

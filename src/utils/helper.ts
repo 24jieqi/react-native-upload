@@ -2,6 +2,8 @@
 import ReactNativeBlobUtil from 'react-native-blob-util'
 import * as RNFS from 'react-native-fs'
 import { Image, Video } from 'react-native-compressor'
+import { DocumentPickerResponse } from 'react-native-document-picker'
+import { IUploadTempSource } from '../interface'
 
 // path 是指 / 开头的文件路径
 // uri 是指 file:// 开头的文件路径
@@ -121,4 +123,16 @@ export const compressorVideo = (filePath: string, removeOriginal: boolean) => {
       compressionMethod: 'auto',
     }),
   )
+}
+
+/**
+ * 文档选择器文件另存操作
+ * @param param0
+ * @returns
+ */
+export const getResolvedPath = async ({ uri, name, type }: DocumentPickerResponse): Promise<IUploadTempSource> => {
+  const base64 = await fs.readFile(uri, 'base64')
+  const path = `${fs.dirs.CacheDir}/${name}`
+  await fs.writeFile(path, base64, 'base64')
+  return { uri: path, name, type }
 }
