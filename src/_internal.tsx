@@ -27,6 +27,7 @@ import useUploadResume from './hooks/useUploadResume'
 import { ISource } from '.'
 import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
 import Preview, { CustomPreview, PreviewInstance } from './components/Preview'
+import { Platform } from 'react-native'
 
 export interface UploadInstance {
   open: (config?: OverrideOptions) => void
@@ -130,6 +131,8 @@ export type OverrideOptions = Pick<UploadProps, 'useCamera' | 'multiple'> & {
 }
 
 let toastKey: ToastMethods
+
+const isAndroid = Platform.OS === 'android'
 
 /**
  * internal upload component, do not use it!
@@ -307,7 +310,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         allowMultiSelection: multiple,
       })
       // 2. 文件另存
-      const resolvedFiles = await Promise.all(files.map((item) => getResolvedPath(item)))
+      const resolvedFiles = await Promise.all(files.map((item) => (isAndroid ? getResolvedPath(item) : item)))
       // 3. 断点续传
       const result = await Promise.all(resolvedFiles.map((item) => getFileBeforeUpload(item)))
       valueCopy.current = [...value, ...result]

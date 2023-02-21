@@ -134,5 +134,5 @@ export const getResolvedPath = async ({ uri, name, type }: DocumentPickerRespons
   const base64 = await fs.readFile(uri, 'base64')
   const path = `${fs.dirs.CacheDir}/${name}`
   await fs.writeFile(path, base64, 'base64')
-  return { uri: path, name, type }
+  return { uri: `file://${path}`, name, type }
 }
