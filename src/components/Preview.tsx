@@ -15,13 +15,14 @@ export interface CustomPreview {
 
 interface PreviewProps {
   customPreview?: CustomPreview
+  list: UploadItem[]
 }
 
 export interface PreviewInstance {
   preview: (file: UploadItem) => void
 }
 
-const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = ({ customPreview = {} }, ref) => {
+const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = ({ customPreview = {}, list }, ref) => {
   const [visible, setVisible] = useState(false)
   const [currentFile, setCurrentFile] = useState<UploadItem>()
   useImperativeHandle(ref, () => ({
@@ -73,7 +74,7 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
         onClose={closeModal}
       />
       {Compnent ? (
-        <Compnent uri={path} onClose={() => setVisible(false)} />
+        <Compnent uri={path} onClose={() => setVisible(false)} list={list} />
       ) : (
         <Flex style={{ flex: 1 }} justify="center" align="center">
           <Empty text="此文件暂不支持预览" />

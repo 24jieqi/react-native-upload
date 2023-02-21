@@ -18,6 +18,7 @@ const UploadPreview: React.FC<IUploadPreview> = ({ list = [], customPreview, ima
   function handlePreview(file: UploadItem) {
     previewRef.current.preview(file)
   }
+  const fileList = formatUploadList(list)
   return (
     <>
       <Uploader
@@ -25,9 +26,9 @@ const UploadPreview: React.FC<IUploadPreview> = ({ list = [], customPreview, ima
         onPressImage={handlePreview}
         showUpload={false}
         deletable={false}
-        list={formatUploadList(list)}
+        list={fileList}
       />
-      <Preview customPreview={customPreview} ref={previewRef} />
+      <Preview list={fileList} customPreview={customPreview} ref={previewRef} />
     </>
   )
 }

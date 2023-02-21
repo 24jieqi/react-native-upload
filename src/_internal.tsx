@@ -394,7 +394,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
           colCount={imagesPerRow}
         />
       )}
-      <Preview customPreview={customPreview} ref={previewRef} />
+      <Preview list={value} customPreview={customPreview} ref={previewRef} />
     </>
   ) : null
 }

@@ -83,10 +83,10 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
       type: file.type,
     }
     data.append(`${file.hash}.${file.size}.${file.offset}`, fileObj)
+    file.previewPath = file.filepath
     const placeholderIcon = getDocumentPlaceholderIconByMimeType(file.type)
     // 把本地资源路径拷贝至previewPath用于预览，使用placeholderIcon替换本地资源路径展示缩略图
     if (placeholderIcon) {
-      file.previewPath = file.filepath
       file.filepath = placeholderIcon
     }
     try {
