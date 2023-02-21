@@ -6,24 +6,30 @@ import { URL } from 'react-native-url-polyfill'
 
 interface ImagePreviewProps extends BasicPreviewProps {}
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({ uri, onClose, list = [] }) => {
+const ImagePreview: React.FC<ImagePreviewProps> = ({ uri, onClose, list = [], onChangeCurrent }) => {
   const previewOptions = useMemo(() => {
-    const imageUrls = list
-      .filter((file) => {
-        const pathName = new URL(file.previewPath).pathname
-        return ['.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG'].some((img) => pathName.endsWith(img))
-      })
-      .map((image) => ({ url: image.previewPath }))
+    const imageList = list.filter((file) => {
+      const pathName = new URL(file.previewPath).pathname
+      return ['.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG'].some((img) => pathName.endsWith(img))
+    })
+
+    const imageUrls = imageList.map((image) => ({ url: image.previewPath }))
     const index = imageUrls.findIndex((image) => image.url === uri)
     return {
+      imageList,
       imageUrls,
       index,
     }
   }, [list, uri])
+  function handleChangePreview(index: number) {
+    const target = previewOptions.imageList[index]
+    onChangeCurrent(target)
+  }
   return (
     <ImageViewer
       index={previewOptions.index}
       onClick={onClose}
+      onChange={handleChangePreview}
       imageUrls={previewOptions.imageUrls}
       enableImageZoom
       failImageSource={require('../images/icon_failed.png')}

@@ -74,7 +74,12 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
         onClose={closeModal}
       />
       {Compnent ? (
-        <Compnent uri={path} onClose={() => setVisible(false)} list={list} />
+        <Compnent
+          onChangeCurrent={(curr) => setCurrentFile(curr)}
+          uri={path}
+          onClose={() => setVisible(false)}
+          list={list}
+        />
       ) : (
         <Flex style={{ flex: 1 }} justify="center" align="center">
           <Empty text="此文件暂不支持预览" />
