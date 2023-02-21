@@ -23,7 +23,9 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ uri, onClose, list = [], on
   }, [list, uri])
   function handleChangePreview(index: number) {
     const target = previewOptions.imageList[index]
-    onChangeCurrent(target)
+    setTimeout(() => {
+      onChangeCurrent(target)
+    }, 200)
   }
   return (
     <ImageViewer
