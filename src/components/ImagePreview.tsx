@@ -6,7 +6,7 @@ import { URL } from 'react-native-url-polyfill'
 
 interface ImagePreviewProps extends BasicPreviewProps {}
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({ uri, onClose, list = [], onChangeCurrent }) => {
+const ImagePreview: React.FC<ImagePreviewProps> = ({ target, onClose, list = [], onChangeCurrent }) => {
   const previewOptions = useMemo(() => {
     const imageList = list.filter((file) => {
       const pathName = new URL(file.previewPath).pathname
@@ -14,13 +14,13 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ uri, onClose, list = [], on
     })
 
     const imageUrls = imageList.map((image) => ({ url: image.previewPath }))
-    const index = imageUrls.findIndex((image) => image.url === uri)
+    const index = imageList.findIndex((image) => image.key === target.key)
     return {
       imageList,
       imageUrls,
       index,
     }
-  }, [list, uri])
+  }, [list, target])
   function handleChangePreview(index: number) {
     const target = previewOptions.imageList[index]
     setTimeout(() => {

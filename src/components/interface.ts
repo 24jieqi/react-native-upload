@@ -2,7 +2,7 @@ import { UploadItem } from '../interface'
 
 export interface BasicPreviewProps {
   list?: UploadItem[]
-  uri: string // 预览资源地址
+  target: UploadItem // 当前需要预览的资源
   onClose: () => void // 预览框关闭
   onChangeCurrent: (current: UploadItem) => void
 }

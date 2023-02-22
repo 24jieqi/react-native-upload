@@ -34,16 +34,11 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
   function closeModal() {
     setVisible(false)
   }
-  const path = useMemo(() => {
+  const Compnent = useMemo(() => {
     if (!currentFile) {
       return
     }
-    return currentFile?.previewPath || currentFile?.filepath
-  }, [currentFile])
-  const Compnent = useMemo(() => {
-    if (!path) {
-      return
-    }
+    const path = currentFile.previewPath
     const mapper: {
       [key: string]: PreviewComponent
     } = {
@@ -62,7 +57,7 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
         return mapper[key]
       }
     }
-  }, [path, customPreview])
+  }, [currentFile, customPreview])
   return (
     <Popup.Page visible={visible} onPressOverlay={closeModal} destroyOnClosed round>
       <Popup.Header
@@ -76,7 +71,7 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
       {Compnent ? (
         <Compnent
           onChangeCurrent={(curr) => setCurrentFile(curr)}
-          uri={path}
+          target={currentFile}
           onClose={() => setVisible(false)}
           list={list}
         />

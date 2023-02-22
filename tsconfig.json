@@ -12,7 +12,8 @@
     "lib": ["dom", "es2017"],
     "skipLibCheck": true,
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "module": "CommonJS"
   },
   "exclude": ["node_modules"],
   "include": ["src", "index.d.ts"]

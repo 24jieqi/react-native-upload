@@ -5,7 +5,7 @@ import { BasicPreviewProps } from './interface'
 
 interface VideoPreviewProps extends BasicPreviewProps {}
 
-const VideoPreview: React.FC<VideoPreviewProps> = ({ uri }) => {
+const VideoPreview: React.FC<VideoPreviewProps> = ({ target }) => {
   const [loading, setLoading] = useState(false)
   return (
     <View style={styles.container}>
@@ -15,7 +15,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ uri }) => {
         resizeMode="contain"
         playWhenInactive
         source={{
-          uri,
+          uri: target.previewPath,
         }}
         onLoadStart={() => setLoading(true)}
         onLoad={() => setLoading(false)}

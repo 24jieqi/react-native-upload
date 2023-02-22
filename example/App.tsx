@@ -141,14 +141,19 @@ const MainComponent = () => {
                       'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
                   },
                   {
+                    filename: '发票.pdf',
+                    fileUrl:
+                      'https://hjfruit-2.hjgpscm.com/0f/0fedf7dcb234375e438d0b253df5aef2cd77bf6ed58d4695b7e7b1ee2360c5ba.pdf',
+                  },
+                  {
                     filename: 'xx.png',
                     fileUrl:
                       'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
                   },
                   {
-                    filename: '发票.pdf',
+                    filename: 'xxxx.png',
                     fileUrl:
-                      'https://hjfruit-2.hjgpscm.com/0f/0fedf7dcb234375e438d0b253df5aef2cd77bf6ed58d4695b7e7b1ee2360c5ba.pdf',
+                      'https://p0.itc.cn/q_70/images03/20220829/780cf85a307247fb9a440e7922371de6.jpeg',
                   },
                 ]}
               />
