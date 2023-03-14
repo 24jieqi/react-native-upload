@@ -1,4 +1,4 @@
-import { UploadItem } from '../interface'
+import { UploadItem } from '../../interface'
 
 export interface BasicPreviewProps {
   list?: UploadItem[]
