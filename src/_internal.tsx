@@ -26,7 +26,7 @@ import { FileVO, ImageMediaType, IUploadTempSource, MediaType, UploadItem } from
 import useUploadResume from './hooks/useUploadResume'
 import { ISource } from '.'
 import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
-import Preview, { CustomPreview, PreviewInstance } from './components/Preview'
+import Preview, { CustomPreview, PreviewInstance } from './components/preview/Preview'
 import { Platform } from 'react-native'
 
 export interface UploadInstance {

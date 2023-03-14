@@ -5,6 +5,7 @@ import UploadWrapper from './Wrapper'
 import { UploadItem, FileVO, IUploadTempSource } from './interface'
 import useUploadTypeSelect from './hooks/useUploadTypeSelect'
 import { formatUploadList } from './utils'
+import openTakePicture from './components/take-picture/open'
 
 export interface ISource extends UploadItem {}
 interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
@@ -22,6 +23,6 @@ Upload.Wrapper = UploadWrapper
 Upload.displayName = 'Upload'
 
 export type { UploadItem, FileVO, UploadActionParams, UploadAction, IUploadTempSource }
-export { formatUploadList }
+export { formatUploadList, openTakePicture }
 
 export default Upload
