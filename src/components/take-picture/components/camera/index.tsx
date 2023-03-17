@@ -1,14 +1,7 @@
 import { Dialog } from '@fruits-chain/react-native-xiaoshu'
 import { Portal } from '@gorhom/portal'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
-import {
-  Image,
-  Linking,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { Image, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import type { PinchGestureHandlerGestureEvent } from 'react-native-gesture-handler'
 import { PinchGestureHandler } from 'react-native-gesture-handler'
 import Reanimated, {
@@ -18,16 +11,10 @@ import Reanimated, {
   useAnimatedProps,
   useSharedValue,
 } from 'react-native-reanimated'
-import {
-  Camera,
-  frameRateIncluded,
-  sortFormats,
-  useCameraDevices,
-} from 'react-native-vision-camera'
+import { Camera, frameRateIncluded, sortFormats, useCameraDevices } from 'react-native-vision-camera'
 import type { CameraDeviceFormat, PhotoFile } from 'react-native-vision-camera'
 
 import { useIsForeground } from '../../hooks/useIsForeground'
-import { light, lightClose } from '../../images'
 import type { ImageInfo } from '../../interface'
 
 import CaptureButton from './capture-button'
@@ -49,12 +36,7 @@ interface CameraComProps {
   onPhotoSubmit: (img: ImageInfo) => void
 }
 
-const CameraCom: React.FC<CameraComProps> = ({
-  onPhotoSubmit,
-  count,
-  maxCount,
-  existCount,
-}) => {
+const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, existCount }) => {
   const [isCameraInitialized, setIsCameraInitialized] = useState(false)
   const camera = useRef<Camera>(null)
   const [visible, setVisible] = useState<boolean>(false)
@@ -82,10 +64,7 @@ const CameraCom: React.FC<CameraComProps> = ({
     setIsCameraInitialized(true)
   }, [])
 
-  const onPinchGesture = useAnimatedGestureHandler<
-    PinchGestureHandlerGestureEvent,
-    { startZoom?: number }
-  >({
+  const onPinchGesture = useAnimatedGestureHandler<PinchGestureHandlerGestureEvent, { startZoom?: number }>({
     onStart: (_, context) => {
       context.startZoom = zoom.value
     },
@@ -98,12 +77,7 @@ const CameraCom: React.FC<CameraComProps> = ({
         [-1, 0, 1],
         Extrapolate.CLAMP,
       )
-      zoom.value = interpolate(
-        scale,
-        [-1, 0, 1],
-        [minZoom, startZoom, maxZoom],
-        Extrapolate.CLAMP,
-      )
+      zoom.value = interpolate(scale, [-1, 0, 1], [minZoom, startZoom, maxZoom], Extrapolate.CLAMP)
     },
   })
 
@@ -113,7 +87,7 @@ const CameraCom: React.FC<CameraComProps> = ({
       Dialog({
         title: `相机权限未开启`,
         message: '请到设置中开启权限，允许星桥货柜访问您的摄像头和麦克风',
-      }).then(async action => {
+      }).then(async (action) => {
         if (action === 'confirm') {
           const permission = await Camera.requestCameraPermission()
           if (permission === 'denied') await Linking.openSettings()
@@ -127,9 +101,7 @@ const CameraCom: React.FC<CameraComProps> = ({
   }, [device?.formats])
 
   const fps = useMemo(() => {
-    const supports60Fps = formats?.some(f =>
-      f.frameRateRanges.some(r => frameRateIncluded(r, 60)),
-    )
+    const supports60Fps = formats?.some((f) => f.frameRateRanges.some((r) => frameRateIncluded(r, 60)))
     if (!supports60Fps) {
       return 30
     }
@@ -137,7 +109,7 @@ const CameraCom: React.FC<CameraComProps> = ({
   }, [formats])
 
   const onFlashPressed = useCallback(() => {
-    setFlash(f => (f === 'off' ? 'on' : 'off'))
+    setFlash((f) => (f === 'off' ? 'on' : 'off'))
   }, [])
 
   const cameraAnimatedProps = useAnimatedProps(() => {
@@ -150,9 +122,7 @@ const CameraCom: React.FC<CameraComProps> = ({
   const format = useMemo(() => {
     let result = formats
 
-    return result.find(f =>
-      f.frameRateRanges.some(r => frameRateIncluded(r, fps)),
-    )
+    return result.find((f) => f.frameRateRanges.some((r) => frameRateIncluded(r, fps)))
   }, [formats, fps])
 
   function onPhotoConfirm(photo: ImageInfo) {
@@ -196,9 +166,9 @@ const CameraCom: React.FC<CameraComProps> = ({
               {supportsFlash ? (
                 <TouchableOpacity activeOpacity={0.5} onPress={onFlashPressed}>
                   {flash === 'on' ? (
-                    <Image source={light} />
+                    <Image source={require('../../images/light.png')} />
                   ) : (
-                    <Image source={lightClose} />
+                    <Image source={require('../../images/light_close.png')} />
                   )}
                 </TouchableOpacity>
               ) : null}
@@ -207,12 +177,7 @@ const CameraCom: React.FC<CameraComProps> = ({
         </PinchGestureHandler>
       )}
 
-      <PhotoConfirm
-        img={currentPhoto}
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onSubmit={onPhotoConfirm}
-      />
+      <PhotoConfirm img={currentPhoto} visible={visible} onCancel={() => setVisible(false)} onSubmit={onPhotoConfirm} />
 
       <Portal hostName="capture-button">
         <CaptureButton

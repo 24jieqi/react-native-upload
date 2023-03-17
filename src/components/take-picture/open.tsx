@@ -3,25 +3,30 @@ import React from 'react'
 
 import type { ImageInfo } from './interface'
 
-import type { TakePictureProps } from './index'
-import TakePicture from './index'
+import type { TakePictureViewProps } from './index'
+import TakePictureView from './index'
 
-export type OpenOptions = Omit<TakePictureProps, 'onSubmit'>
+export type OpenOptions = Omit<TakePictureViewProps, 'onSubmit'>
 
-function openTakePicture(options: OpenOptions): Promise<ImageInfo[]> {
-  return new Promise(resolve => {
+/**
+ * 打开特定拍照UI（多张拍照、照片管理）
+ * @param options
+ * @returns
+ */
+function openPictureVisionPicker(options: OpenOptions): Promise<ImageInfo[]> {
+  return new Promise((resolve) => {
     const id = Portal.add(
-      <TakePicture
+      <TakePictureView
         {...options}
-        onSubmit={photoList => {
+        onSubmit={(photoList) => {
           resolve(photoList)
-          setTimeout(() => {
-            Portal.remove(id)
-          }, 1000)
+        }}
+        onClosed={() => {
+          Portal.remove(id)
         }}
       />,
     )
   })
 }
 
-export default openTakePicture
+export default openPictureVisionPicker

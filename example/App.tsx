@@ -13,8 +13,10 @@ import Upload, {
   formatUploadList,
   UploadActionParams,
   UploadItem,
+  openTakePicture,
 } from '@fruits-chain/react-native-upload';
 import {
+  Button,
   Card,
   Form,
   NoticeBar,
@@ -24,6 +26,7 @@ import {
 import axios from 'axios';
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StatusBar, Text} from 'react-native';
+import {PortalProvider} from '@gorhom/portal';
 import PdfViewer from './src/components/pdf-viewer';
 
 export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
@@ -51,6 +54,10 @@ const MainComponent = () => {
       _files[0].deletable = false;
     }
     setFiles(_files);
+  }
+  async function handleOpenCamera() {
+    const result = await openTakePicture({});
+    console.log(result);
   }
   return (
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
@@ -131,6 +138,7 @@ const MainComponent = () => {
                 );
               })}
             </Card>
+            <Button onPress={handleOpenCamera}>连续拍照</Button>
             <Card title="图片查看">
               <Upload.Preview
                 customPreview={{pdf: PdfViewer}}
@@ -166,9 +174,11 @@ const MainComponent = () => {
 };
 
 const App = () => (
-  <Provider>
-    <MainComponent />
-  </Provider>
+  <PortalProvider>
+    <Provider>
+      <MainComponent />
+    </Provider>
+  </PortalProvider>
 );
 
 export default App;

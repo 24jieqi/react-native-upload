@@ -1,35 +1,42 @@
-import { Dialog, Popup } from '@fruits-chain/react-native-xiaoshu'
+import { Dialog, Flex, Popup } from '@fruits-chain/react-native-xiaoshu'
 import { PortalHost } from '@gorhom/portal'
 import type { ReactNode } from 'react'
 import React, { useEffect, useRef, useState } from 'react'
 import type { StatusBarProps } from 'react-native'
-import {
-  Platform,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from 'react-native'
+import { Platform, StatusBar, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 
 import CameraCom from './components/camera'
 import Header from './components/header'
 import PhotoView from './components/photo-view'
 import type { ImageInfo } from './interface'
 
-export interface TakePictureProps {
+export interface TakePictureViewProps {
+  /**
+   * 当前已存在资源数量
+   */
   existCount?: number
+  /**
+   * 最大拍照数量
+   */
   maxCount?: number
+  /**
+   * 自定义标题
+   */
   title?: string | ReactNode
+  /**
+   * 提交事件
+   * @param imageInfo
+   * @returns
+   */
   onSubmit?: (imageInfo: ImageInfo[]) => void
+  /**
+   * 关闭事件
+   * @returns
+   */
+  onClosed?: () => void
 }
 
-const TakePicture: React.FC<TakePictureProps> = ({
-  onSubmit,
-  title,
-  maxCount,
-  existCount,
-}) => {
+const TakePictureView: React.FC<TakePictureViewProps> = ({ onSubmit, title, maxCount, existCount, onClosed }) => {
   const [visible, setVisible] = useState<boolean>(true)
 
   const [photoList, setPhotoList] = useState<ImageInfo[]>([])
@@ -49,7 +56,7 @@ const TakePicture: React.FC<TakePictureProps> = ({
         title: `将删除已拍摄的${photoList.length}张图片`,
         confirmButtonColor: '#f92f2f',
         confirmButtonText: '删除',
-      }).then(action => {
+      }).then((action) => {
         if (action === 'confirm') {
           handleCancel()
           onSubmit([])
@@ -62,7 +69,7 @@ const TakePicture: React.FC<TakePictureProps> = ({
   }
 
   const handleCameraSubmit = (photo: ImageInfo) => {
-    setPhotoList(value => {
+    setPhotoList((value) => {
       return [...value, photo]
     })
   }
@@ -82,7 +89,7 @@ const TakePicture: React.FC<TakePictureProps> = ({
   }, [])
 
   return (
-    <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.page}>
+    <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.page} onClosed={onClosed}>
       <Header title={title} onClose={handleClose} onSubmit={handleSubmit} />
 
       <View style={styles.content}>
@@ -99,59 +106,28 @@ const TakePicture: React.FC<TakePictureProps> = ({
       </View>
 
       <View style={styles.bottom}>
-        <View style={styles.tabWrap}>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => setState('picture')}>
-            <View
-              style={[
-                styles.tabItem,
-                state === 'picture' ? styles.activeTab : null,
-              ]}>
-              <Text
-                style={[
-                  styles.tabText,
-                  state === 'picture' ? styles.activeText : null,
-                ]}>
-                已拍照片
-              </Text>
+        <Flex style={styles.tabWrap} justify="between">
+          <TouchableOpacity activeOpacity={1} onPress={() => setState('picture')}>
+            <View style={[styles.tabItem, state === 'picture' ? styles.activeTab : null]}>
+              <Text style={[styles.tabText, state === 'picture' ? styles.activeText : null]}>已拍照片</Text>
               <View style={styles.tabCount}>
                 <Text style={styles.tabCountText}>{photoList.length}</Text>
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => setState('photograph')}>
-            <View
-              style={[
-                styles.tabItem,
-                state === 'photograph' ? styles.activeTab : null,
-              ]}>
-              <Text
-                style={[
-                  styles.tabText,
-                  state === 'photograph' ? styles.activeText : null,
-                ]}>
-                拍照
-              </Text>
+          <TouchableOpacity activeOpacity={1} onPress={() => setState('photograph')}>
+            <View style={[styles.tabItem, state === 'photograph' ? styles.activeTab : null]}>
+              <Text style={[styles.tabText, state === 'photograph' ? styles.activeText : null]}>拍照</Text>
             </View>
           </TouchableOpacity>
-        </View>
-
-        <View>
-          {state === 'photograph' ? (
-            <PortalHost name="capture-button" />
-          ) : (
-            <PortalHost name="photo-view" />
-          )}
-        </View>
+        </Flex>
+        <View>{state === 'photograph' ? <PortalHost name="capture-button" /> : <PortalHost name="photo-view" />}</View>
       </View>
     </Popup.Page>
   )
 }
 
-export default TakePicture
+export default TakePictureView
 
 const styles = StyleSheet.create({
   page: {
@@ -163,14 +139,13 @@ const styles = StyleSheet.create({
   },
 
   tabWrap: {
-    borderRadius: 21,
     width: 200,
-    height: 42,
+    height: 40,
+    borderRadius: 20,
     borderColor: '#fff',
     borderWidth: 1,
     marginBottom: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    paddingHorizontal: 2,
   },
 
   bottom: {
@@ -186,8 +161,8 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   tabItem: {
-    borderRadius: 20,
-    height: 40,
+    borderRadius: 17,
+    height: 34,
     paddingHorizontal: 6,
     textAlign: 'center',
     minWidth: 76,
@@ -198,8 +173,7 @@ const styles = StyleSheet.create({
   tabText: {
     color: '#fff',
     fontSize: 16,
-    textAlign: 'center',
-    lineHeight: 36,
+    lineHeight: 22,
   },
   tabCount: {
     backgroundColor: '#0065fe',

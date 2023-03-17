@@ -34,7 +34,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ target, onClose, list = [],
       onChange={handleChangePreview}
       imageUrls={previewOptions.imageUrls}
       enableImageZoom
-      failImageSource={require('../images/icon_failed.png')}
+      failImageSource={require('../../images/icon_failed.png')}
       loadingRender={() => <ActivityIndicator color="#fff" />}
     />
   )

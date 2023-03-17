@@ -27,6 +27,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
   },
+  closeBtn: {
+    width: 32,
+    height: 32,
+  },
 })
 
 export default styles
