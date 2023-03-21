@@ -78,8 +78,12 @@ export interface IUploadTempSource {
   type: string
 }
 
-export type MediaSelectorType = 'photo' | 'video' | 'document'
+/**
+ * crop mediaType
+ */
+export type CropMediaType = 'photo' | 'video' | 'any'
 
-export type MediaType = MediaSelectorType[] | MediaSelectorType | 'any'
-
-export type ImageMediaType = 'photo' | 'video' | 'any'
+/**
+ * 调用选择器类型
+ */
+export type PickerType = 'cropPicker' | 'cropCamera' | 'visionCamera' | 'documentPicker'

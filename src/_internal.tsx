@@ -8,30 +8,26 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import {
-  Options,
-  Image as ImageType,
-  Video as VideoType,
-  ImageOrVideo,
-  openCamera,
-  openPicker,
-} from 'react-native-image-crop-picker'
-import DocumentPicker from 'react-native-document-picker'
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import { cloneDeep } from 'lodash'
-import { compressorImage, compressorVideo, getResolvedPath } from './utils/helper'
-import { exec, getImagePickerMediaType, isVideo } from './utils'
-import { FileVO, ImageMediaType, IUploadTempSource, MediaType, UploadItem } from './interface'
+import { exec } from './utils'
+import { CropMediaType, FileVO, IUploadTempSource, PickerType, UploadItem } from './interface'
 import useUploadResume from './hooks/useUploadResume'
 import { ISource } from '.'
 import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
 import Preview, { CustomPreview, PreviewInstance } from './components/preview/Preview'
-import { Platform } from 'react-native'
+import { BasicUploadOptions, composedPicker } from './picker'
+import { isDef } from '@fruits-chain/utils'
+
+interface OverrideUploadConfig {
+  pickerType: PickerType
+  cropMediaType?: CropMediaType
+  multiple?: boolean
+}
 
 export interface UploadInstance {
-  open: (config?: OverrideOptions) => void
-  openDocument: () => void
+  open: (config?: OverrideUploadConfig) => void
 }
 
 export interface UploadActionParams {
@@ -66,17 +62,9 @@ export interface UploadProps {
    */
   cropping?: boolean
   /**
-   * 上传文件类型
-   */
-  mediaType?: MediaType
-  /**
    * 是否支持多选上传
    */
   multiple?: boolean
-  /**
-   * 是否使用相机拍摄
-   */
-  useCamera?: boolean
   /**
    * 点击新增
    */
@@ -124,15 +112,21 @@ export interface UploadProps {
    * 自定义预览实现 key: 文件名后缀 value:自定义预览组件
    */
   customPreview?: CustomPreview
-}
-
-export type OverrideOptions = Pick<UploadProps, 'useCamera' | 'multiple'> & {
-  mediaType?: ImageMediaType
+  /**
+   * 选择器类型
+   */
+  pickerType?: PickerType | PickerType[]
+  /**
+   * pickerType 为crop* mediaType
+   */
+  cropMediaType?: CropMediaType
+  /**
+   * 用于VisionCamera的标题
+   */
+  title?: string
 }
 
 let toastKey: ToastMethods
-
-const isAndroid = Platform.OS === 'android'
 
 /**
  * internal upload component, do not use it!
@@ -146,10 +140,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     maxCount = 10,
     tipText,
     cropping = false,
-    mediaType = 'any',
     defaultList = [],
-    useCamera = false,
-    multiple = true,
     onPressAdd,
     uploadAction,
     width = 300,
@@ -159,8 +150,10 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     compress = true,
     showUi = true,
     imagesPerRow = 4,
+    multiple = true,
     count,
     customPreview,
+    title,
   },
   ref,
 ) => {
@@ -174,8 +167,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
   const valueCopy = useRef<UploadItem[]>([]) // 组件内资源备份
   // 对外暴露接口
   useImperativeHandle(ref, () => ({
-    open: chooseImageAndUpload,
-    openDocument: chooseDocumentAndUpload,
+    open: chooseResourceAndUpload,
   }))
   // 受控情形下的内外数据同步
   useEffect(() => {
@@ -190,134 +182,50 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
       setValue(cloneDeep(value))
     }
   }
+  /**
+   * 删除文件
+   * @param item
+   */
   function removeImage(item: UploadItem) {
     const results = valueCopy.current.filter((it) => it.key !== item.key)
     valueCopy.current = results
     setValueIfNeeded(results)
     onChange && onChange(results)
   }
-  async function _compress(uri: string, type: string) {
+  /**
+   * 文件选择
+   * @param config
+   * @returns
+   */
+  async function chooseResourceAndUpload(config: OverrideUploadConfig) {
     try {
-      if (isVideo(type)) {
-        return await compressorVideo(uri, false)
-      } else {
-        return await compressorImage(uri, false)
+      const action = composedPicker[config.pickerType]
+      const options: BasicUploadOptions = {
+        multiple: isDef(config.multiple) ? config.multiple : multiple,
+        maxCount,
+        width,
+        height,
+        cropping,
+        cropMediaType: config.cropMediaType,
+        currentCount: value.length,
+        title,
+        compress,
+        onStartCompress() {
+          toastKey = Toast.loading({
+            message: '处理中...',
+            duration: 0,
+          })
+        },
       }
-    } catch (error) {}
-  }
-  async function compressWork(images: ImageOrVideo[]) {
-    const result: IUploadTempSource[] = []
-    if (!images || !images.length) {
-      return result
-    }
-    toastKey = Toast.loading({
-      message: '处理中...',
-      duration: 0,
-    })
-    for (const image of images) {
-      const parts = image.path.split('/')
-      const uri = image.path
-      const name = parts[parts.length - 1]
-      const type = image.mime
-      if (type.includes('video') && !type.includes('mp4')) {
-        Toast('只支持mp4格式的视频')
-        continue
-      }
-      if (!compress) {
-        result.push({
-          name,
-          uri,
-          type,
-        })
-      } else {
-        const filepath = await _compress(uri, type)
-        // 需要在这里做操作
-        result.push({
-          name,
-          uri: filepath,
-          type,
-        })
-      }
-    }
-    return result
-  }
-
-  function chooseImageAndUpload(config: OverrideOptions) {
-    const isCamera = typeof config.useCamera === 'undefined' ? useCamera : config.useCamera
-    const options: Options = {
-      multiple: isCamera ? false : multiple,
-      maxFiles: maxCount,
-      width,
-      height,
-      includeBase64: true,
-      cropping,
-      cropperChooseText: '确认',
-      cropperCancelText: '取消',
-      mediaType: getImagePickerMediaType(mediaType),
-      ...config,
-    }
-    const optionAction = isCamera ? openCamera : openPicker
-    optionAction(options)
-      .then((i: ImageType | ImageType[] | VideoType) => {
-        // 文件压缩
-        const images = multiple && !isCamera ? [...(i as ImageType[])] : [i as ImageType | VideoType]
-        let result = images
-        if (value.length + images.length > maxCount) {
-          result = result.slice(0, maxCount - value.length)
-        }
-        return compressWork(result)
-      })
-      .then(async (res) => {
-        // 断点续传逻辑
-        const res1 = await Promise.all(res.map((item) => getFileBeforeUpload(item)))
-        return res1
-      })
-      .then((files: UploadItem[]) => {
-        setTimeout(() => {
-          toastKey.close()
-        }, 0)
-        valueCopy.current = [...value, ...files]
-        setValueIfNeeded(valueCopy.current)
-        exec(onChange, cloneDeep(valueCopy.current))
-        return valueCopy.current.filter((f) => f.status === 'loading')
-      })
-      .then(async (filesToUpload) => {
-        for (const file of filesToUpload) {
-          const uploadRes = await uploadFile(file)
-          if (uploadRes.status === 'error') {
-            exec(onUploadError, '文件上传失败')
-          }
-          const idx = valueCopy.current.findIndex((file) => file.key === uploadRes.key)
-          if (~idx) {
-            valueCopy.current[idx] = uploadRes
-          }
-          setValueIfNeeded(valueCopy.current)
-          exec(onChange, cloneDeep(valueCopy.current))
-        }
-      })
-      .catch((e) => {
-        // 用户手动取消提示错误
-        if (e?.code && e?.code === 'E_PICKER_CANCELLED') {
-          return
-        }
-        Toast('文件上传失败！')
-      })
-  }
-  async function chooseDocumentAndUpload() {
-    try {
-      // 1. 选择文件
-      const files = await DocumentPicker.pick({
-        allowMultiSelection: multiple,
-      })
-      // 2. 文件另存
-      const resolvedFiles = await Promise.all(files.map((item) => (isAndroid ? getResolvedPath(item) : item)))
-      // 3. 断点续传
-      const result = await Promise.all(resolvedFiles.map((item) => getFileBeforeUpload(item)))
-      valueCopy.current = [...value, ...result]
+      const files = await action(options)
+      const filesResumed = await Promise.all(files.map((item) => getFileBeforeUpload(item)))
+      setTimeout(() => {
+        toastKey?.close?.()
+      }, 0)
+      valueCopy.current = [...value, ...filesResumed]
       setValueIfNeeded(valueCopy.current)
       exec(onChange, cloneDeep(valueCopy.current))
       const filesToUpload = valueCopy.current.filter((f) => f.status === 'loading')
-      // 4. 文件上传
       for (const file of filesToUpload) {
         const uploadRes = await uploadFile(file)
         if (uploadRes.status === 'error') {
@@ -330,22 +238,41 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         setValueIfNeeded(valueCopy.current)
         exec(onChange, cloneDeep(valueCopy.current))
       }
-    } catch (err) {
-      // 用户手动取消
-      if (err?.code === 'DOCUMENT_PICKER_CANCELED') {
+    } catch (e) {
+      // 用户手动取消提示错误
+      if (e?.code && e?.code === 'E_PICKER_CANCELLED') {
         return
       }
+      // 关闭处理中提示框，如果有必要的话
+      toastKey?.close?.()
       Toast('文件上传失败！')
     }
   }
+  /**
+   * 点击上传UI
+   * @returns
+   */
   function handlePressAdd() {
+    if (value.length >= maxCount) {
+      Toast('已达到最大上传数量！')
+      return
+    }
     onPressAdd()
   }
+  /**
+   * 点击已上传文件预览
+   * @param item
+   */
   function handlePress(item: ISource) {
     if (item.status === 'done') {
       previewRef.current.preview(item)
     }
   }
+  /**
+   * 失败重传
+   * @param item
+   * @returns
+   */
   async function handleReupload(item: ISource) {
     const currIndex = valueCopy.current.findIndex((one) => one.key === item.key)
     if (!~currIndex) {

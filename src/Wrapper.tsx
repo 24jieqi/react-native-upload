@@ -16,7 +16,7 @@ const UploadWrapper: React.FC<PropsWithChildren<UploadWrapperProps>> = ({
   activeOpacity = 0.2,
   ...props
 }) => {
-  const { uploadInstance, handlePressAdd } = useUploadTypeSelect(props.mediaType)
+  const { uploadInstance, handlePressAdd } = useUploadTypeSelect(props.pickerType, props.cropMediaType)
   return (
     <TouchableOpacity hitSlop={hitSlop} activeOpacity={activeOpacity} style={wrapperStyle} onPress={handlePressAdd}>
       {children}

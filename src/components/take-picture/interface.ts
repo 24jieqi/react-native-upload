@@ -1,6 +1,6 @@
 export interface ImageInfo {
   path: string
-  mine: string
+  mime: string
 }
 
 export const TITLE_HEIGHT = 48

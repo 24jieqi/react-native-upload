@@ -13,10 +13,8 @@ import Upload, {
   formatUploadList,
   UploadActionParams,
   UploadItem,
-  openTakePicture,
 } from '@fruits-chain/react-native-upload';
 import {
-  Button,
   Card,
   Form,
   NoticeBar,
@@ -55,10 +53,6 @@ const MainComponent = () => {
     }
     setFiles(_files);
   }
-  async function handleOpenCamera() {
-    const result = await openTakePicture({});
-    console.log(result);
-  }
   return (
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
       <StatusBar barStyle="dark-content" />
@@ -79,9 +73,18 @@ const MainComponent = () => {
                 <Upload uploadAction={uploadImage} />
               </Form.Item>
             </Card>
-            <Card title="基础文件上传，初始带图片">
-              <Form.Item name="files1" valuePropName="list">
-                <Upload uploadAction={uploadImage} />
+            <Card title="基础文件上传-所有类型">
+              <Form.Item name="files" valuePropName="list">
+                <Upload
+                  uploadAction={uploadImage}
+                  cropMediaType="photo"
+                  pickerType={[
+                    'cropCamera',
+                    'cropPicker',
+                    'documentPicker',
+                    'visionCamera',
+                  ]}
+                />
               </Form.Item>
             </Card>
             <Card title="基础文件上传（自定义可删除）">
@@ -95,21 +98,12 @@ const MainComponent = () => {
                 onChange={handleUpdateFile}
               />
             </Card>
-            <Card title="自定义PDF预览">
+            <Card title="文档上传-自定义PDF预览">
               <Form.Item name="document" valuePropName="list">
                 <Upload
                   uploadAction={uploadImage}
-                  mediaType={['document']}
+                  pickerType="documentPicker"
                   customPreview={{pdf: PdfViewer}}
-                />
-              </Form.Item>
-            </Card>
-            <Card title="图片/视频上传">
-              <Form.Item name="picAndVideos" valuePropName="list">
-                <Upload
-                  uploadAction={uploadImage}
-                  tipText="视频"
-                  mediaType={['video', 'photo']}
                 />
               </Form.Item>
             </Card>
@@ -118,7 +112,17 @@ const MainComponent = () => {
                 <Upload
                   uploadAction={uploadImage}
                   tipText="视频"
-                  mediaType="video"
+                  pickerType={['cropCamera', 'cropPicker']}
+                  cropMediaType="video"
+                />
+              </Form.Item>
+            </Card>
+            <Card title="拍摄照片--连续拍照UI">
+              <Form.Item name="videos" valuePropName="list">
+                <Upload
+                  uploadAction={uploadImage}
+                  tipText="图片"
+                  pickerType="visionCamera"
                 />
               </Form.Item>
             </Card>
@@ -138,7 +142,6 @@ const MainComponent = () => {
                 );
               })}
             </Card>
-            <Button onPress={handleOpenCamera}>连续拍照</Button>
             <Card title="图片查看">
               <Upload.Preview
                 customPreview={{pdf: PdfViewer}}

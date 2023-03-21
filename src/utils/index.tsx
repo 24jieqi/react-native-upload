@@ -1,5 +1,7 @@
 import { Image } from 'react-native'
-import { FileVO, ImageMediaType, MediaType, UploadItem } from '../interface'
+import { ImageOrVideo } from 'react-native-image-crop-picker'
+import { FileVO, IUploadTempSource, UploadItem } from '../interface'
+import { compress } from './helper'
 
 export function getThumbnailImageUrl(url: string = '', width = 80, height = 80) {
   if (!url || url.includes('.mp4')) {
@@ -8,12 +10,16 @@ export function getThumbnailImageUrl(url: string = '', width = 80, height = 80) 
   return `${url}?x-image-process=image/resize,m_fill,h_${height},w_${width}`
 }
 
-export function isVideo(mimeType: string) {
-  return mimeType.includes('video')
+export function isMp4(mimeType: string) {
+  return mimeType.includes('video/mp4')
 }
 
-export function isValidVideo(mimeType: string) {
-  return isVideo(mimeType) && mimeType.includes('mp4')
+export function isImage(mimeType: string) {
+  return mimeType.includes('image/')
+}
+
+export function isCompressSupportType(mimeType: string) {
+  return isMp4(mimeType) || isImage(mimeType)
 }
 
 export function getFileExt(mimeType: string) {
@@ -25,21 +31,6 @@ export function exec(func: ((...param: any) => any) | undefined, ...params: any[
   if (typeof func === 'function') {
     return func(...params)
   }
-}
-
-/**
- * 获取imageCropPicker支持的mediaType
- * @param mediaType
- * @returns
- */
-export function getImagePickerMediaType(mediaType: MediaType): ImageMediaType {
-  if (mediaType === 'any' || (mediaType.includes('photo') && mediaType.includes('video'))) {
-    return 'any'
-  }
-  if (mediaType.includes('photo')) {
-    return 'photo'
-  }
-  return 'video'
 }
 
 /**
@@ -105,4 +96,41 @@ export function formatUploadList(list: FileVO[]) {
       type: '',
     } as UploadItem
   })
+}
+
+/**
+ * 图片、视频压缩
+ * @param images
+ * @param shouldCompress
+ * @returns
+ */
+export async function compressImageOrVideo(images: Partial<ImageOrVideo>[], shouldCompress?: boolean) {
+  const result: IUploadTempSource[] = []
+  if (!images || !images.length) {
+    return result
+  }
+  for (const image of images) {
+    const parts = image.path.split('/')
+    const uri = image.path
+    const name = parts[parts.length - 1]
+    const type = image.mime
+    if (!isCompressSupportType(type)) {
+      continue
+    }
+    if (!shouldCompress) {
+      result.push({
+        name,
+        uri,
+        type,
+      })
+    } else {
+      const filepath = await compress(uri, type)
+      result.push({
+        name,
+        uri: filepath,
+        type,
+      })
+    }
+  }
+  return result
 }

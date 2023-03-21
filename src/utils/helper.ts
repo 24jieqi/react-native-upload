@@ -136,3 +136,19 @@ export const getResolvedPath = async ({ uri, name, type }: DocumentPickerRespons
   await fs.writeFile(path, base64, 'base64')
   return { uri: `file://${path}`, name, type }
 }
+
+/**
+ * 图片视频压缩
+ * @param uri
+ * @param type
+ * @returns
+ */
+export async function compress(uri: string, type: string) {
+  try {
+    if (type.includes('video')) {
+      return await compressorVideo(uri, false)
+    } else {
+      return await compressorImage(uri, false)
+    }
+  } catch (error) {}
+}

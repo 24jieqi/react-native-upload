@@ -132,10 +132,10 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
 
   const onMediaCaptured = useCallback(async (photo: PhotoFile) => {
     const reg = /(jpg|png|jpeg)/i
-    const mine = `image/${photo.path.match(reg)[0]}`
+    const mime = `image/${photo.path.match(reg)[0]}`
     const info = {
       path: photo.path,
-      mine: mine,
+      mime,
     }
     setCurrentPhoto(info)
     setVisible(true)

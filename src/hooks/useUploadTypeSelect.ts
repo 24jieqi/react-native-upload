@@ -1,81 +1,70 @@
 import { ActionSheet } from '@fruits-chain/react-native-xiaoshu'
 import { Action } from '@fruits-chain/react-native-xiaoshu/lib/typescript/action-sheet/interface'
-import { isArray } from '@fruits-chain/utils'
+import { isType } from '@fruits-chain/utils'
 import { useMemo, useRef } from 'react'
-import { MediaType, MediaSelectorType } from '../interface'
+import { CropMediaType, PickerType } from '../interface'
 import { UploadInstance } from '../_internal'
 
 interface ExtendedAction extends Action {
   onPress?: () => void
 }
 
-function getMediaSelectorType(mediaType: MediaType): MediaSelectorType[] {
-  // 如果是数组，直接返回
-  if (isArray(mediaType as MediaSelectorType[])) {
-    return mediaType as MediaSelectorType[]
-  }
-  // 如果未传入或者传入any，返回全部类型
-  if (!mediaType || mediaType === 'any') {
-    return ['video', 'photo', 'document']
-  }
-  // 返回当前用户选择的类型
-  return [mediaType as MediaSelectorType]
-}
-
-const useUploadTypeSelect = (mediaType: MediaType) => {
+const useUploadTypeSelect = (
+  pickerType: PickerType | PickerType[] = ['cropCamera', 'cropPicker'],
+  cropMediaType: CropMediaType = 'any',
+) => {
   const uploadInstance = useRef<UploadInstance>()
   const actions = useMemo(() => {
-    // 相册选择
-    const albumAction: ExtendedAction = {
-      name: '相册选择',
-      onPress() {
-        uploadInstance.current.open({
-          useCamera: false,
-        })
-      },
-    }
     // 选择文档、拍照、拍摄视频
     const selectorActionMap: {
-      [key in MediaSelectorType]: ExtendedAction
+      [key in PickerType]: ExtendedAction
     } = {
-      document: {
-        name: '选择文件',
-        onPress() {
-          uploadInstance.current.openDocument()
-        },
-      },
-      photo: {
-        name: '拍摄照片',
+      cropPicker: {
+        name: '相册选择',
         onPress() {
           uploadInstance.current.open({
-            useCamera: true,
+            pickerType: 'cropPicker',
+            cropMediaType,
+          })
+        },
+      },
+      documentPicker: {
+        name: '选择文件',
+        onPress() {
+          uploadInstance.current.open({
+            pickerType: 'documentPicker',
+          })
+        },
+      },
+      cropCamera: {
+        name: '相机拍摄',
+        onPress() {
+          uploadInstance.current.open({
+            pickerType: 'cropCamera',
+            cropMediaType,
             multiple: false,
           })
         },
       },
-      video: {
-        name: '拍摄视频',
+      visionCamera: {
+        name: '照片拍摄',
         onPress() {
           uploadInstance.current.open({
-            useCamera: true,
-            multiple: false,
-            mediaType: 'video',
+            pickerType: 'visionCamera',
           })
         },
       },
     }
-    const selectorTypeList = getMediaSelectorType(mediaType)
+    const selectorTypeList = isType('String')(pickerType)
+      ? [pickerType as PickerType]
+      : [...(pickerType as PickerType[])]
     const result: ExtendedAction[] = []
     // 把对应类型的选项加入进来
     for (const selectorType of selectorTypeList) {
       result.push(selectorActionMap[selectorType])
     }
-    // 如果是图片/视频类型，则把相册选择加入
-    if (selectorTypeList.includes('photo') || selectorTypeList.includes('video')) {
-      result.push(albumAction)
-    }
     return result
-  }, [mediaType])
+  }, [pickerType])
   function handlePressAdd() {
     ActionSheet({
       cancelText: '取消',
