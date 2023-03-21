@@ -11,9 +11,8 @@
     "pods": "pod-install --quiet"
   },
   "dependencies": {
-    "@fruits-chain/react-native-upload": "^1.5.6",
+    "@fruits-chain/react-native-upload": "^2.0.0",
     "@fruits-chain/react-native-xiaoshu": "^0.3.12-beta.0",
-    "@gorhom/portal": "^1.0.14",
     "axios": "0.27.2",
     "rc-field-form": "^1.27.3",
     "react": "18.1.0",

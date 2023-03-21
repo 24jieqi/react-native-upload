@@ -13,6 +13,7 @@ import Upload, {
   formatUploadList,
   UploadActionParams,
   UploadItem,
+  UploadProvider,
 } from '@fruits-chain/react-native-upload';
 import {
   Card,
@@ -24,7 +25,6 @@ import {
 import axios from 'axios';
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StatusBar, Text} from 'react-native';
-import {PortalProvider} from '@gorhom/portal';
 import PdfViewer from './src/components/pdf-viewer';
 
 export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
@@ -177,11 +177,11 @@ const MainComponent = () => {
 };
 
 const App = () => (
-  <PortalProvider>
+  <UploadProvider>
     <Provider>
       <MainComponent />
     </Provider>
-  </PortalProvider>
+  </UploadProvider>
 );
 
 export default App;
