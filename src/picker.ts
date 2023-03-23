@@ -45,7 +45,9 @@ export async function openCropPicker(_options: BasicUploadOptions) {
   if (_options.currentCount + files.length > _options.maxCount) {
     files = files.slice(0, _options.maxCount - _options.currentCount)
   }
-  _options.onStartCompress?.()
+  if (files && files.length) {
+    _options.onStartCompress?.()
+  }
   return compressImageOrVideo(files, _options.compress)
 }
 
@@ -67,7 +69,9 @@ export async function openCropCamera(_options: BasicUploadOptions) {
     cropperCancelText: '取消',
   }
   const file = await openCamera(options)
-  _options.onStartCompress?.()
+  if (file) {
+    _options.onStartCompress?.()
+  }
   return compressImageOrVideo([file], _options.compress)
 }
 
@@ -103,7 +107,9 @@ export async function openVisionCamera(options: BasicUploadOptions) {
     existCount: options.currentCount,
     title: options.title,
   })
-  options.onStartCompress?.()
+  if (images && images.length) {
+    options.onStartCompress?.()
+  }
   return compressImageOrVideo(images, options.compress)
 }
 

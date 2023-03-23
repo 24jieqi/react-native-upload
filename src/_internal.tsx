@@ -239,13 +239,14 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         exec(onChange, cloneDeep(valueCopy.current))
       }
     } catch (e) {
+      const cancelledCode = ['DOCUMENT_PICKER_CANCELED', 'E_PICKER_CANCELLED']
       // 用户手动取消提示错误
-      if (e?.code && e?.code === 'E_PICKER_CANCELLED') {
+      if (e?.code && cancelledCode.includes(e.code)) {
         return
       }
       // 关闭处理中提示框，如果有必要的话
       toastKey?.close?.()
-      Toast('文件上传失败！')
+      Toast(e.message || '文件上传失败！')
     }
   }
   /**

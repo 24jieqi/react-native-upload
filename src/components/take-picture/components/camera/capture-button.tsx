@@ -3,17 +3,8 @@ import type { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typesc
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ViewProps } from 'react-native'
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
-import Reanimated, {
-  useAnimatedStyle,
-  withSpring,
-  useSharedValue,
-} from 'react-native-reanimated'
-import type {
-  Camera,
-  PhotoFile,
-  TakePhotoOptions,
-  TakeSnapshotOptions,
-} from 'react-native-vision-camera'
+import Reanimated, { useAnimatedStyle, withSpring, useSharedValue } from 'react-native-reanimated'
+import type { Camera, PhotoFile, TakePhotoOptions, TakeSnapshotOptions } from 'react-native-vision-camera'
 
 export interface AddressInfoType {
   address?: string
@@ -95,15 +86,12 @@ const _CaptureButton: React.FC<Props> = ({
     pressDownDate.current = now
     if (maxCount - existCount <= count) {
       Dialog({
-        title: `${
-          existCount > 0 ? `已上传${existCount}个图片或视频，` : ''
-        } 最多拍${maxCount - existCount}张`,
+        title: `${existCount > 0 ? `已上传${existCount}个图片或视频，` : ''} 最多拍${maxCount - existCount}张`,
       }).then(() => {})
       return
     }
     try {
-      if (pressDownDate.current === null)
-        throw new Error('PressDownDate ref .current was null!')
+      if (pressDownDate.current === null) throw new Error('PressDownDate ref .current was null!')
       pressDownDate.current = undefined
       await takePhoto()
     } finally {
@@ -145,10 +133,7 @@ const _CaptureButton: React.FC<Props> = ({
   }, [])
 
   return (
-    <TouchableOpacity
-      onPress={handlePress}
-      activeOpacity={1}
-      disabled={!enabled && loading}>
+    <TouchableOpacity onPress={handlePress} activeOpacity={1} disabled={!enabled && loading}>
       <Reanimated.View {...props} style={style}>
         <Reanimated.View style={styles.flex}>
           <View style={styles.shadow} />
