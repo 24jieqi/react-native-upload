@@ -166,9 +166,9 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
               {supportsFlash ? (
                 <TouchableOpacity activeOpacity={0.5} onPress={onFlashPressed}>
                   {flash === 'on' ? (
-                    <Image source={require('../../images/light.png')} />
+                    <Image style={styles.flashLightIcon} source={require('../../images/light.png')} />
                   ) : (
-                    <Image source={require('../../images/light_close.png')} />
+                    <Image style={styles.flashLightIcon} source={require('../../images/light_close.png')} />
                   )}
                 </TouchableOpacity>
               ) : null}

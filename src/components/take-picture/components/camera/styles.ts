@@ -16,6 +16,10 @@ const styles = StyleSheet.create({
     right: 16,
     bottom: 24,
   },
+  flashLightIcon: {
+    width: 40,
+    height: 40,
+  },
 })
 
 export default styles
