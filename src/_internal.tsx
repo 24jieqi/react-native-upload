@@ -117,9 +117,9 @@ export interface UploadProps {
    */
   pickerType?: PickerType | PickerType[]
   /**
-   * pickerType 为crop* mediaType
+   * pickerType 为cropPickerMediaType mediaType
    */
-  cropMediaType?: CropMediaType
+  cropPickerMediaType?: CropMediaType
   /**
    * 用于VisionCamera的标题
    */

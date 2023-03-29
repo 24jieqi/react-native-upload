@@ -10,8 +10,8 @@ interface ExtendedAction extends Action {
 }
 
 const useUploadTypeSelect = (
-  pickerType: PickerType | PickerType[] = ['cropCamera', 'cropPicker'],
-  cropMediaType: CropMediaType = 'any',
+  pickerType: PickerType | PickerType[] = ['cropPicker', 'visionCamera'],
+  cropPickerMediaType: CropMediaType = 'any',
 ) => {
   const uploadInstance = useRef<UploadInstance>()
   const actions = useMemo(() => {
@@ -24,24 +24,34 @@ const useUploadTypeSelect = (
         onPress() {
           uploadInstance.current.open({
             pickerType: 'cropPicker',
-            cropMediaType,
+            cropMediaType: cropPickerMediaType,
           })
         },
       },
       documentPicker: {
-        name: '选择文件',
+        name: '文件选择',
         onPress() {
           uploadInstance.current.open({
             pickerType: 'documentPicker',
           })
         },
       },
-      cropCamera: {
-        name: '相机拍摄',
+      cropCameraPhoto: {
+        name: '系统相机拍摄',
         onPress() {
           uploadInstance.current.open({
-            pickerType: 'cropCamera',
-            cropMediaType,
+            pickerType: 'cropCameraPhoto',
+            cropMediaType: 'photo',
+            multiple: false,
+          })
+        },
+      },
+      cropCameraVideo: {
+        name: '视频拍摄',
+        onPress() {
+          uploadInstance.current.open({
+            pickerType: 'cropCameraVideo',
+            cropMediaType: 'video',
             multiple: false,
           })
         },

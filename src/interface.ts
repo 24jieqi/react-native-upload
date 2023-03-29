@@ -86,4 +86,4 @@ export type CropMediaType = 'photo' | 'video' | 'any'
 /**
  * 调用选择器类型
  */
-export type PickerType = 'cropPicker' | 'cropCamera' | 'visionCamera' | 'documentPicker'
+export type PickerType = 'cropPicker' | 'cropCameraPhoto' | 'cropCameraVideo' | 'visionCamera' | 'documentPicker'

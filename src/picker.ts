@@ -116,7 +116,8 @@ export async function openVisionCamera(options: BasicUploadOptions) {
 export const composedPicker: {
   [key in PickerType]: (config: BasicUploadOptions) => Promise<IUploadTempSource[]>
 } = {
-  cropCamera: openCropCamera,
+  cropCameraPhoto: openCropCamera,
+  cropCameraVideo: openCropCamera,
   cropPicker: openCropPicker,
   documentPicker: openDocumentPicker,
   visionCamera: openVisionCamera,

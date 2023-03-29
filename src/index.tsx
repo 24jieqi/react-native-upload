@@ -16,7 +16,7 @@ interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
 }
 
 const Upload: IUpload = (props) => {
-  const { uploadInstance, handlePressAdd } = useUploadTypeSelect(props.pickerType, props.cropMediaType)
+  const { uploadInstance, handlePressAdd } = useUploadTypeSelect(props.pickerType, props.cropPickerMediaType)
   return <UploadInternal {...props} ref={uploadInstance} onPressAdd={handlePressAdd} />
 }
 
