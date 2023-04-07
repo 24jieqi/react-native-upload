@@ -70,16 +70,19 @@ const MainComponent = () => {
           <Space>
             <Card title="基础文件上传">
               <Form.Item name="files" valuePropName="list">
-                <Upload uploadAction={uploadImage} />
+                <Upload
+                  uploadAction={uploadImage}
+                  watermark={['测试时间，地点', '测试经纬度']}
+                />
               </Form.Item>
             </Card>
             <Card title="基础文件上传-所有类型">
               <Form.Item name="files" valuePropName="list">
                 <Upload
                   uploadAction={uploadImage}
-                  cropMediaType="photo"
+                  cropPickerMediaType="any"
                   pickerType={[
-                    'cropCamera',
+                    'cropCameraVideo',
                     'cropPicker',
                     'documentPicker',
                     'visionCamera',
@@ -112,8 +115,8 @@ const MainComponent = () => {
                 <Upload
                   uploadAction={uploadImage}
                   tipText="视频"
-                  pickerType={['cropCamera', 'cropPicker']}
-                  cropMediaType="video"
+                  pickerType={['cropCameraVideo', 'cropPicker']}
+                  cropPickerMediaType="video"
                 />
               </Form.Item>
             </Card>

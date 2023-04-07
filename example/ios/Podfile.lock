@@ -303,6 +303,9 @@ PODS:
     - React-Core
   - react-native-pdf (6.6.2):
     - React-Core
+  - react-native-photo-manipulator (1.2.7):
+    - React
+    - WCPhotoManipulator (~> 2.0.4)
   - react-native-safe-area-context (4.4.1):
     - RCT-Folly
     - RCTRequired
@@ -438,6 +441,7 @@ PODS:
     - React
     - React-callinvoker
     - React-Core
+  - WCPhotoManipulator (2.0.4)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -490,6 +494,7 @@ DEPENDENCIES:
   - react-native-compressor (from `../node_modules/react-native-compressor`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-pdf (from `../node_modules/react-native-pdf`)
+  - react-native-photo-manipulator (from `../node_modules/react-native-photo-manipulator`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -534,6 +539,7 @@ SPEC REPOS:
     - SDWebImageWebPCoder
     - SocketRocket
     - TOCropViewController
+    - WCPhotoManipulator
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -583,6 +589,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-document-picker"
   react-native-pdf:
     :path: "../node_modules/react-native-pdf"
+  react-native-photo-manipulator:
+    :path: "../node_modules/react-native-photo-manipulator"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-video:
@@ -667,6 +675,7 @@ SPEC CHECKSUMS:
   react-native-compressor: ebcf8bc36f8e44581a8f831583caee8a27e55a01
   react-native-document-picker: 958e2bc82e128be69055be261aeac8d872c8d34c
   react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
+  react-native-photo-manipulator: dce015c4d602abb529931a40d9d34c277ee478b8
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   React-perflogger: e68d3795cf5d247a0379735cbac7309adf2fb931
@@ -692,9 +701,10 @@ SPEC CHECKSUMS:
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   VisionCamera: e9a95af10e00aaebe99d648ff4519fd336e16ffe
+  WCPhotoManipulator: 45b7be19b75c9edf6d2b44f2f61dbc3673862a8f
   Yoga: eca980a5771bf114c41a754098cd85e6e0d90ed7
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: 9249c2c3a5c75d4c8ef9894bb20b424cf3be3f1a
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

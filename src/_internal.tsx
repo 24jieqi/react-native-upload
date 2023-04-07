@@ -11,7 +11,7 @@ import React, {
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import { cloneDeep } from 'lodash'
-import { exec } from './utils'
+import { exec, GetWatermarkMethod, WatermarkText } from './utils'
 import { CropMediaType, FileVO, IUploadTempSource, PickerType, UploadItem } from './interface'
 import useUploadResume from './hooks/useUploadResume'
 import { ISource } from '.'
@@ -19,6 +19,7 @@ import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/
 import Preview, { CustomPreview, PreviewInstance } from './components/preview/Preview'
 import { BasicUploadOptions, composedPicker } from './picker'
 import { isDef } from '@fruits-chain/utils'
+import { TextOptions } from 'react-native-photo-manipulator'
 
 interface OverrideUploadConfig {
   pickerType: PickerType
@@ -124,6 +125,10 @@ export interface UploadProps {
    * 用于VisionCamera的标题
    */
   title?: string
+  /**
+   * 照片水印
+   */
+  watermark?: WatermarkText | GetWatermarkMethod
 }
 
 let toastKey: ToastMethods
@@ -154,6 +159,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     count,
     customPreview,
     title,
+    watermark = () => Promise.resolve([]),
   },
   ref,
 ) => {
@@ -216,6 +222,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
             duration: 0,
           })
         },
+        watermark,
       }
       const files = await action(options)
       const filesResumed = await Promise.all(files.map((item) => getFileBeforeUpload(item)))

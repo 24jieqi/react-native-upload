@@ -11,7 +11,7 @@
     "pods": "pod-install --quiet"
   },
   "dependencies": {
-    "@fruits-chain/react-native-upload": "^2.0.0",
+    "@fruits-chain/react-native-upload": "^2.0.2",
     "@fruits-chain/react-native-xiaoshu": "^0.3.12-beta.0",
     "axios": "0.27.2",
     "rc-field-form": "^1.27.3",
@@ -25,6 +25,7 @@
     "react-native-gesture-handler": "^2.9.0",
     "react-native-image-crop-picker": "^0.38.0",
     "react-native-pdf": "^6.6.2",
+    "react-native-photo-manipulator": "^1.2.7",
     "react-native-reanimated": "2.14.4",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-svg": "^13.4.0",

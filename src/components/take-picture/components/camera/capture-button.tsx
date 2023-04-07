@@ -69,6 +69,7 @@ const _CaptureButton: React.FC<Props> = ({
       } else {
         photo = await camera.current.takeSnapshot(takePhotoOptions)
       }
+      // 在此加上水印
       onMediaCaptured(photo)
       toastKey?.close()
     } catch (e) {

@@ -2,6 +2,9 @@ import { Image } from 'react-native'
 import { ImageOrVideo } from 'react-native-image-crop-picker'
 import { FileVO, IUploadTempSource, UploadItem } from '../interface'
 import { compress } from './helper'
+import { ImageSource, TextOptions } from 'react-native-photo-manipulator'
+import RNPhotoManipulator from 'react-native-photo-manipulator'
+import { ceilWith, div, isFunction, isType, mul, plus } from '@fruits-chain/utils'
 
 export function getThumbnailImageUrl(url: string = '', width = 80, height = 80) {
   if (!url || url.includes('.mp4')) {
@@ -133,4 +136,43 @@ export async function compressImageOrVideo(images: Partial<ImageOrVideo>[], shou
     }
   }
   return result
+}
+
+export type WatermarkText = string[] | TextOptions[]
+
+export type GetWatermarkMethod = () => Promise<WatermarkText>
+
+/**
+ * 添加图片水印
+ * @param image
+ * @param watermark
+ * @returns
+ */
+export async function printWatermark(
+  image: ImageSource,
+  watermark: WatermarkText | GetWatermarkMethod,
+  size?: { width: number; height: number },
+) {
+  const adjustTextSize = size?.height ? ceilWith(size.height * 0.05) : 30
+  let rawTexts: WatermarkText
+  if (isFunction(rawTexts)) {
+    rawTexts = await (watermark as GetWatermarkMethod)()
+  } else {
+    rawTexts = watermark as WatermarkText
+  }
+  const texts = rawTexts.map((item, index) => {
+    if (isType('String')(item)) {
+      return {
+        position: {
+          x: div(adjustTextSize, 2),
+          y: plus(div(adjustTextSize, 2), mul(adjustTextSize, index)),
+        },
+        textSize: adjustTextSize,
+        color: '#FFFFFF',
+        text: item,
+      } as TextOptions
+    }
+    return item as TextOptions
+  })
+  return await RNPhotoManipulator.printText(image, texts)
 }

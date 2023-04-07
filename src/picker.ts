@@ -5,7 +5,7 @@ import DocumentPicker from 'react-native-document-picker'
 import { Platform } from 'react-native'
 import { getResolvedPath } from './utils/helper'
 import openPictureVisionPicker from './components/take-picture/open'
-import { compressImageOrVideo } from './utils'
+import { compressImageOrVideo, isImage, printWatermark } from './utils'
 
 export interface BasicUploadOptions extends Partial<Omit<UploadProps, 'pickerType'>> {
   /**
@@ -47,6 +47,12 @@ export async function openCropPicker(_options: BasicUploadOptions) {
   }
   if (files && files.length) {
     _options.onStartCompress?.()
+  }
+  // 为图片添加水印
+  for (const file of files) {
+    if (isImage(file.mime)) {
+      file.path = await printWatermark(file.path, _options.watermark)
+    }
   }
   return compressImageOrVideo(files, _options.compress)
 }
