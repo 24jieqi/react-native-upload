@@ -51,7 +51,7 @@ export async function openCropPicker(_options: BasicUploadOptions) {
   // 为图片添加水印
   for (const file of files) {
     if (isImage(file.mime)) {
-      file.path = await printWatermark(file.path, _options.watermark)
+      file.path = await printWatermark(file.path, _options.watermark, { width: file.width, height: file.height })
     }
   }
   return compressImageOrVideo(files, _options.compress)
@@ -77,6 +77,10 @@ export async function openCropCamera(_options: BasicUploadOptions) {
   const file = await openCamera(options)
   if (file) {
     _options.onStartCompress?.()
+    // 为图片添加水印
+    if (isImage(file.mime)) {
+      file.path = await printWatermark(file.path, _options.watermark, { width: file.width, height: file.height })
+    }
   }
   return compressImageOrVideo([file], _options.compress)
 }
@@ -112,6 +116,7 @@ export async function openVisionCamera(options: BasicUploadOptions) {
     maxCount: options.maxCount,
     existCount: options.currentCount,
     title: options.title,
+    watermark: options.watermark,
   })
   if (images && images.length) {
     options.onStartCompress?.()

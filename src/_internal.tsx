@@ -19,8 +19,6 @@ import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/
 import Preview, { CustomPreview, PreviewInstance } from './components/preview/Preview'
 import { BasicUploadOptions, composedPicker } from './picker'
 import { isDef } from '@fruits-chain/utils'
-import { TextOptions } from 'react-native-photo-manipulator'
-
 interface OverrideUploadConfig {
   pickerType: PickerType
   cropMediaType?: CropMediaType

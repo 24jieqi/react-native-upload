@@ -1,10 +1,11 @@
 import { Dialog, Toast } from '@fruits-chain/react-native-xiaoshu'
 import type { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ViewProps } from 'react-native'
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Reanimated, { useAnimatedStyle, withSpring, useSharedValue } from 'react-native-reanimated'
 import type { Camera, PhotoFile, TakePhotoOptions, TakeSnapshotOptions } from 'react-native-vision-camera'
+import { GetWatermarkMethod, WatermarkText, printWatermark } from '../../../../utils'
 
 export interface AddressInfoType {
   address?: string
@@ -30,6 +31,10 @@ interface Props extends ViewProps {
   count: number
   maxCount: number
   existCount: number
+  /**
+   * 图片水印相关配置
+   */
+  watermark?: WatermarkText | GetWatermarkMethod
 }
 
 const _CaptureButton: React.FC<Props> = ({
@@ -41,10 +46,10 @@ const _CaptureButton: React.FC<Props> = ({
   count,
   maxCount,
   existCount,
+  watermark,
   ...props
 }): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(false)
-  const pressDownDate = useRef<Date | undefined>(undefined)
   const takePhotoOptions = useMemo<TakePhotoOptions & TakeSnapshotOptions>(
     () => ({
       qualityPrioritization: 'speed',
@@ -70,21 +75,24 @@ const _CaptureButton: React.FC<Props> = ({
         photo = await camera.current.takeSnapshot(takePhotoOptions)
       }
       // 在此加上水印
+      photo.path = await printWatermark(photo.path, watermark, { width: photo.width, height: photo.height })
       onMediaCaptured(photo)
-      toastKey?.close()
     } catch (e) {
-      toastKey?.close()
+      setTimeout(() => {
+        toastKey.setMessage('拍摄失败')
+      }, 0)
+    } finally {
+      setTimeout(() => {
+        toastKey?.close()
+      }, 200)
       enableTakePhoto()
     }
-    enableTakePhoto()
   }, [camera, onMediaCaptured, takePhotoOptions])
 
   const handlePress = async () => {
     if (loading) return
     disableTakePhoto()
     isPressingButton.value = true
-    const now = new Date()
-    pressDownDate.current = now
     if (maxCount - existCount <= count) {
       Dialog({
         title: `${existCount > 0 ? `已上传${existCount}个图片或视频，` : ''} 最多拍${maxCount - existCount}张`,
@@ -92,8 +100,6 @@ const _CaptureButton: React.FC<Props> = ({
       return
     }
     try {
-      if (pressDownDate.current === null) throw new Error('PressDownDate ref .current was null!')
-      pressDownDate.current = undefined
       await takePhoto()
     } finally {
       isPressingButton.value = false

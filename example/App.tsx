@@ -87,6 +87,12 @@ const MainComponent = () => {
                     'documentPicker',
                     'visionCamera',
                   ]}
+                  watermark={[
+                    '2022-10-06 18:00:19',
+                    '中铁峰汇国际B座24楼洪九果品',
+                    '精度：东经117度',
+                    '纬度：北纬89度',
+                  ]}
                 />
               </Form.Item>
             </Card>

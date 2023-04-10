@@ -20,6 +20,7 @@ import type { ImageInfo } from '../../interface'
 import CaptureButton from './capture-button'
 import PhotoConfirm from './photo-confirm'
 import styles from './styles'
+import { GetWatermarkMethod, WatermarkText } from '../../../../utils'
 
 const SCALE_FULL_ZOOM = 3
 export const MAX_ZOOM_FACTOR = 20
@@ -34,9 +35,13 @@ interface CameraComProps {
   maxCount: number
   existCount?: number
   onPhotoSubmit: (img: ImageInfo) => void
+  /**
+   * 图片水印相关配置
+   */
+  watermark?: WatermarkText | GetWatermarkMethod
 }
 
-const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, existCount }) => {
+const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, existCount, watermark }) => {
   const [isCameraInitialized, setIsCameraInitialized] = useState(false)
   const camera = useRef<Camera>(null)
   const [visible, setVisible] = useState<boolean>(false)
@@ -191,6 +196,7 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
           count={count}
           maxCount={maxCount}
           existCount={existCount}
+          watermark={watermark}
         />
       </Portal>
     </View>

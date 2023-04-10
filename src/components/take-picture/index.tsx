@@ -9,6 +9,7 @@ import CameraCom from './components/camera'
 import Header from './components/header'
 import PhotoView from './components/photo-view'
 import type { ImageInfo } from './interface'
+import { GetWatermarkMethod, WatermarkText } from '../../utils'
 
 export interface TakePictureViewProps {
   /**
@@ -34,9 +35,20 @@ export interface TakePictureViewProps {
    * @returns
    */
   onClosed?: () => void
+  /**
+   * 图片水印相关配置
+   */
+  watermark?: WatermarkText | GetWatermarkMethod
 }
 
-const TakePictureView: React.FC<TakePictureViewProps> = ({ onSubmit, title, maxCount, existCount, onClosed }) => {
+const TakePictureView: React.FC<TakePictureViewProps> = ({
+  onSubmit,
+  title,
+  maxCount,
+  existCount,
+  onClosed,
+  watermark,
+}) => {
   const [visible, setVisible] = useState<boolean>(true)
 
   const [photoList, setPhotoList] = useState<ImageInfo[]>([])
@@ -99,6 +111,7 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({ onSubmit, title, maxC
             maxCount={maxCount}
             existCount={existCount}
             count={photoList?.length}
+            watermark={watermark}
           />
         ) : (
           <PhotoView photoList={photoList} onChange={setPhotoList} />
