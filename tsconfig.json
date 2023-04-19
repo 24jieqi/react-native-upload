@@ -11,7 +11,7 @@
     "target": "es6",
     "lib": ["dom", "es2017"],
     "skipLibCheck": true,
-    "outDir": "dist",
+    "outDir": "example/node_modules/@fruits-chain/react-native-upload/dist",
     "declaration": true,
     "module": "CommonJS"
   },

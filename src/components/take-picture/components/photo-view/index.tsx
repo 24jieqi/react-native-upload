@@ -1,14 +1,13 @@
-import { Portal } from '@gorhom/portal'
 import cloneDeep from 'lodash/cloneDeep'
 import React, { useEffect, useMemo, useState } from 'react'
 import { ActivityIndicator, Dimensions, Image, Platform, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-// eslint-disable-next-line import/no-named-as-default
 import ImageViewer from 'react-native-image-zoom-viewer'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import type { ImageInfo } from '../../interface'
 import { BUTTON_HEIGHT, TITLE_HEIGHT } from '../../interface'
+import TabBar from '../tab-bar'
 
 interface PhotoViewProps {
   photoList: ImageInfo[]
@@ -68,7 +67,7 @@ const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
     }, 200)
   }
   return (
-    <View>
+    <View style={styles.container}>
       {photoList.length > 0 ? (
         <View style={styles.imageView}>
           <ImageViewer
@@ -91,7 +90,9 @@ const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
         EmptyImage()
       )}
 
-      <Portal hostName="photo-view">
+      <View style={styles.bottom}>
+        <TabBar count={photoList?.length} state="picture" />
+
         <ScrollView horizontal contentContainerStyle={styles.wrap}>
           {photoList.map((ele, index) => {
             return (
@@ -111,19 +112,28 @@ const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
             )
           })}
         </ScrollView>
-      </Portal>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    position: 'relative',
+    flex: 1,
+  },
   wrap: {
     marginLeft: 16,
     paddingRight: 16,
   },
   imageView: {
-    height: '100%',
-    width: '100%',
+    flex: 1,
+  },
+  bottom: {
+    marginTop: 16,
+    alignItems: 'center',
+    height: 180,
+    backgroundColor: '#000',
   },
   imageWrap: {
     position: 'relative',

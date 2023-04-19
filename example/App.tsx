@@ -13,7 +13,6 @@ import Upload, {
   formatUploadList,
   UploadActionParams,
   UploadItem,
-  UploadProvider,
 } from '@fruits-chain/react-native-upload';
 import {
   Card,
@@ -132,6 +131,7 @@ const MainComponent = () => {
                   uploadAction={uploadImage}
                   tipText="图片"
                   pickerType="visionCamera"
+                  watermark={['水印测试', '1231232']}
                 />
               </Form.Item>
             </Card>
@@ -186,11 +186,9 @@ const MainComponent = () => {
 };
 
 const App = () => (
-  <UploadProvider>
-    <Provider>
-      <MainComponent />
-    </Provider>
-  </UploadProvider>
+  <Provider>
+    <MainComponent />
+  </Provider>
 );
 
 export default App;

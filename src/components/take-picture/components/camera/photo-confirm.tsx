@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import { Button, Flex, Popup } from '@fruits-chain/react-native-xiaoshu'
 import React from 'react'
 import { Image, View, StyleSheet } from 'react-native'
@@ -14,12 +13,7 @@ interface PhotoConfirmProps {
   onCancel: () => void
 }
 
-const PhotoConfirm: React.FC<PhotoConfirmProps> = ({
-  img,
-  visible,
-  onSubmit,
-  onCancel,
-}) => {
+const PhotoConfirm: React.FC<PhotoConfirmProps> = ({ img, visible, onSubmit, onCancel }) => {
   const insets = useSafeAreaInsets()
   return (
     <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.container}>
@@ -40,10 +34,7 @@ const PhotoConfirm: React.FC<PhotoConfirmProps> = ({
             重拍
           </Button>
           {/* @ts-ignore */}
-          <Button
-            type="primary"
-            style={[styles.btn, { marginLeft: 12 }]}
-            onPress={() => onSubmit(img)}>
+          <Button type="primary" style={[styles.btn, { marginLeft: 12 }]} onPress={() => onSubmit(img)}>
             确定
           </Button>
         </Flex>
