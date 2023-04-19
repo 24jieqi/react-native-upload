@@ -7,7 +7,6 @@ import useUploadTypeSelect from './hooks/useUploadTypeSelect'
 import { formatUploadList } from './utils'
 import openPictureVisionPicker from './components/take-picture/open'
 import { ImageInfo } from './components/take-picture/interface'
-import { PortalProvider } from '@gorhom/portal'
 
 export interface ISource extends UploadItem {}
 interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
@@ -26,10 +25,5 @@ Upload.displayName = 'Upload'
 
 export type { UploadItem, FileVO, UploadActionParams, UploadAction, IUploadTempSource, ImageInfo }
 export { formatUploadList, openPictureVisionPicker }
-
-/**
- * 同@gorhom/portal包中的`PortalProvider`
- */
-export const UploadProvider = PortalProvider
 
 export default Upload

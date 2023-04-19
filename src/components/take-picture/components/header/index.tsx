@@ -1,10 +1,9 @@
 import { Flex } from '@fruits-chain/react-native-xiaoshu'
 import type { ReactNode } from 'react'
 import React from 'react'
-import { Image, Platform, Text, TouchableNativeFeedback, View } from 'react-native'
+import { Image, Platform, Text, TouchableNativeFeedback, View, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import styles from './styles'
 interface IProps {
   title?: string | ReactNode
   onClose: () => void
@@ -36,3 +35,36 @@ const Header: React.FC<IProps> = ({ title, onClose, onSubmit }) => {
 }
 
 export default Header
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    backgroundColor: '#000',
+  },
+  titleWrap: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  title: {
+    fontSize: 16,
+    lineHeight: 22,
+    color: '#fff',
+    textAlign: 'center',
+  },
+  btn: {
+    backgroundColor: '#0065fe',
+    paddingHorizontal: 12,
+    borderRadius: 50,
+    height: 32,
+  },
+  btnText: {
+    lineHeight: 31,
+    fontSize: 16,
+    color: '#fff',
+  },
+  closeBtn: {
+    width: 32,
+    height: 32,
+  },
+})

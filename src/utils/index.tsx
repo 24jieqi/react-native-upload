@@ -156,15 +156,15 @@ export type GetWatermarkMethod = (size?: ImageSize) => Promise<WatermarkText>
  */
 export async function printWatermark(
   image: ImageSource,
-  watermark: WatermarkText | GetWatermarkMethod,
+  watermark?: WatermarkText | GetWatermarkMethod,
   size?: ImageSize,
 ) {
   const adjustTextSize = size?.height ? ceilWith(size.height * 0.05) : 30
   let rawTexts: WatermarkText
-  if (isFunction(rawTexts)) {
+  if (isFunction(watermark)) {
     rawTexts = await (watermark as GetWatermarkMethod)(size)
   } else {
-    rawTexts = watermark as WatermarkText
+    rawTexts = (watermark || []) as WatermarkText
   }
   const texts = rawTexts.map((item, index) => {
     if (isType('String')(item)) {

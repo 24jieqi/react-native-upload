@@ -7,13 +7,14 @@ import Reanimated, { useAnimatedStyle, withSpring, useSharedValue } from 'react-
 import type { Camera, PhotoFile, TakePhotoOptions, TakeSnapshotOptions } from 'react-native-vision-camera'
 import { GetWatermarkMethod, WatermarkText, printWatermark } from '../../../../utils'
 
-export interface AddressInfoType {
-  address?: string
-  lat?: string
-  lng?: string
-}
-
+/**
+ * 拍照按钮，动态变化小尺寸
+ */
 const CAPTURE_BUTTON_SIZE = 72
+
+/**
+ * 拍照按钮，动态变化大尺寸
+ */
 const CAPTURE_BUTTON_BG_SIZE = 88
 
 let toastKey: ToastMethods
@@ -28,9 +29,15 @@ interface Props extends ViewProps {
 
   flash: 'off' | 'on'
   enabled: boolean
+  // 当前拍照数量
   count: number
+
+  // 最大允许拍照数量
   maxCount: number
+
+  // 外部已存在照片数量
   existCount: number
+
   /**
    * 图片水印相关配置
    */
@@ -69,6 +76,8 @@ const _CaptureButton: React.FC<Props> = ({
       })
       if (camera.current === null) throw new Error('Camera ref is null!')
       let photo: PhotoFile
+
+      // 当环境为安卓时，启用安卓的快速拍照
       if (Platform.OS === 'ios') {
         photo = await camera.current.takePhoto(takePhotoOptions)
       } else {
@@ -91,14 +100,15 @@ const _CaptureButton: React.FC<Props> = ({
 
   const handlePress = async () => {
     if (loading) return
-    disableTakePhoto()
-    isPressingButton.value = true
+    // 先进行数量判断，再禁用按钮
     if (maxCount - existCount <= count) {
       Dialog({
         title: `${existCount > 0 ? `已上传${existCount}个图片或视频，` : ''} 最多拍${maxCount - existCount}张`,
       }).then(() => {})
       return
     }
+    disableTakePhoto()
+    isPressingButton.value = true
     try {
       await takePhoto()
     } finally {
@@ -140,7 +150,7 @@ const _CaptureButton: React.FC<Props> = ({
   }, [])
 
   return (
-    <TouchableOpacity onPress={handlePress} activeOpacity={1} disabled={!enabled && loading}>
+    <TouchableOpacity onPress={handlePress} activeOpacity={1} disabled={!enabled || loading}>
       <Reanimated.View {...props} style={style}>
         <Reanimated.View style={styles.flex}>
           <View style={styles.shadow} />

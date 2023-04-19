@@ -1,15 +1,15 @@
-import { Dialog, Flex, Popup } from '@fruits-chain/react-native-xiaoshu'
-import { PortalHost } from '@gorhom/portal'
-import type { ReactNode } from 'react'
+import { Dialog, Popup } from '@fruits-chain/react-native-xiaoshu'
+import { ReactNode } from 'react'
 import React, { useEffect, useRef, useState } from 'react'
 import type { StatusBarProps } from 'react-native'
-import { Platform, StatusBar, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
+import { Platform, StatusBar, StyleSheet } from 'react-native'
 
 import CameraCom from './components/camera'
 import Header from './components/header'
 import PhotoView from './components/photo-view'
 import type { ImageInfo } from './interface'
 import { GetWatermarkMethod, WatermarkText } from '../../utils'
+import { StateContext, StateType } from './context/state-context'
 
 export interface TakePictureViewProps {
   /**
@@ -53,7 +53,7 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
 
   const [photoList, setPhotoList] = useState<ImageInfo[]>([])
 
-  const [state, setState] = useState<'picture' | 'photograph'>('photograph')
+  const [state, setState] = useState<StateType>('photograph')
 
   const stackPropsRef = useRef<StatusBarProps>()
 
@@ -80,7 +80,7 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
     }
   }
 
-  const handleCameraSubmit = (photo: ImageInfo) => {
+  const onPhotoSubmit = (photo: ImageInfo) => {
     setPhotoList((value) => {
       return [...value, photo]
     })
@@ -104,10 +104,10 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
     <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.page} onClosed={onClosed}>
       <Header title={title} onClose={handleClose} onSubmit={handleSubmit} />
 
-      <View style={styles.content}>
+      <StateContext.Provider value={{ state, setState }}>
         {state === 'photograph' ? (
           <CameraCom
-            onPhotoSubmit={handleCameraSubmit}
+            onPhotoSubmit={onPhotoSubmit}
             maxCount={maxCount}
             existCount={existCount}
             count={photoList?.length}
@@ -116,26 +116,7 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
         ) : (
           <PhotoView photoList={photoList} onChange={setPhotoList} />
         )}
-      </View>
-
-      <View style={styles.bottom}>
-        <Flex style={styles.tabWrap} justify="between">
-          <TouchableOpacity activeOpacity={1} onPress={() => setState('picture')}>
-            <View style={[styles.tabItem, state === 'picture' ? styles.activeTab : null]}>
-              <Text style={[styles.tabText, state === 'picture' ? styles.activeText : null]}>已拍照片</Text>
-              <View style={styles.tabCount}>
-                <Text style={styles.tabCountText}>{photoList.length}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} onPress={() => setState('photograph')}>
-            <View style={[styles.tabItem, state === 'photograph' ? styles.activeTab : null]}>
-              <Text style={[styles.tabText, state === 'photograph' ? styles.activeText : null]}>拍照</Text>
-            </View>
-          </TouchableOpacity>
-        </Flex>
-        <View>{state === 'photograph' ? <PortalHost name="capture-button" /> : <PortalHost name="photo-view" />}</View>
-      </View>
+      </StateContext.Provider>
     </Popup.Page>
   )
 }

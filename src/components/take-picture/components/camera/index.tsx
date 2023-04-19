@@ -1,5 +1,4 @@
 import { Dialog } from '@fruits-chain/react-native-xiaoshu'
-import { Portal } from '@gorhom/portal'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Image, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import type { PinchGestureHandlerGestureEvent } from 'react-native-gesture-handler'
@@ -19,8 +18,8 @@ import type { ImageInfo } from '../../interface'
 
 import CaptureButton from './capture-button'
 import PhotoConfirm from './photo-confirm'
-import styles from './styles'
 import { GetWatermarkMethod, WatermarkText } from '../../../../utils'
+import TabBar from '../tab-bar'
 
 const SCALE_FULL_ZOOM = 3
 export const MAX_ZOOM_FACTOR = 20
@@ -42,26 +41,23 @@ interface CameraComProps {
 }
 
 const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, existCount, watermark }) => {
-  const [isCameraInitialized, setIsCameraInitialized] = useState(false)
-  const camera = useRef<Camera>(null)
   const [visible, setVisible] = useState<boolean>(false)
-  const [flash, setFlash] = useState<'off' | 'on'>('off')
-
   const [currentPhoto, setCurrentPhoto] = useState<ImageInfo>()
 
+  /**
+   * 相机相关变量与参数
+   */
+  // 相机是否准备完成
+  const [isCameraInitialized, setIsCameraInitialized] = useState(false)
+  const camera = useRef<Camera>(null)
   const initRef = useRef<boolean>(false)
-
+  const [flash, setFlash] = useState<'off' | 'on'>('off')
   const zoom = useSharedValue(Platform.OS === 'ios' ? 1.5 : 1)
-
-  // const isFocussed = useIsFocused()
   const isForeground = useIsForeground()
-
   const isActive = isForeground
   const devices = useCameraDevices()
-
   const device = devices?.back
   const supportsFlash = device?.hasFlash ?? false
-
   const minZoom = device?.minZoom ?? 1
   const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR)
 
@@ -87,6 +83,7 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
   })
 
   const onError = useCallback(() => {
+    // onError 会调用多次，通过initRef限制一次调用
     if (!initRef.current) {
       initRef.current = true
       Dialog({
@@ -100,6 +97,7 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
       })
     }
   }, [])
+
   const formats = useMemo<CameraDeviceFormat[]>(() => {
     if (!device?.formats) return []
     return device?.formats.sort(sortFormats)
@@ -149,58 +147,87 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
   return (
     <View style={styles.container}>
       {device && (
-        <PinchGestureHandler onGestureEvent={onPinchGesture} enabled={isActive}>
-          <Reanimated.View style={styles.captureContent}>
-            <ReanimatedCamera
-              ref={camera}
-              style={StyleSheet.absoluteFill}
-              device={device}
-              format={format}
-              fps={fps}
-              lowLightBoost={device?.supportsLowLightBoost}
-              isActive={isActive}
-              onInitialized={onInitialized}
-              onError={onError}
-              enableZoomGesture
-              animatedProps={cameraAnimatedProps}
-              photo
-              orientation="portrait"
-              frameProcessorFps={1}
+        <>
+          <PinchGestureHandler onGestureEvent={onPinchGesture} enabled={isActive}>
+            <Reanimated.View style={styles.captureContent}>
+              <ReanimatedCamera
+                ref={camera}
+                style={StyleSheet.absoluteFill}
+                device={device}
+                format={format}
+                fps={fps}
+                lowLightBoost={device?.supportsLowLightBoost}
+                isActive={isActive}
+                onInitialized={onInitialized}
+                onError={onError}
+                enableZoomGesture
+                animatedProps={cameraAnimatedProps}
+                photo
+                orientation="portrait"
+                frameProcessorFps={1}
+              />
+              <View style={styles.rightButton}>
+                {supportsFlash ? (
+                  <TouchableOpacity activeOpacity={0.5} onPress={onFlashPressed}>
+                    {flash === 'on' ? (
+                      <Image style={styles.flashLightIcon} source={require('../../images/light.png')} />
+                    ) : (
+                      <Image style={styles.flashLightIcon} source={require('../../images/light_close.png')} />
+                    )}
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            </Reanimated.View>
+          </PinchGestureHandler>
+          <View style={styles.bottom}>
+            <TabBar count={count} state="photograph" />
+            <CaptureButton
+              camera={camera}
+              onMediaCaptured={onMediaCaptured}
+              cameraZoom={zoom}
+              minZoom={minZoom}
+              maxZoom={maxZoom}
+              flash={supportsFlash ? flash : 'off'}
+              enabled={isCameraInitialized && isActive}
+              count={count}
+              maxCount={maxCount}
+              existCount={existCount}
+              watermark={watermark}
             />
-            <View style={styles.rightButton}>
-              {supportsFlash ? (
-                <TouchableOpacity activeOpacity={0.5} onPress={onFlashPressed}>
-                  {flash === 'on' ? (
-                    <Image style={styles.flashLightIcon} source={require('../../images/light.png')} />
-                  ) : (
-                    <Image style={styles.flashLightIcon} source={require('../../images/light_close.png')} />
-                  )}
-                </TouchableOpacity>
-              ) : null}
-            </View>
-          </Reanimated.View>
-        </PinchGestureHandler>
+          </View>
+        </>
       )}
 
       <PhotoConfirm img={currentPhoto} visible={visible} onCancel={() => setVisible(false)} onSubmit={onPhotoConfirm} />
-
-      <Portal hostName="capture-button">
-        <CaptureButton
-          camera={camera}
-          onMediaCaptured={onMediaCaptured}
-          cameraZoom={zoom}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-          flash={supportsFlash ? flash : 'off'}
-          enabled={isCameraInitialized && isActive}
-          count={count}
-          maxCount={maxCount}
-          existCount={existCount}
-          watermark={watermark}
-        />
-      </Portal>
     </View>
   )
 }
 
 export default CameraCom
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  captureContent: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    flex: 1,
+  },
+  bottom: {
+    marginTop: 16,
+    alignItems: 'center',
+    height: 180,
+    backgroundColor: '#000',
+  },
+  rightButton: {
+    position: 'absolute',
+    right: 16,
+    bottom: 24,
+  },
+  flashLightIcon: {
+    width: 40,
+    height: 40,
+  },
+})
