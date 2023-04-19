@@ -4,7 +4,8 @@
   "description": "A React-Native UI Component to upload image/video and preview",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "tsc -p tsconfig.dev.json"
   },
   "keywords": [
     "react-native",
