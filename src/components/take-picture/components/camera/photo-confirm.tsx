@@ -1,10 +1,11 @@
 import { Button, Flex, Popup } from '@fruits-chain/react-native-xiaoshu'
 import React from 'react'
-import { Image, View, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import type { ImageInfo } from '../../interface'
 import { BUTTON_HEIGHT, TITLE_HEIGHT } from '../../interface'
+import ImageViewCom from '../image-view'
 
 interface PhotoConfirmProps {
   img: ImageInfo
@@ -24,7 +25,7 @@ const PhotoConfirm: React.FC<PhotoConfirmProps> = ({ img, visible, onSubmit, onC
             marginTop: insets.top + TITLE_HEIGHT,
           },
         ]}>
-        <Image source={{ uri: `file://${img?.path}` }} style={styles.img} />
+        <ImageViewCom imageList={[img]} index={0} />
         <View />
       </View>
       <View style={[styles.button, { height: BUTTON_HEIGHT }]}>

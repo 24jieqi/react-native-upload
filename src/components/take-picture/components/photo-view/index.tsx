@@ -1,13 +1,11 @@
 import cloneDeep from 'lodash/cloneDeep'
-import React, { useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, Dimensions, Image, Platform, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Image, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import ImageViewer from 'react-native-image-zoom-viewer'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import type { ImageInfo } from '../../interface'
-import { BUTTON_HEIGHT, TITLE_HEIGHT } from '../../interface'
 import TabBar from '../tab-bar'
+import ImageViewCom from '../image-view'
 
 interface PhotoViewProps {
   photoList: ImageInfo[]
@@ -15,7 +13,6 @@ interface PhotoViewProps {
 }
 
 const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
-  const insets = useSafeAreaInsets()
   const [currentIndex, setCurrentIndex] = useState<number>(0)
 
   const handlePhotoClick = (index: number) => {
@@ -27,23 +24,6 @@ const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
     tempPhotoList.splice(index, 1)
     onChange(tempPhotoList)
   }
-
-  const imgHeight = useMemo(() => {
-    return (
-      Dimensions.get('screen').height - insets.top - TITLE_HEIGHT - BUTTON_HEIGHT - (Platform.OS === 'ios' ? 0 : 16)
-    )
-  }, [insets.top])
-
-  const photos = useMemo(() => {
-    const width = Dimensions.get('screen').width
-    return photoList.map((ele) => ({
-      url: `file://${ele.path}`,
-      id: ele.path,
-      width: width,
-      height: imgHeight,
-    }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [photoList, imgHeight])
 
   useEffect(() => {
     const maxIndex = photoList.length - 1
@@ -70,21 +50,7 @@ const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
     <View style={styles.container}>
       {photoList.length > 0 ? (
         <View style={styles.imageView}>
-          <ImageViewer
-            imageUrls={photos}
-            onChange={handleChangeView}
-            renderImage={(props) => {
-              return (
-                <View style={styles.content}>
-                  <Image {...props} />
-                </View>
-              )
-            }}
-            enableImageZoom
-            index={currentIndex}
-            failImageSource={require('../../images/icon_failed.png')}
-            loadingRender={() => <ActivityIndicator color="#fff" />}
-          />
+          <ImageViewCom onChange={handleChangeView} index={currentIndex} imageList={photoList} />
         </View>
       ) : (
         EmptyImage()
