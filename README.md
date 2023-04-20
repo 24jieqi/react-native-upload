@@ -1,4 +1,4 @@
-# @fruits-chain/react-native-upload
+@fruits-chain/react-native-upload
 
 > 一个用于文件上传的 React-Native 组件
 
@@ -32,6 +32,8 @@ $ yarn add @fruits-chain/react-native-upload
 [react-native-fast-image](https://github.com/DylanVann/react-native-fast-image) 高效图片组件
 
 [react-native-document-picker](https://github.com/rnmods/react-native-document-picker) 文档选择
+
+[react-native-photo-manipulator](https://github.com/guhungry/react-native-photo-manipulator) 图片水印
 
 \*[react-native-vision-camera](https://github.com/mrousavy/react-native-vision-camera) 自定义上传 UI 使用的拍照库
 
@@ -74,7 +76,7 @@ const UploadPage: React.FC = () => {
   <img alt="默认" src="./case-1.png" width=200 height=433 />
   <img alt="模式选择" src="./case-2.png" width=200 height=433 />
   <img alt="包含照片" src="./case-3.png" width=200 height=433/>
-  <img alt="图片预览" src="./case-4.png" width=200 height=433 />
+  <img alt="图片预览" src="./case-4.jpg" width=200 height=433 />
 </div>
 
 ### 可运行的 Demo
@@ -87,28 +89,29 @@ const UploadPage: React.FC = () => {
 
 > `？`表示可选参数
 
-| 参数                 | 类型                                                           | 说明                                                                         | 默认值                         | 版本  |
-| -------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------ | ----- |
-| list?                | `IUploadSource`[]                                              | 当前上传的文件列表                                                           | -                              | -     |
-| defaultList?         | `IUploadSource`[]                                              | 默认上传的文件列表                                                           | []                             | -     |
-| onChange?            | (list:`IUploadSource`[]) => void                               | 上传文件变更/状态变更时调用此方法                                            | -                              | -     |
-| onUploadError?       | (msg?: any) => void                                            | 上传出错时的回调                                                             | -                              | -     |
-| maxCount?            | number                                                         | 最大可上传数量                                                               | 10                             | -     |
-| tipText?             | string                                                         | 上传提示文本                                                                 | -                              | -     |
-| multiple?            | boolean                                                        | 是否支持多选上传                                                             | true                           | -     |
-| uploadAction?        | `UploadAction`                                                 | 上传接口封装的函数                                                           | -                              | -     |
-| cropping?            | boolean                                                        | 是否进行裁剪                                                                 | false                          | -     |
-| width?               | number                                                         | cropping 模式下选取图片的宽度                                                | 300                            | -     |
-| height?              | number                                                         | cropping 模式下选取图片的高度                                                | 300                            | -     |
-| allowResume?         | `boolean or number`                                            | 是否支持续传（传入 `number`时表示只有压缩后大于 `number`字节的文件会开启续传 | false                          | 1.2.0 |
-| progressAction?      | (fileHash: string) => Promise<{fileUrl: string; size: number}> | 获取上传当前图片上传进度                                                     | -                              | 1.2.0 |
-| compress?            | boolean                                                        | 是否开启压缩                                                                 | true                           | 1.2.0 |
-| imagesPerRow?        | number                                                         | 每一行显示的个数                                                             | 4                              | 1.3.8 |
-| count?               | `number or RegularCount[]`                                     | 固 regular 模式下，设置固定上传个数及文案                                    | -                              | 1.3.9 |
-| customPreview?       | `CustomPreview`                                                | 自定义预览的组件映射 key: 文件名后缀 value:自定义预览组件                    | -                              | 1.4.0 |
-| pickerType?          | `PickerType or PickerType[]`                                   | 指定选择器类型                                                               | ['cropPicker', 'visionCamera'] | 2.0.0 |
-| cropPickerMediaType? | `CropMediaType`                                                | pickerType 为 cropPicker 的 mediaType                                        | `any`                          | 2.0.2 |
-| title                | string                                                         | 用于 pickerType 为 `visionCamera`时 UI 的标题                                | -                              | 2.0.0 |
+| 参数                 | 类型                                                           | 说明                                                                         | 默认值                         | 版本  |     |
+| -------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------ | ----- | --- |
+| list?                | `IUploadSource`[]                                              | 当前上传的文件列表                                                           | -                              | -     |     |
+| defaultList?         | `IUploadSource`[]                                              | 默认上传的文件列表                                                           | []                             | -     |     |
+| onChange?            | (list:`IUploadSource`[]) => void                               | 上传文件变更/状态变更时调用此方法                                            | -                              | -     |     |
+| onUploadError?       | (msg?: any) => void                                            | 上传出错时的回调                                                             | -                              | -     |     |
+| maxCount?            | number                                                         | 最大可上传数量                                                               | 10                             | -     |     |
+| tipText?             | string                                                         | 上传提示文本                                                                 | -                              | -     |     |
+| multiple?            | boolean                                                        | 是否支持多选上传                                                             | true                           | -     |     |
+| uploadAction?        | `UploadAction`                                                 | 上传接口封装的函数                                                           | -                              | -     |     |
+| cropping?            | boolean                                                        | 是否进行裁剪                                                                 | false                          | -     |     |
+| width?               | number                                                         | cropping 模式下选取图片的宽度                                                | 300                            | -     |     |
+| height?              | number                                                         | cropping 模式下选取图片的高度                                                | 300                            | -     |     |
+| allowResume?         | `boolean or number`                                            | 是否支持续传（传入 `number`时表示只有压缩后大于 `number`字节的文件会开启续传 | false                          | 1.2.0 |     |
+| progressAction?      | (fileHash: string) => Promise<{fileUrl: string; size: number}> | 获取上传当前图片上传进度                                                     | -                              | 1.2.0 |     |
+| compress?            | boolean                                                        | 是否开启压缩                                                                 | true                           | 1.2.0 |     |
+| imagesPerRow?        | number                                                         | 每一行显示的个数                                                             | 4                              | 1.3.8 |     |
+| count?               | `number or RegularCount[]`                                     | 固 regular 模式下，设置固定上传个数及文案                                    | -                              | 1.3.9 |     |
+| customPreview?       | `CustomPreview`                                                | 自定义预览的组件映射 key: 文件名后缀 value:自定义预览组件                    | -                              | 1.4.0 |     |
+| pickerType?          | `PickerType or PickerType[]`                                   | 指定选择器类型                                                               | ['cropPicker', 'visionCamera'] | 2.0.0 |     |
+| cropPickerMediaType? | `CropMediaType`                                                | pickerType 为 cropPicker 的 mediaType                                        | `any`                          | 2.0.2 |     |
+| title                | string                                                         | 用于 pickerType 为 `visionCamera`时 UI 的标题                                | -                              | 2.0.0 |     |
+| watermark?           | `WatermarkText\|GetWatermarkMethod`                            | 配置图片水印                                                                 | -                              | 2.1.0 |
 
 ```ts
 interface UploadItem {

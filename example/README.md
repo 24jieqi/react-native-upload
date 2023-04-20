@@ -4,4 +4,7 @@
 
 ### Screenshots
 
-<img src="./screen-shoot.png" width=200>
+<div style="display: flex; flex-wrap: no-wrap">
+  <img src="./ss-1.jpg" width=200>
+  <img src="./ss-2.jpg" width=200>
+</div>
