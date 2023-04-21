@@ -36,7 +36,7 @@ export interface TakePictureViewProps {
 }
 
 const TakePictureView: React.FC<TakePictureViewProps> = ({ title, maxCount, existCount, onClosed, watermark }) => {
-  const [visible, setVisible] = useState<boolean>(true)
+  const [visible, setVisible] = useState<boolean>(false)
 
   const [photoList, setPhotoList] = useState<ImageInfo[]>([])
 
@@ -63,6 +63,8 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({ title, maxCount, exis
         // 重设StatusBar 清空photoList 关闭UI
         handleCancel()
       }
+    } else {
+      handleCancel(false)
     }
   }
   const onPhotoSubmit = (photo: ImageInfo) => {
@@ -87,6 +89,9 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({ title, maxCount, exis
     Platform.OS === 'android' && StatusBar.setBackgroundColor('transparent')
   }, [])
 
+  useEffect(() => {
+    setVisible(true)
+  }, [])
   return (
     <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.page} onClosed={() => onClosed(photoList)}>
       <Header title={title} onClose={handleClose} onSubmit={handleConfirm} />
