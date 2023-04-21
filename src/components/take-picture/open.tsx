@@ -18,10 +18,8 @@ function openPictureVisionPicker(options: OpenOptions): Promise<ImageInfo[]> {
     const id = Portal.add(
       <TakePictureView
         {...options}
-        onSubmit={(photoList) => {
+        onClosed={(photoList) => {
           resolve(photoList)
-        }}
-        onClosed={() => {
           Portal.remove(id)
         }}
       />,

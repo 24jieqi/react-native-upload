@@ -25,30 +25,17 @@ export interface TakePictureViewProps {
    */
   title?: string | ReactNode
   /**
-   * 提交事件
-   * @param imageInfo
-   * @returns
-   */
-  onSubmit?: (imageInfo: ImageInfo[]) => void
-  /**
    * 关闭事件
    * @returns
    */
-  onClosed?: () => void
+  onClosed?: (photoList: ImageInfo[]) => void
   /**
    * 图片水印相关配置
    */
   watermark?: WatermarkText | GetWatermarkMethod
 }
 
-const TakePictureView: React.FC<TakePictureViewProps> = ({
-  onSubmit,
-  title,
-  maxCount,
-  existCount,
-  onClosed,
-  watermark,
-}) => {
+const TakePictureView: React.FC<TakePictureViewProps> = ({ title, maxCount, existCount, onClosed, watermark }) => {
   const [visible, setVisible] = useState<boolean>(true)
 
   const [photoList, setPhotoList] = useState<ImageInfo[]>([])
@@ -56,40 +43,40 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
   const [state, setState] = useState<StateType>('photograph')
 
   const stackPropsRef = useRef<StatusBarProps>()
-
-  const handleSubmit = () => {
-    onSubmit(photoList)
-    handleCancel()
+  /**
+   * 确定按钮事件
+   */
+  const handleConfirm = () => {
+    handleCancel(false)
   }
-
-  const handleClose = () => {
+  /**
+   * 关闭按钮事件
+   */
+  const handleClose = async () => {
     if (photoList.length > 0) {
-      Dialog.confirm({
+      const action = await Dialog.confirm({
         title: `将删除已拍摄的${photoList.length}张图片`,
         confirmButtonColor: '#f92f2f',
         confirmButtonText: '删除',
-      }).then((action) => {
-        if (action === 'confirm') {
-          handleCancel()
-          onSubmit([])
-        }
       })
-    } else {
-      handleCancel()
-      onSubmit([])
+      if (action === 'confirm') {
+        // 重设StatusBar 清空photoList 关闭UI
+        handleCancel()
+      }
     }
   }
-
   const onPhotoSubmit = (photo: ImageInfo) => {
     setPhotoList((value) => {
       return [...value, photo]
     })
   }
 
-  const handleCancel = () => {
+  const handleCancel = (clear = true) => {
     StatusBar.popStackEntry(stackPropsRef.current)
-    setPhotoList([])
     setVisible(false)
+    if (clear) {
+      setPhotoList([])
+    }
   }
 
   useEffect(() => {
@@ -101,8 +88,8 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
   }, [])
 
   return (
-    <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.page} onClosed={onClosed}>
-      <Header title={title} onClose={handleClose} onSubmit={handleSubmit} />
+    <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.page} onClosed={() => onClosed(photoList)}>
+      <Header title={title} onClose={handleClose} onSubmit={handleConfirm} />
 
       <StateContext.Provider value={{ state, setState }}>
         {state === 'photograph' ? (
