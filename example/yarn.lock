@@ -947,13 +947,12 @@
     "@babel/runtime" "*"
     lodash "*"
 
-"@fruits-chain/react-native-upload@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-2.0.2.tgz#0750edb14d129ccb83b26cc68a74e5f2a4fa8b27"
-  integrity sha512-9XsH4rtNIIdDfbmqpfzCHfFuZUfI5+sFouy3IVOIugprE4EJIS39l/ywzYOsWkgo5YiD1/n8SdoVh9UPiegHEQ==
+"@fruits-chain/react-native-upload@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-2.1.1.tgz#d503c47a48eb383eb0944697838d517c3afa2979"
+  integrity sha512-jK74Dx3LsdlYCyBNaQfYsp0bfWDdL6UpaMqB6qge244B8+z7PE2ENFncspFACcz2wjAYdUyy9jeBWrQynMCKbw==
   dependencies:
     "@fruits-chain/utils" "^1.0.1"
-    "@gorhom/portal" "^1.0.14"
     lodash "^4.17.21"
     react-native-image-zoom-viewer "^3.0.1"
     react-native-url-polyfill "^1.3.0"
@@ -977,13 +976,6 @@
   integrity sha512-OZyVrHiNOQzA2HukrYTu1aj46r1q0Wrn89ehHGEDp72CN5t8N9UTZYQj9b6bFgYDVofBO2js40C1LGiWJhk5EA==
   dependencies:
     decimal.js-light "^2.5.1"
-
-"@gorhom/portal@^1.0.14":
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/@gorhom/portal/-/portal-1.0.14.tgz#1953edb76aaba80fb24021dc774550194a18e111"
-  integrity sha512-MXyL4xvCjmgaORr/rtryDNFy3kU4qUbKlwtQqqsygd0xX3mhKjOLn6mQK8wfu0RkoE0pBE0nAasRoHua+/QZ7A==
-  dependencies:
-    nanoid "^3.3.1"
 
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
@@ -5477,11 +5469,6 @@ ms@2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
-
-nanoid@^3.3.1:
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
-  integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
 
 nanomatch@^1.2.9:
   version "1.2.13"
