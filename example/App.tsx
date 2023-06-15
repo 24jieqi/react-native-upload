@@ -13,16 +13,22 @@ import Upload, {
   formatUploadList,
   UploadActionParams,
   UploadItem,
+  clearCache,
+  cacheDirStat,
+  CacheDirStat,
 } from '@fruits-chain/react-native-upload';
 import {
+  Button,
   Card,
+  Description,
   Form,
   NoticeBar,
   Provider,
   Space,
+  Toast,
 } from '@fruits-chain/react-native-xiaoshu';
 import axios from 'axios';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StatusBar, Text} from 'react-native';
 import PdfViewer from './src/components/pdf-viewer';
 
@@ -31,7 +37,7 @@ export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
   data.append('file', file);
   return axios
     .request({
-      url: 'http://192.168.10.233:3004/_files/upload', // 替换成你的上传地址
+      url: 'http://192.168.10.85:4000/_upload', // 替换成你的上传地址
       timeout: 0,
       data,
       method: 'post',
@@ -46,12 +52,42 @@ export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
 
 const MainComponent = () => {
   const [files, setFiles] = useState<UploadItem[]>([]);
+  const [stat, setStat] = useState<CacheDirStat>();
+  const [loading, setLoading] = useState(false);
   function handleUpdateFile(_files: UploadItem[]) {
     if (_files && _files.length) {
       _files[0].deletable = false;
     }
     setFiles(_files);
   }
+  const handlePress = async () => {
+    const result = await clearCache();
+    switch (result.status) {
+      case 'done':
+        Toast.success(
+          `成功清除${result.fileCount}个文件，大小${result.fileSize}B`,
+        );
+        break;
+      case 'undo':
+        Toast(`你无需清除缓存，原因：${result.message}`);
+        break;
+      case 'error':
+        Toast.fail(`清除缓存失败，原因：${result.message}`);
+        break;
+      default:
+        break;
+    }
+  };
+  useEffect(() => {
+    setLoading(true);
+    cacheDirStat()
+      .then(info => {
+        setStat(info);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
   return (
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
       <StatusBar barStyle="dark-content" />
@@ -177,6 +213,19 @@ const MainComponent = () => {
                   },
                 ]}
               />
+            </Card>
+            <Card title="缓存与清除缓存">
+              <Space>
+                <Description.Group>
+                  <Description label="文件数">{stat?.fileCount}个</Description>
+                  <Description label="缓存大小">
+                    约{Math.round((stat?.size || 0) / (1024 * 1024))}MB
+                  </Description>
+                </Description.Group>
+                <Button type="primary" onPress={handlePress} loading={loading}>
+                  清除缓存
+                </Button>
+              </Space>
             </Card>
           </Space>
         </Form>

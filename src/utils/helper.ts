@@ -4,6 +4,7 @@ import * as RNFS from 'react-native-fs'
 import { Image, Video } from 'react-native-compressor'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { IUploadTempSource } from '../interface'
+import { isDef } from '@fruits-chain/utils'
 
 // path 是指 / 开头的文件路径
 // uri 是指 file:// 开头的文件路径
@@ -12,11 +13,24 @@ const { fs } = ReactNativeBlobUtil
 
 export const isImage = (t: string) => /image/.test(t)
 
-export const buildCachePath = (filename: string) => `${fs.dirs.CacheDir}/${filename}`
+let cacheDirExist: boolean
 
-const getFileExtension = (filename: string) => {
-  // eslint-disable-next-line no-bitwise
-  return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2)
+/**
+ * 文件上传的压缩文件缓存目录
+ */
+export const UPLOAD_CACHE_DIR = `${fs.dirs.CacheDir}/upload`
+
+export const buildCachePath = async (filename: string) => {
+  const path = `${UPLOAD_CACHE_DIR}/${filename}`
+  // 初始化检查一次
+  if (!isDef(cacheDirExist)) {
+    cacheDirExist = await fs.exists(UPLOAD_CACHE_DIR)
+  }
+  if (!cacheDirExist) {
+    await fs.mkdir(UPLOAD_CACHE_DIR)
+    cacheDirExist = true
+  }
+  return path
 }
 
 export const buildUri = (p: string) => (/^file:\/\//.test(p) ? p : `file://${p}`)
@@ -30,39 +44,14 @@ const getMiniFilename = (filename: string) => {
   return newUrl
 }
 
-export const copyFile = async (filePath: string) => {
-  const _path = normalizePath(filePath)
-  const fileHash = await RNFS.hash(_path, 'sha256')
-  const extension = getFileExtension(filePath)
-  const toFilePath = buildCachePath([fileHash, extension].join('.'))
-  const toFileUri = buildUri(toFilePath)
-
-  const hasCopyFile = await fs.exists(toFilePath)
-  if (hasCopyFile) {
-    return toFileUri
-  }
-
-  console.log('filePath => ', filePath)
-  console.log('toFileUri => ', toFileUri)
-
-  const v1 = await fs.exists(filePath)
-  console.log('v1  => ', v1)
-  const v2 = await fs.exists(toFileUri)
-  console.log('v2  => ', v2)
-
-  const copied = await fs.cp(filePath, toFileUri)
-  if (!copied) {
-    throw '复制失败'
-  }
-
-  if (__DEV__) {
-    console.log('完成 cp')
-  }
-
-  return toFileUri
-}
-
-const compressorAction = async (filePath: string, removeOriginal: boolean, compressorFile: () => Promise<string>) => {
+/**
+ * 文件压缩
+ * @param filePath 原始文件路径
+ * @param clear 压缩完成后是否删除缓存
+ * @param compressorFile 特定类型文件压缩动作
+ * @returns
+ */
+const compressorAction = async (filePath: string, clear: boolean, compressorFile: () => Promise<string>) => {
   const _path = normalizePath(filePath)
   const hasFile = await fs.exists(_path)
 
@@ -72,7 +61,7 @@ const compressorAction = async (filePath: string, removeOriginal: boolean, compr
 
   const originalInfo = await fs.stat(_path)
   const miniFilename = getMiniFilename(originalInfo.filename)
-  const miniFilePath = buildCachePath(miniFilename)
+  const miniFilePath = await buildCachePath(miniFilename)
   const miniFileUri = buildUri(miniFilePath)
   // 是否已经压缩了
   const hasMiniFile = await fs.exists(miniFilePath)
@@ -102,23 +91,23 @@ const compressorAction = async (filePath: string, removeOriginal: boolean, compr
     `)
   }
 
-  if (removeOriginal) {
+  if (clear) {
     fs.unlink(_path)
   }
 
   return miniFileUri
 }
 
-export const compressorImage = async (filePath: string, removeOriginal: boolean) => {
-  return compressorAction(filePath, removeOriginal, () =>
+export const compressorImage = async (filePath: string, clear: boolean) => {
+  return compressorAction(filePath, clear, () =>
     Image.compress(filePath, {
       compressionMethod: 'auto',
     }),
   )
 }
 
-export const compressorVideo = (filePath: string, removeOriginal: boolean) => {
-  return compressorAction(filePath, removeOriginal, () =>
+export const compressorVideo = (filePath: string, clear: boolean) => {
+  return compressorAction(filePath, clear, () =>
     Video.compress(filePath, {
       compressionMethod: 'auto',
     }),
@@ -132,7 +121,7 @@ export const compressorVideo = (filePath: string, removeOriginal: boolean) => {
  */
 export const getResolvedPath = async ({ uri, name, type }: DocumentPickerResponse): Promise<IUploadTempSource> => {
   const base64 = await fs.readFile(uri, 'base64')
-  const path = `${fs.dirs.CacheDir}/${name}`
+  const path = await buildCachePath(name)
   await fs.writeFile(path, base64, 'base64')
   return { uri: `file://${path}`, name, type }
 }
@@ -146,9 +135,9 @@ export const getResolvedPath = async ({ uri, name, type }: DocumentPickerRespons
 export async function compress(uri: string, type: string) {
   try {
     if (type.includes('video')) {
-      return await compressorVideo(uri, false)
+      return await compressorVideo(uri, true)
     } else {
-      return await compressorImage(uri, false)
+      return await compressorImage(uri, true)
     }
   } catch (error) {}
 }

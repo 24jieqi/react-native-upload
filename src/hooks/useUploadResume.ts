@@ -67,7 +67,7 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
       return file
     }
     // 需要断点续传
-    file.sliceUri = buildUri(buildCachePath(`_${file.name}`))
+    file.sliceUri = buildUri(await buildCachePath(`_${file.offset}_${file.name}`))
     file.status = 'loading'
     await fs.slice(file.uri, file.sliceUri, file.offset, file.size)
     return file

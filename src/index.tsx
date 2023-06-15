@@ -7,6 +7,8 @@ import useUploadTypeSelect from './hooks/useUploadTypeSelect'
 import { formatUploadList } from './utils'
 import openPictureVisionPicker from './components/take-picture/open'
 import { ImageInfo } from './components/take-picture/interface'
+import { UPLOAD_CACHE_DIR } from './utils/helper'
+import { clearCache, cacheDirStat, CacheDirStat } from './utils/caches'
 
 export interface ISource extends UploadItem {}
 interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
@@ -23,7 +25,7 @@ Upload.Preview = UploadPreview
 Upload.Wrapper = UploadWrapper
 Upload.displayName = 'Upload'
 
-export type { UploadItem, FileVO, UploadActionParams, UploadAction, IUploadTempSource, ImageInfo }
-export { formatUploadList, openPictureVisionPicker }
+export type { UploadItem, FileVO, UploadActionParams, UploadAction, IUploadTempSource, ImageInfo, CacheDirStat }
+export { formatUploadList, openPictureVisionPicker, UPLOAD_CACHE_DIR, clearCache, cacheDirStat }
 
 export default Upload
