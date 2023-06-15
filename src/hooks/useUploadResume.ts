@@ -72,7 +72,7 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
     await fs.slice(file.uri, file.sliceUri, file.offset, file.size)
     return file
   }
-  async function uploadFile(file: UploadItem) {
+  async function uploadFile(file: UploadItem, backUpload: boolean) {
     if (file.status && file.status === 'done') {
       return file
     }
@@ -89,6 +89,7 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
     if (placeholderIcon) {
       file.filepath = placeholderIcon
     }
+    if (backUpload) return file
     try {
       const res = await uploadAction({
         data,
