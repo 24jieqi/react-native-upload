@@ -128,9 +128,9 @@ export interface UploadProps {
    */
   watermark?: WatermarkText | GetWatermarkMethod
   /**
-   * 是否支持后台上传    
-   * true 支持, 选择文件或者点击重传后不会触发上传API，具体的上传调度逻辑由外部自行实现    
-   * false 不支持    
+   * 是否支持后台上传
+   * true 支持, 选择文件或者点击重传后不会触发上传API，具体的上传调度逻辑由外部自行实现
+   * false 不支持
    */
   backUpload?: boolean
 }
@@ -164,7 +164,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     customPreview,
     title,
     watermark = () => Promise.resolve([]),
-    backUpload,
+    backUpload = false,
   },
   ref,
 ) => {

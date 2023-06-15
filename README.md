@@ -85,7 +85,7 @@ const UploadPage: React.FC = () => {
 
 > 注意：正常运行前需要使用各自的上传接口
 
-## API
+### API
 
 > `？`表示可选参数
 
@@ -112,6 +112,7 @@ const UploadPage: React.FC = () => {
 | cropPickerMediaType? | `CropMediaType`                                                | pickerType 为 cropPicker 的 mediaType                                        | `any`                          | 2.0.2 |     |
 | title                | string                                                         | 用于 pickerType 为 `visionCamera`时 UI 的标题                                | -                              | 2.0.0 |     |
 | watermark?           | `WatermarkText\|GetWatermarkMethod`                            | 配置图片水印                                                                 | -                              | 2.1.0 |
+| backUpload?          | boolean                                                        | 是否启用后台上传（启用后不会执行文件上传动作）                               | false                          | 2.2.0 |
 
 ```ts
 interface UploadItem {
@@ -168,3 +169,18 @@ interface FileVO {
   filename?: string
 }
 ```
+
+### 缓存
+
+> 此上传组件在文件压缩/断点续传等阶段会产生大量的缓存文件，并且默认不会清除，在`2.2.0`版本，提供了两个 API 来快速感知上传缓存和清除缓存，你也可以通过`UPLOAD_CACHE_DIR`获取缓存目录从而更灵活的实现清除缓存的功能
+
+#### `function cacheDirStat(): Promise<CacheDirStat>`
+
+> 获取文件上传缓存文件夹的统计信息
+
+#### `function clearCache(): Promise<ClearCacheResult>`
+
+> 清除上传文件夹缓存
+> ⚠️ 清除缓存后，再次上传同一文件的处理效率将会下降
+
+具体使用方式见[example](./example)
