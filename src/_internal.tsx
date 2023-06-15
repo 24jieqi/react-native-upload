@@ -127,6 +127,12 @@ export interface UploadProps {
    * 照片水印
    */
   watermark?: WatermarkText | GetWatermarkMethod
+  /**
+   * 是否支持后台上传    
+   * true 支持, 选择文件或者点击重传后不会触发上传API，具体的上传调度逻辑由外部自行实现    
+   * false 不支持    
+   */
+  backUpload?: boolean
 }
 
 let toastKey: ToastMethods
@@ -158,6 +164,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     customPreview,
     title,
     watermark = () => Promise.resolve([]),
+    backUpload,
   },
   ref,
 ) => {
@@ -228,11 +235,13 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         toastKey?.close?.()
       }, 0)
       valueCopy.current = [...value, ...filesResumed]
-      setValueIfNeeded(valueCopy.current)
-      exec(onChange, cloneDeep(valueCopy.current))
+      if (!backUpload) {
+        setValueIfNeeded(valueCopy.current)
+        exec(onChange, cloneDeep(valueCopy.current))
+      }
       const filesToUpload = valueCopy.current.filter((f) => f.status === 'loading')
       for (const file of filesToUpload) {
-        const uploadRes = await uploadFile(file)
+        const uploadRes = await uploadFile(file, backUpload)
         if (uploadRes.status === 'error') {
           exec(onUploadError, '文件上传失败')
         }
@@ -240,6 +249,12 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         if (~idx) {
           valueCopy.current[idx] = uploadRes
         }
+        if (!backUpload) {
+          setValueIfNeeded(valueCopy.current)
+          exec(onChange, cloneDeep(valueCopy.current))
+        }
+      }
+      if (backUpload) {
         setValueIfNeeded(valueCopy.current)
         exec(onChange, cloneDeep(valueCopy.current))
       }
@@ -290,12 +305,18 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
       type: valueCopy.current[currIndex].type,
     })
     valueCopy.current[currIndex] = res
-    setValueIfNeeded(valueCopy.current)
-    exec(onChange, cloneDeep(valueCopy.current))
+    if (!backUpload) {
+      setValueIfNeeded(valueCopy.current)
+      exec(onChange, cloneDeep(valueCopy.current))
+    }
     if (res.status === 'done') {
+      if (backUpload) {
+        setValueIfNeeded(valueCopy.current)
+        exec(onChange, cloneDeep(valueCopy.current))
+      }
       return
     }
-    const uploadRes = await uploadFile(res)
+    const uploadRes = await uploadFile(res, backUpload)
     if (uploadRes.status === 'error') {
       exec(onUploadError, '文件上传失败')
     }
