@@ -60,8 +60,15 @@ const MainComponent = () => {
     }
     setFiles(_files);
   }
+  function getCacheStat() {
+    cacheDirStat().then(info => {
+      setStat(info);
+    });
+  }
   const handlePress = async () => {
+    setLoading(true);
     const result = await clearCache();
+    setLoading(false);
     switch (result.status) {
       case 'done':
         Toast.success(
@@ -77,16 +84,10 @@ const MainComponent = () => {
       default:
         break;
     }
+    getCacheStat();
   };
   useEffect(() => {
-    setLoading(true);
-    cacheDirStat()
-      .then(info => {
-        setStat(info);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    getCacheStat();
   }, []);
   return (
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
