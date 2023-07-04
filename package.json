@@ -1,6 +1,6 @@
 {
   "name": "@fruits-chain/react-native-upload",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "A React-Native UI Component to upload image/video and preview",
   "main": "dist/index.js",
   "scripts": {
