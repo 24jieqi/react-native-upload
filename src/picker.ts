@@ -39,8 +39,8 @@ export async function openCropPicker(_options: BasicUploadOptions) {
     mediaType: _options.cropMediaType,
     cropperChooseText: '确认',
     cropperCancelText: '取消',
-    // tips: 降低在iOS上的质量 以避免选择大图片报错
-    compressImageQuality: isAndroid ? 1 : 0.6,
+    // tips: 降低选取文件质量，以免在大文件报错
+    compressImageQuality: isAndroid ? 0.6 : 0.8,
   }
   const filelist: ImageOrVideo | ImageOrVideo[] = await openPicker(options)
   let files = options.multiple ? [...(filelist as unknown as ImageOrVideo[])] : [filelist as ImageOrVideo]
