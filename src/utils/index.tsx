@@ -44,7 +44,7 @@ export function exec(func: ((...param: any) => any) | undefined, ...params: any[
  */
 export function getDocumentPlaceholderIconByMimeType(type: string) {
   const mimeTypeIconMap = {
-    'video/mp4': require('../images/audio.png'),
+    'video/mp4': require('../images/video.png'),
     'application/pdf': require('../images/pdf.png'),
     'application/zip': require('../images/zip.png'),
     'text/csv': require('../images/csv.png'),
@@ -54,7 +54,7 @@ export function getDocumentPlaceholderIconByMimeType(type: string) {
     'application/vnd.openxmlformats-officedocument.presentationml.presentation': require('../images/pptx.png'),
     'application/vnd.ms-excel': require('../images/xls.png'),
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': require('../images/xlsx.png'),
-    '.mp4': require('../images/audio.png'),
+    '.mp4': require('../images/video.png'),
     '.pdf': require('../images/pdf.png'),
     '.zip': require('../images/zip.png'),
     '.csv': require('../images/csv.png'),
