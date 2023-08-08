@@ -11,7 +11,7 @@ import React, {
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import { cloneDeep } from 'lodash'
-import { exec, GetWatermarkMethod, WatermarkText } from './utils'
+import { exec, WatermarkOperations } from './utils'
 import { CropMediaType, FileVO, IUploadTempSource, PickerType, UploadItem } from './interface'
 import useUploadResume from './hooks/useUploadResume'
 import { ISource } from '.'
@@ -124,9 +124,9 @@ export interface UploadProps {
    */
   title?: string
   /**
-   * 照片水印
+   * 照片水印（支持文本和图片 支持异步获取）
    */
-  watermark?: WatermarkText | GetWatermarkMethod
+  watermark?: WatermarkOperations
   /**
    * 是否支持后台上传
    * true 支持, 选择文件或者点击重传后不会触发上传API，具体的上传调度逻辑由外部自行实现
@@ -163,7 +163,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     count,
     customPreview,
     title,
-    watermark = () => Promise.resolve([]),
+    watermark = [],
     backUpload = false,
   },
   ref,

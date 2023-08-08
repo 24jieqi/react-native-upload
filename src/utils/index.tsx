@@ -2,7 +2,7 @@ import { Image } from 'react-native'
 import { ImageOrVideo } from 'react-native-image-crop-picker'
 import { FileVO, IUploadTempSource, UploadItem } from '../interface'
 import { compress } from './helper'
-import { ImageSource, TextOptions } from 'react-native-photo-manipulator'
+import { ImageSource, PhotoBatchOperations, Point, TextOptions } from 'react-native-photo-manipulator'
 import RNPhotoManipulator from 'react-native-photo-manipulator'
 import { ceilWith, div, isFunction, isType, mul, plus } from '@fruits-chain/utils'
 import { buildUri } from './helper'
@@ -144,9 +144,22 @@ interface ImageSize {
   height: number
 }
 
-export type WatermarkText = string[] | TextOptions[]
+type WatermarkText = string | TextOptions
 
-export type GetWatermarkMethod = (size?: ImageSize) => Promise<WatermarkText>
+type GetWatermarkMethod = (size?: ImageSize) => Promise<WatermarkText>
+
+interface Overlay {
+  overlay: ImageSource
+  position: Point
+}
+
+type GetOverlayMethod = (size?: ImageSize) => Promise<Overlay>
+
+export type WatermarkOperations = Array<WatermarkText | GetWatermarkMethod | Overlay | GetOverlayMethod>
+
+type WatermarkRawOperations = Array<WatermarkText | Overlay>
+
+const isStr = isType('String')
 
 /**
  * 添加图片水印
@@ -154,31 +167,44 @@ export type GetWatermarkMethod = (size?: ImageSize) => Promise<WatermarkText>
  * @param watermark
  * @returns
  */
-export async function printWatermark(
-  image: ImageSource,
-  watermark?: WatermarkText | GetWatermarkMethod,
-  size?: ImageSize,
-) {
+export async function printWatermark(image: ImageSource, watermark: WatermarkOperations = [], size?: ImageSize) {
   const adjustTextSize = size?.height ? ceilWith(size.height * 0.05) : 30
-  let rawTexts: WatermarkText
-  if (isFunction(watermark)) {
-    rawTexts = await (watermark as GetWatermarkMethod)(size)
-  } else {
-    rawTexts = (watermark || []) as WatermarkText
-  }
-  const texts = rawTexts.map((item, index) => {
-    if (isType('String')(item)) {
-      return {
-        position: {
-          x: div(adjustTextSize, 2),
-          y: plus(div(adjustTextSize, 2), mul(adjustTextSize, index)),
-        },
-        textSize: adjustTextSize,
-        color: '#FFFFFF',
-        text: item,
-      } as TextOptions
+  const rawOperations: WatermarkRawOperations = []
+  for (const item of watermark) {
+    if (isFunction(item)) {
+      rawOperations.push(await item(size))
+    } else {
+      rawOperations.push(item)
     }
-    return item as TextOptions
+  }
+  let rawTextIndex = 0
+  const operations: PhotoBatchOperations[] = rawOperations.map((item) => {
+    // 图片类型的水印
+    if ((item as Overlay).overlay) {
+      return {
+        operation: 'overlay',
+        ...(item as Overlay),
+      }
+    }
+    // 纯文本类型的水印，记录信息
+    if (isStr(item)) {
+      return {
+        operation: 'text',
+        options: {
+          position: {
+            x: div(adjustTextSize, 2),
+            y: plus(div(adjustTextSize, 2), mul(adjustTextSize, rawTextIndex++)),
+          },
+          textSize: adjustTextSize,
+          color: '#FFFFFF',
+          text: item,
+        } as TextOptions,
+      }
+    }
+    return {
+      operation: 'text',
+      options: item as TextOptions,
+    }
   })
-  return await RNPhotoManipulator.printText(buildUri(image as string), texts)
+  return await RNPhotoManipulator.batch(buildUri(image as string), operations, null)
 }
