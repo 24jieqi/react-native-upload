@@ -8,7 +8,7 @@ import CameraCom from './components/camera'
 import Header from './components/header'
 import PhotoView from './components/photo-view'
 import type { ImageInfo } from './interface'
-import { GetWatermarkMethod, WatermarkText } from '../../utils'
+import { WatermarkOperations } from '../../utils'
 import { StateContext, StateType } from './context/state-context'
 
 export interface TakePictureViewProps {
@@ -32,7 +32,7 @@ export interface TakePictureViewProps {
   /**
    * 图片水印相关配置
    */
-  watermark?: WatermarkText | GetWatermarkMethod
+  watermark?: WatermarkOperations
 }
 
 const TakePictureView: React.FC<TakePictureViewProps> = ({ title, maxCount, existCount, onClosed, watermark }) => {

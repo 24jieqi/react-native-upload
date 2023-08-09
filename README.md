@@ -8,6 +8,7 @@
 - 支持多图片&视频预览以及自定义文件类型预览
 - 可自定义上传后的显示 UI
 - 内置一套相机拍摄 UI（欢迎使用）
+- 图片水印，支持文本和图片 overlay 的形式
 
 ## 安装
 
@@ -111,8 +112,8 @@ const UploadPage: React.FC = () => {
 | pickerType?          | `PickerType or PickerType[]`                                   | 指定选择器类型                                                               | ['cropPicker', 'visionCamera'] | 2.0.0 |     |
 | cropPickerMediaType? | `CropMediaType`                                                | pickerType 为 cropPicker 的 mediaType                                        | `any`                          | 2.0.2 |     |
 | title                | string                                                         | 用于 pickerType 为 `visionCamera`时 UI 的标题                                | -                              | 2.0.0 |     |
-| watermark?           | `WatermarkText\|GetWatermarkMethod`                            | 配置图片水印                                                                 | -                              | 2.1.0 |
-| backUpload?          | boolean                                                        | 是否启用后台上传（启用后不会执行文件上传动作）                               | false                          | 2.2.0 |
+| watermark?           | `WatermarkOperations`                                          | 配置图片水印，`2.3.0`支持图片作为水印                                        | -                              | 2.1.0 |     |
+| backUpload?          | boolean                                                        | 是否启用后台上传（启用后不会执行文件上传动作）                               | false                          | 2.2.0 |     |
 
 ```ts
 interface UploadItem {
@@ -172,7 +173,7 @@ interface FileVO {
 
 ### 缓存
 
-> 此上传组件在文件压缩/断点续传等阶段会产生大量的缓存文件，并且默认不会清除，在`2.2.0`版本，提供了两个 API 来快速感知上传缓存和清除缓存，你也可以通过`UPLOAD_CACHE_DIR`获取缓存目录从而更灵活的实现清除缓存的功能
+> 此上传组件在文件压缩/断点续传等阶段会产生大量的缓存文件，并且默认不会清除，在 `2.2.0`版本，提供了两个 API 来快速感知上传缓存和清除缓存，你也可以通过 `UPLOAD_CACHE_DIR`获取缓存目录从而更灵活的实现清除缓存的功能
 
 #### `function cacheDirStat(): Promise<CacheDirStat>`
 

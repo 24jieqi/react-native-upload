@@ -5,7 +5,7 @@ import type { ViewProps } from 'react-native'
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Reanimated, { useAnimatedStyle, withSpring, useSharedValue } from 'react-native-reanimated'
 import type { Camera, PhotoFile, TakePhotoOptions, TakeSnapshotOptions } from 'react-native-vision-camera'
-import { GetWatermarkMethod, WatermarkText, printWatermark } from '../../../../utils'
+import { WatermarkOperations, printWatermark } from '../../../../utils'
 
 /**
  * 拍照按钮，动态变化小尺寸
@@ -41,7 +41,7 @@ interface Props extends ViewProps {
   /**
    * 图片水印相关配置
    */
-  watermark?: WatermarkText | GetWatermarkMethod
+  watermark?: WatermarkOperations
 }
 
 const _CaptureButton: React.FC<Props> = ({

@@ -206,5 +206,10 @@ export async function printWatermark(image: ImageSource, watermark: WatermarkOpe
       options: item as TextOptions,
     }
   })
-  return await RNPhotoManipulator.batch(buildUri(image as string), operations, null)
+  return await RNPhotoManipulator.batch(buildUri(image as string), operations, {
+    x: 0,
+    y: 0,
+    width: size.width,
+    height: size.height,
+  })
 }

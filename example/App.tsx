@@ -29,15 +29,17 @@ import {
 } from '@fruits-chain/react-native-xiaoshu';
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, ScrollView, StatusBar, Text} from 'react-native';
+import {Image, SafeAreaView, ScrollView, StatusBar, Text} from 'react-native';
 import PdfViewer from './src/components/pdf-viewer';
+
+import logo from './src/images/logo.jpg';
 
 export function uploadImage({file}: UploadActionParams): Promise<FileVO> {
   const data = new FormData();
   data.append('file', file);
   return axios
     .request({
-      url: 'http://192.168.10.85:4000/_upload', // 替换成你的上传地址
+      url: 'http://192.168.10.84:4000/_upload', // 替换成你的上传地址
       timeout: 0,
       data,
       method: 'post',
@@ -128,6 +130,16 @@ const MainComponent = () => {
                     '中铁峰汇国际B座24楼洪九果品',
                     '精度：东经117度',
                     '纬度：北纬89度',
+                    size => {
+                      const cover = Image.resolveAssetSource(logo);
+                      return Promise.resolve({
+                        overlay: logo,
+                        position: {
+                          x: size ? size.width - cover.width - 24 : 24,
+                          y: 24,
+                        },
+                      });
+                    },
                   ]}
                 />
               </Form.Item>

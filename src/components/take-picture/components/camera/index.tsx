@@ -18,7 +18,7 @@ import type { ImageInfo } from '../../interface'
 
 import CaptureButton from './capture-button'
 import PhotoConfirm from './photo-confirm'
-import { GetWatermarkMethod, WatermarkText } from '../../../../utils'
+import { WatermarkOperations } from '../../../../utils'
 import TabBar from '../tab-bar'
 
 const SCALE_FULL_ZOOM = 3
@@ -37,7 +37,7 @@ interface CameraComProps {
   /**
    * 图片水印相关配置
    */
-  watermark?: WatermarkText | GetWatermarkMethod
+  watermark?: WatermarkOperations
 }
 
 const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, existCount, watermark }) => {
