@@ -4,7 +4,7 @@ import { FileVO, IUploadTempSource, UploadItem } from '../interface'
 import { compress } from './helper'
 import { ImageSource, PhotoBatchOperations, Point, TextOptions } from 'react-native-photo-manipulator'
 import RNPhotoManipulator from 'react-native-photo-manipulator'
-import { ceilWith, div, isFunction, isType, mul, plus } from '@fruits-chain/utils'
+import { ceilWith, div, isArray, isFunction, isType, mul, plus } from '@fruits-chain/utils'
 import { buildUri } from './helper'
 
 export function getThumbnailImageUrl(url: string = '', width = 80, height = 80) {
@@ -146,20 +146,24 @@ interface ImageSize {
 
 type WatermarkText = string | TextOptions
 
-type GetWatermarkMethod = (size?: ImageSize) => Promise<WatermarkText>
+type GetWatermarkMethod = (size?: ImageSize) => Promise<Array<WatermarkText> | WatermarkText>
 
 interface Overlay {
   overlay: ImageSource
   position: Point
 }
 
-type GetOverlayMethod = (size?: ImageSize) => Promise<Overlay>
+type GetOverlayMethod = (size?: ImageSize) => Promise<Array<Overlay> | Overlay>
 
 export type WatermarkOperations = Array<WatermarkText | GetWatermarkMethod | Overlay | GetOverlayMethod>
 
 type WatermarkRawOperations = Array<WatermarkText | Overlay>
 
 const isStr = isType('String')
+
+function makeItemAsArray(item: any) {
+  return isArray(item) ? item : [item]
+}
 
 /**
  * 添加图片水印
@@ -172,7 +176,7 @@ export async function printWatermark(image: ImageSource, watermark: WatermarkOpe
   const rawOperations: WatermarkRawOperations = []
   for (const item of watermark) {
     if (isFunction(item)) {
-      rawOperations.push(await item(size))
+      rawOperations.push(...makeItemAsArray(await item(size)))
     } else {
       rawOperations.push(item)
     }
