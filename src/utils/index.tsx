@@ -161,7 +161,7 @@ type WatermarkRawOperations = Array<WatermarkText | Overlay>
 
 const isStr = isType('String')
 
-function makeItemAsArray(item: any) {
+function makeItemAsArray(item: any): any[] {
   return isArray(item) ? item : [item]
 }
 
