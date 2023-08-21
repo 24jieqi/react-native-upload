@@ -172,7 +172,9 @@ function makeItemAsArray(item: any): any[] {
  * @returns
  */
 export async function printWatermark(image: ImageSource, watermark: WatermarkOperations = [], size?: ImageSize) {
-  const adjustTextSize = size?.height ? ceilWith(size.height * 0.05) : 30
+  const heightSize = size?.height ? ceilWith(size.height * 0.1) : 30 // 10行
+  const widthSize = size?.width ? ceilWith(size.width * 0.025) : 30 // 每行40个字（等宽字体）
+  const adjustTextSize = Math.min(heightSize, widthSize) // 取最小值
   const rawOperations: WatermarkRawOperations = []
   for (const item of watermark) {
     if (isFunction(item)) {
