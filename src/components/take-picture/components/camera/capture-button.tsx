@@ -1,11 +1,13 @@
 import { Dialog, Toast } from '@fruits-chain/react-native-xiaoshu'
 import type { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ViewProps } from 'react-native'
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Reanimated, { useAnimatedStyle, withSpring, useSharedValue } from 'react-native-reanimated'
 import type { Camera, PhotoFile, TakePhotoOptions, TakeSnapshotOptions } from 'react-native-vision-camera'
-import { WatermarkOperations, printWatermark } from '../../../../utils'
+import { printWatermark } from '../../../../utils'
+import { StateContext } from '../../context/state-context'
+import { isFunction } from '@fruits-chain/utils'
 
 /**
  * 拍照按钮，动态变化小尺寸
@@ -37,11 +39,6 @@ interface Props extends ViewProps {
 
   // 外部已存在照片数量
   existCount: number
-
-  /**
-   * 图片水印相关配置
-   */
-  watermark?: WatermarkOperations
 }
 
 const _CaptureButton: React.FC<Props> = ({
@@ -53,7 +50,6 @@ const _CaptureButton: React.FC<Props> = ({
   count,
   maxCount,
   existCount,
-  watermark,
   ...props
 }): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -67,7 +63,7 @@ const _CaptureButton: React.FC<Props> = ({
     [flash],
   )
   const isPressingButton = useSharedValue(false)
-
+  const { watermark, shouldPrintWatermark } = useContext(StateContext)
   const takePhoto = useCallback(async () => {
     try {
       toastKey = Toast.loading({
@@ -83,8 +79,13 @@ const _CaptureButton: React.FC<Props> = ({
       } else {
         photo = await camera.current.takeSnapshot(takePhotoOptions)
       }
-      // 在此加上水印
-      photo.path = await printWatermark(photo.path, watermark, { width: photo.width, height: photo.height })
+      const shouldPrint = isFunction(shouldPrintWatermark)
+        ? shouldPrintWatermark(photo, 'visionCamera')
+        : shouldPrintWatermark
+      if (shouldPrint && watermark.length > 0) {
+        // 在此加上水印
+        photo.path = await printWatermark(photo.path, watermark, { width: photo.width, height: photo.height })
+      }
       onMediaCaptured(photo)
     } catch (e) {
       setTimeout(() => {

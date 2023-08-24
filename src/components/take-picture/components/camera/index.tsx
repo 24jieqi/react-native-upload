@@ -18,7 +18,6 @@ import type { ImageInfo } from '../../interface'
 
 import CaptureButton from './capture-button'
 import PhotoConfirm from './photo-confirm'
-import { WatermarkOperations } from '../../../../utils'
 import TabBar from '../tab-bar'
 
 const SCALE_FULL_ZOOM = 3
@@ -34,13 +33,9 @@ interface CameraComProps {
   maxCount: number
   existCount?: number
   onPhotoSubmit: (img: ImageInfo) => void
-  /**
-   * 图片水印相关配置
-   */
-  watermark?: WatermarkOperations
 }
 
-const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, existCount, watermark }) => {
+const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, existCount }) => {
   const [visible, setVisible] = useState<boolean>(false)
   const [currentPhoto, setCurrentPhoto] = useState<ImageInfo>()
 
@@ -192,7 +187,6 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
               count={count}
               maxCount={maxCount}
               existCount={existCount}
-              watermark={watermark}
             />
           </View>
         </>

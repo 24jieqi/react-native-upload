@@ -6,6 +6,7 @@ import { Platform } from 'react-native'
 import { getResolvedPath } from './utils/helper'
 import openPictureVisionPicker from './components/take-picture/open'
 import { compressImageOrVideo, isImage, printWatermark } from './utils'
+import { isFunction } from '@fruits-chain/utils'
 
 export interface BasicUploadOptions extends Partial<Omit<UploadProps, 'pickerType'>> {
   /**
@@ -53,6 +54,13 @@ export async function openCropPicker(_options: BasicUploadOptions) {
   // 为图片添加水印
   for (const file of files) {
     if (isImage(file.mime)) {
+      const shouldPrintWatermark = _options.shouldPrintWatermark
+      const shouldPrint = isFunction(shouldPrintWatermark)
+        ? shouldPrintWatermark(file, 'cropPicker', _options.cropMediaType)
+        : shouldPrintWatermark
+      if (!shouldPrint || !_options.watermark.length) {
+        continue
+      }
       file.path = await printWatermark(file.path, _options.watermark, { width: file.width, height: file.height })
     }
   }
@@ -81,7 +89,13 @@ export async function openCropCamera(_options: BasicUploadOptions) {
     _options.onStartCompress?.()
     // 为图片添加水印
     if (isImage(file.mime)) {
-      file.path = await printWatermark(file.path, _options.watermark, { width: file.width, height: file.height })
+      const shouldPrintWatermark = _options.shouldPrintWatermark
+      const shouldPrint = isFunction(shouldPrintWatermark)
+        ? shouldPrintWatermark(file, _options.cropMediaType === 'photo' ? 'cropCameraPhoto' : 'cropCameraVideo')
+        : shouldPrintWatermark
+      if (shouldPrint && _options.watermark.length) {
+        file.path = await printWatermark(file.path, _options.watermark, { width: file.width, height: file.height })
+      }
     }
   }
   return compressImageOrVideo([file], _options.compress)
@@ -119,6 +133,7 @@ export async function openVisionCamera(options: BasicUploadOptions) {
     existCount: options.currentCount,
     title: options.title,
     watermark: options.watermark,
+    shouldPrintWatermark: options.shouldPrintWatermark,
   })
   if (images && images.length) {
     options.onStartCompress?.()

@@ -10,6 +10,7 @@ import PhotoView from './components/photo-view'
 import type { ImageInfo } from './interface'
 import { WatermarkOperations } from '../../utils'
 import { StateContext, StateType } from './context/state-context'
+import { PrintWaterMarkFn } from '../../interface'
 
 export interface TakePictureViewProps {
   /**
@@ -33,9 +34,20 @@ export interface TakePictureViewProps {
    * 图片水印相关配置
    */
   watermark?: WatermarkOperations
+  /**
+   * 是否绘制水印 默认`true`
+   */
+  shouldPrintWatermark?: boolean | PrintWaterMarkFn
 }
 
-const TakePictureView: React.FC<TakePictureViewProps> = ({ title, maxCount, existCount, onClosed, watermark }) => {
+const TakePictureView: React.FC<TakePictureViewProps> = ({
+  title,
+  maxCount,
+  existCount,
+  onClosed,
+  watermark,
+  shouldPrintWatermark,
+}) => {
   const [visible, setVisible] = useState<boolean>(false)
 
   const [photoList, setPhotoList] = useState<ImageInfo[]>([])
@@ -96,14 +108,13 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({ title, maxCount, exis
     <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.page} onClosed={() => onClosed(photoList)}>
       <Header title={title} onClose={handleClose} onSubmit={handleConfirm} />
 
-      <StateContext.Provider value={{ state, setState }}>
+      <StateContext.Provider value={{ state, setState, watermark, shouldPrintWatermark }}>
         {state === 'photograph' ? (
           <CameraCom
             onPhotoSubmit={onPhotoSubmit}
             maxCount={maxCount}
             existCount={existCount}
             count={photoList?.length}
-            watermark={watermark}
           />
         ) : (
           <PhotoView photoList={photoList} onChange={setPhotoList} />

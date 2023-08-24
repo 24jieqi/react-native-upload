@@ -12,7 +12,7 @@ import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
 import { cloneDeep } from 'lodash'
 import { exec, WatermarkOperations } from './utils'
-import { CropMediaType, FileVO, IUploadTempSource, PickerType, UploadItem } from './interface'
+import { CropMediaType, FileVO, IUploadTempSource, PickerType, PrintWaterMarkFn, UploadItem } from './interface'
 import useUploadResume from './hooks/useUploadResume'
 import { ISource } from '.'
 import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
@@ -133,6 +133,10 @@ export interface UploadProps {
    * false 不支持
    */
   backUpload?: boolean
+  /**
+   * 是否绘制水印 默认`true`
+   */
+  shouldPrintWatermark?: boolean | PrintWaterMarkFn
 }
 
 let toastKey: ToastMethods
@@ -165,6 +169,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     title,
     watermark = [],
     backUpload = false,
+    shouldPrintWatermark = true,
   },
   ref,
 ) => {
@@ -228,6 +233,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
           })
         },
         watermark,
+        shouldPrintWatermark,
       }
       const files = await action(options)
       const filesResumed = await Promise.all(files.map((item) => getFileBeforeUpload(item)))
