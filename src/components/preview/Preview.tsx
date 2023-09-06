@@ -34,6 +34,10 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
   function closeModal() {
     setVisible(false)
   }
+  function handleRequestPopupClose() {
+    closeModal()
+    return true
+  }
   const Compnent = useMemo(() => {
     if (!currentFile) {
       return
@@ -59,7 +63,12 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
     }
   }, [currentFile, customPreview])
   return (
-    <Popup.Page visible={visible} onPressOverlay={closeModal} destroyOnClosed round>
+    <Popup.Page
+      visible={visible}
+      onPressOverlay={closeModal}
+      destroyOnClosed
+      round
+      onRequestClose={handleRequestPopupClose}>
       <Popup.Header
         title={
           <Text style={styles.titleText} ellipsizeMode="middle" numberOfLines={1}>
