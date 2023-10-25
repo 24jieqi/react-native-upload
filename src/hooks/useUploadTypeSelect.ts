@@ -6,7 +6,7 @@ import { CropMediaType, PickerType } from '../interface'
 import { UploadInstance } from '../_internal'
 
 interface ExtendedAction extends Action {
-  onPress?: () => void
+  onPress?: (index?: number) => void
 }
 
 const useUploadTypeSelect = (
@@ -21,46 +21,51 @@ const useUploadTypeSelect = (
     } = {
       cropPicker: {
         name: '相册选择',
-        onPress() {
+        onPress(index?: number) {
           uploadInstance.current.open({
             pickerType: 'cropPicker',
             cropMediaType: cropPickerMediaType,
+            index,
           })
         },
       },
       documentPicker: {
         name: '文件选择',
-        onPress() {
+        onPress(index?: number) {
           uploadInstance.current.open({
             pickerType: 'documentPicker',
+            index,
           })
         },
       },
       cropCameraPhoto: {
         name: '系统相机拍摄',
-        onPress() {
+        onPress(index?: number) {
           uploadInstance.current.open({
             pickerType: 'cropCameraPhoto',
             cropMediaType: 'photo',
             multiple: false,
+            index,
           })
         },
       },
       cropCameraVideo: {
         name: '视频拍摄',
-        onPress() {
+        onPress(index?: number) {
           uploadInstance.current.open({
             pickerType: 'cropCameraVideo',
             cropMediaType: 'video',
             multiple: false,
+            index,
           })
         },
       },
       visionCamera: {
         name: '照片拍摄',
-        onPress() {
+        onPress(index?: number) {
           uploadInstance.current.open({
             pickerType: 'visionCamera',
+            index,
           })
         },
       },
@@ -75,13 +80,13 @@ const useUploadTypeSelect = (
     }
     return result
   }, [pickerType])
-  function handlePressAdd() {
+  function handlePressAdd(index?: number) {
     ActionSheet({
       cancelText: '取消',
       actions,
     })
       .then(({ item }: { item: ExtendedAction }) => {
-        item.onPress?.()
+        item.onPress?.(index)
       })
       .catch(() => {})
   }

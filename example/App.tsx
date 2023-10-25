@@ -91,6 +91,18 @@ const MainComponent = () => {
   useEffect(() => {
     getCacheStat();
   }, []);
+  function handleBeforeDelete(
+    _: UploadItem,
+    index: number,
+    list: UploadItem[],
+  ) {
+    const res = [...list];
+    res[index] = null as any;
+    if (index === 0) {
+      res[1] = null as any;
+    }
+    return res;
+  }
   return (
     <SafeAreaView style={{backgroundColor: '#eceef1', flex: 1}}>
       <StatusBar barStyle="dark-content" />
@@ -232,6 +244,29 @@ const MainComponent = () => {
                   },
                 ]}
               />
+            </Card>
+            <Card title="regular模式 设置count后">
+              <Form.Item name="idCards" valuePropName="list">
+                <Upload
+                  multiple={false}
+                  count={[{text: '正面'}, {text: '反面'}]}
+                  pickerType={['cropCameraPhoto', 'cropPicker']}
+                  cropPickerMediaType="photo"
+                  uploadAction={uploadImage}
+                />
+              </Form.Item>
+            </Card>
+            <Card title="身份证正反面--自定义删除">
+              <Form.Item name="idCards1" valuePropName="list">
+                <Upload
+                  multiple={false}
+                  count={[{text: '正面'}, {text: '反面'}]}
+                  pickerType={['cropCameraPhoto', 'cropPicker']}
+                  cropPickerMediaType="photo"
+                  uploadAction={uploadImage}
+                  beforeDelete={handleBeforeDelete}
+                />
+              </Form.Item>
             </Card>
             <Card title="缓存与清除缓存">
               <Space>

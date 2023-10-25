@@ -10,7 +10,7 @@ import React, {
 } from 'react'
 import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
 import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isBoolean } from 'lodash'
 import { exec, WatermarkOperations } from './utils'
 import { CropMediaType, FileVO, IUploadTempSource, PickerType, PrintWaterMarkFn, UploadItem } from './interface'
 import useUploadResume from './hooks/useUploadResume'
@@ -18,11 +18,12 @@ import { ISource } from '.'
 import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
 import Preview, { CustomPreview, PreviewInstance } from './components/preview/Preview'
 import { BasicUploadOptions, composedPicker } from './picker'
-import { isDef } from '@fruits-chain/utils'
+import { isDef, isPromise } from '@fruits-chain/utils'
 interface OverrideUploadConfig {
   pickerType: PickerType
   cropMediaType?: CropMediaType
   multiple?: boolean
+  index?: number
 }
 
 export interface UploadInstance {
@@ -65,9 +66,11 @@ export interface UploadProps {
    */
   multiple?: boolean
   /**
-   * 点击新增
+   * 点击新增，regular模式下点击的索引
+   * @param index
+   * @returns
    */
-  onPressAdd?: () => void
+  onPressAdd?: (index?: number) => void
   /**
    * 上传地址（需要封装成UploadAction的形式）
    */
@@ -137,6 +140,18 @@ export interface UploadProps {
    * 是否绘制水印 默认`true`
    */
   shouldPrintWatermark?: boolean | PrintWaterMarkFn
+  /**
+   * 资源删除前执行的钩子函数，返回false停止删除过程 返回`UploadItem[]`作为自定义删除结果直接使用 支持异步
+   * @param current
+   * @param index
+   * @param list
+   * @returns
+   */
+  beforeDelete?: (
+    current: UploadItem,
+    index: number,
+    list: UploadItem[],
+  ) => UploadItem[] | boolean | Promise<UploadItem[] | boolean>
 }
 
 let toastKey: ToastMethods
@@ -170,6 +185,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     watermark = [],
     backUpload = false,
     shouldPrintWatermark = true,
+    beforeDelete,
   },
   ref,
 ) => {
@@ -198,15 +214,58 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
       setValue(cloneDeep(value))
     }
   }
+  function removeImage(item: UploadItem) {
+    const targetIndex = valueCopy.current.findIndex((it) => it?.key === item.key)
+    let results = [...valueCopy.current]
+    if (isDef(count)) {
+      results[targetIndex] = null
+    } else {
+      results.splice(targetIndex, 1)
+    }
+    console.log(results, targetIndex, count)
+    valueCopy.current = results
+    setValueIfNeeded(results)
+    onChange && onChange(results)
+  }
   /**
    * 删除文件
    * @param item
    */
-  function removeImage(item: UploadItem) {
-    const results = valueCopy.current.filter((it) => it.key !== item.key)
-    valueCopy.current = results
-    setValueIfNeeded(results)
-    onChange && onChange(results)
+  function handleDelete(item: UploadItem, index: number, list: UploadItem[]) {
+    const res = beforeDelete?.(item, index, list)
+    // 1. 如果没有传入beforeDelete，则直接执行默认的delete操作
+    if (!isDef(res)) {
+      removeImage(item)
+      return
+    }
+    // 2. 如果是异步函数
+    if (isPromise(res)) {
+      res.then((val) => {
+        // 2.1 如果===true，则表示执行默认delete操作
+        if (isBoolean(val)) {
+          if (val) {
+            removeImage(item)
+          }
+          return
+        }
+        // 2.2 否则以执行结果作为最终值
+        valueCopy.current = val
+        setValueIfNeeded(val)
+        onChange && onChange(val)
+      })
+    } else {
+      // 3.1 同步的情况 如果===true 执行默认delete操作
+      if (isBoolean(res)) {
+        if (res) {
+          removeImage(item)
+        }
+        return
+      }
+      // 3.2 把执行结果作为最终值
+      valueCopy.current = res
+      setValueIfNeeded(res)
+      onChange && onChange(res)
+    }
   }
   /**
    * 文件选择
@@ -240,18 +299,24 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
       setTimeout(() => {
         toastKey?.close?.()
       }, 0)
-      valueCopy.current = [...value, ...filesResumed]
+      const nextVal = [...value]
+      if (filesResumed.length === 1 && isDef(config.index)) {
+        nextVal[config.index] = filesResumed[0]
+      } else {
+        nextVal.push(...filesResumed)
+      }
+      valueCopy.current = nextVal
       if (!backUpload) {
         setValueIfNeeded(valueCopy.current)
         exec(onChange, cloneDeep(valueCopy.current))
       }
-      const filesToUpload = valueCopy.current.filter((f) => f.status === 'loading')
+      const filesToUpload = valueCopy.current.filter((f) => f?.status === 'loading')
       for (const file of filesToUpload) {
         const uploadRes = await uploadFile(file, backUpload)
         if (uploadRes.status === 'error') {
           exec(onUploadError, '文件上传失败')
         }
-        const idx = valueCopy.current.findIndex((file) => file.key === uploadRes.key)
+        const idx = valueCopy.current.findIndex((file) => file?.key === uploadRes.key)
         if (~idx) {
           valueCopy.current[idx] = uploadRes
         }
@@ -279,12 +344,12 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
    * 点击上传UI
    * @returns
    */
-  function handlePressAdd() {
+  function handlePressAdd(index?: number) {
     if (value.length >= maxCount) {
       Toast('已达到最大上传数量！')
       return
     }
-    onPressAdd()
+    onPressAdd(index)
   }
   /**
    * 点击已上传文件预览
@@ -336,7 +401,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         <Uploader
           onPressImage={handlePress}
           maxCount={maxCount}
-          onPressDelete={(item) => removeImage(item)}
+          onPressDelete={handleDelete}
           onPressUpload={handlePressAdd}
           onPressError={handleReupload}
           list={value}
@@ -347,7 +412,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         <Uploader.Regular
           onPressImage={handlePress}
           count={count}
-          onPressDelete={(item) => removeImage(item)}
+          onPressDelete={handleDelete}
           onPressUpload={handlePressAdd}
           onPressError={handleReupload}
           list={value}
