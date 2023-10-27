@@ -86,7 +86,8 @@ const useUploadTypeSelect = (
       actions,
     })
       .then(({ item }: { item: ExtendedAction }) => {
-        item.onPress?.(index)
+        // tip: 因为Uploader会传出来event实例，这里做兼容性调整
+        item.onPress?.(isType('Number')(index) ? index : undefined)
       })
       .catch(() => {})
   }
