@@ -8,7 +8,7 @@ interface ImagePreviewProps extends BasicPreviewProps {}
 
 const ImagePreview: React.FC<ImagePreviewProps> = ({ target, onClose, list = [], onChangeCurrent }) => {
   const previewOptions = useMemo(() => {
-    const imageList = list.filter((file) => {
+    const imageList = list.filter(Boolean).filter((file) => {
       const pathName = new URL(file.previewPath).pathname
       return ['.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG'].some((img) => pathName.endsWith(img))
     })
