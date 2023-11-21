@@ -4,9 +4,9 @@
   "description": "A React-Native UI Component to upload image/video and preview",
   "main": "dist/commonjs/index.js",
   "module": "dist/module/index.js",
-  "react-native": "src/index.ts",
+  "react-native": "src/index.tsx",
   "types": "dist/typescript/index.d.ts",
-  "source": "src/index.ts",
+  "source": "src/index.tsx",
   "files": [
     "dist",
     "src",
