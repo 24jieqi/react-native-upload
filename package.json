@@ -13,10 +13,10 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build": "bob build",
+    "build": "rm -rf dist && bob build",
     "dev": "tsc -p tsconfig.dev.json",
     "lint:ts": "tsc --noEmit && eslint src --ext .ts,.tsx --quiet",
-    "prepare": "bob build"
+    "prepare": "yarn build"
   },
   "keywords": [
     "react-native",
