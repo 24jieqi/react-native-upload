@@ -6,6 +6,7 @@ import { ImageSource, PhotoBatchOperations, Point, TextOptions } from 'react-nat
 import RNPhotoManipulator from 'react-native-photo-manipulator'
 import { ceilWith, div, isArray, isFunction, isType, mul, plus } from '@fruits-chain/utils'
 import { buildUri } from './helper'
+import { URL } from 'react-native-url-polyfill'
 
 export function getThumbnailImageUrl(url: string = '', width = 80, height = 80) {
   if (!url || url.includes('.mp4')) {
@@ -26,9 +27,14 @@ export function isCompressSupportType(mimeType: string) {
   return isMp4(mimeType) || isImage(mimeType)
 }
 
-export function getFileExt(mimeType: string) {
-  const typeArr = mimeType.split('.')
-  return '.' + typeArr[typeArr.length - 1]
+/**
+ * 根据URL获取文件扩展名
+ * @param filePath
+ * @returns
+ */
+export function getFileExt(filePath: string) {
+  const pathName = new URL(filePath).pathname
+  return /.*(\..*)$/.exec(pathName)?.[1]
 }
 
 export function exec(func: ((...param: any) => any) | undefined, ...params: any[]) {
