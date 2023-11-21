@@ -1,11 +1,19 @@
-import { Text, StyleSheet } from 'react-native'
 import { Empty, Flex, Popup } from '@fruits-chain/react-native-xiaoshu'
-import React, { forwardRef, PropsWithChildren, useImperativeHandle, useMemo, useState } from 'react'
+import type { PropsWithChildren } from 'react'
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from 'react'
+import { Text, StyleSheet } from 'react-native'
 import { URL } from 'react-native-url-polyfill'
-import { UploadItem } from '../../interface'
-import VideoPreview from './VideoPreview'
+
+import type { UploadItem } from '../../interface'
+
 import ImagePreview from './ImagePreview'
-import { BasicPreviewProps } from './interface'
+import type { BasicPreviewProps } from './interface'
+import VideoPreview from './VideoPreview'
 
 type PreviewComponent = React.ComponentType<BasicPreviewProps>
 
@@ -22,7 +30,10 @@ export interface PreviewInstance {
   preview: (file: UploadItem) => void
 }
 
-const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = ({ customPreview = {}, list }, ref) => {
+const _Preview: React.ForwardRefRenderFunction<
+  PreviewInstance,
+  PreviewProps
+> = ({ customPreview = {}, list }, ref) => {
   const [visible, setVisible] = useState(false)
   const [currentFile, setCurrentFile] = useState<UploadItem>()
   useImperativeHandle(ref, () => ({
@@ -71,7 +82,10 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
       onRequestClose={handleRequestPopupClose}>
       <Popup.Header
         title={
-          <Text style={styles.titleText} ellipsizeMode="middle" numberOfLines={1}>
+          <Text
+            style={styles.titleText}
+            ellipsizeMode="middle"
+            numberOfLines={1}>
             {currentFile?.name}
           </Text>
         }
@@ -79,13 +93,13 @@ const _Preview: React.ForwardRefRenderFunction<PreviewInstance, PreviewProps> = 
       />
       {Compnent ? (
         <Compnent
-          onChangeCurrent={(curr) => setCurrentFile(curr)}
+          onChangeCurrent={curr => setCurrentFile(curr)}
           target={currentFile}
           onClose={() => setVisible(false)}
           list={list}
         />
       ) : (
-        <Flex style={{ flex: 1 }} justify="center" align="center">
+        <Flex style={styles.flex1} justify="center" align="center">
           <Empty text="此文件暂不支持预览" />
         </Flex>
       )}
@@ -105,6 +119,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginRight: 28,
     fontWeight: 'bold',
+  },
+  flex1: {
+    flex: 1,
   },
 })
 

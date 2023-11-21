@@ -1,6 +1,7 @@
 import { createContext } from 'react'
-import { WatermarkOperations } from '../../../utils'
-import { PrintWaterMarkFn } from '../../../interface'
+
+import type { PrintWaterMarkFn } from '../../../interface'
+import type { WatermarkOperations } from '../../../utils'
 
 export type StateType = 'photograph' | 'picture'
 

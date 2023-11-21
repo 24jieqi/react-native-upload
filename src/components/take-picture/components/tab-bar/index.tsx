@@ -1,6 +1,7 @@
 import { Flex } from '@fruits-chain/react-native-xiaoshu'
 import React, { useContext } from 'react'
 import { TouchableOpacity, View, StyleSheet, Text } from 'react-native'
+
 import { StateContext } from '../../context/state-context'
 
 interface IProps {
@@ -13,16 +14,38 @@ const TabBar: React.FC<IProps> = ({ count, state }) => {
   return (
     <Flex style={styles.tabWrap} justify="between">
       <TouchableOpacity activeOpacity={1} onPress={() => setState('picture')}>
-        <View style={[styles.tabItem, state === 'picture' ? styles.activeTab : null]}>
-          <Text style={[styles.tabText, state === 'picture' ? styles.activeText : null]}>已拍照片</Text>
+        <View
+          style={[
+            styles.tabItem,
+            state === 'picture' ? styles.activeTab : null,
+          ]}>
+          <Text
+            style={[
+              styles.tabText,
+              state === 'picture' ? styles.activeText : null,
+            ]}>
+            已拍照片
+          </Text>
           <View style={styles.tabCount}>
             <Text style={styles.tabCountText}>{count}</Text>
           </View>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} onPress={() => setState('photograph')}>
-        <View style={[styles.tabItem, state === 'photograph' ? styles.activeTab : null]}>
-          <Text style={[styles.tabText, state === 'photograph' ? styles.activeText : null]}>拍照</Text>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => setState('photograph')}>
+        <View
+          style={[
+            styles.tabItem,
+            state === 'photograph' ? styles.activeTab : null,
+          ]}>
+          <Text
+            style={[
+              styles.tabText,
+              state === 'photograph' ? styles.activeText : null,
+            ]}>
+            拍照
+          </Text>
         </View>
       </TouchableOpacity>
     </Flex>

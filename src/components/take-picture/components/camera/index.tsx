@@ -1,6 +1,13 @@
 import { Dialog } from '@fruits-chain/react-native-xiaoshu'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
-import { Image, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import {
+  Image,
+  Linking,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import type { PinchGestureHandlerGestureEvent } from 'react-native-gesture-handler'
 import { PinchGestureHandler } from 'react-native-gesture-handler'
 import Reanimated, {
@@ -10,15 +17,20 @@ import Reanimated, {
   useAnimatedProps,
   useSharedValue,
 } from 'react-native-reanimated'
-import { Camera, frameRateIncluded, sortFormats, useCameraDevices } from 'react-native-vision-camera'
+import {
+  Camera,
+  frameRateIncluded,
+  sortFormats,
+  useCameraDevices,
+} from 'react-native-vision-camera'
 import type { CameraDeviceFormat, PhotoFile } from 'react-native-vision-camera'
 
 import { useIsForeground } from '../../hooks/useIsForeground'
 import type { ImageInfo } from '../../interface'
+import TabBar from '../tab-bar'
 
 import CaptureButton from './capture-button'
 import PhotoConfirm from './photo-confirm'
-import TabBar from '../tab-bar'
 
 const SCALE_FULL_ZOOM = 3
 export const MAX_ZOOM_FACTOR = 20
@@ -35,7 +47,12 @@ interface CameraComProps {
   onPhotoSubmit: (img: ImageInfo) => void
 }
 
-const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, existCount }) => {
+const CameraCom: React.FC<CameraComProps> = ({
+  onPhotoSubmit,
+  count,
+  maxCount,
+  existCount,
+}) => {
   const [visible, setVisible] = useState<boolean>(false)
   const [currentPhoto, setCurrentPhoto] = useState<ImageInfo>()
 
@@ -60,7 +77,10 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
     setIsCameraInitialized(true)
   }, [])
 
-  const onPinchGesture = useAnimatedGestureHandler<PinchGestureHandlerGestureEvent, { startZoom?: number }>({
+  const onPinchGesture = useAnimatedGestureHandler<
+    PinchGestureHandlerGestureEvent,
+    { startZoom?: number }
+  >({
     onStart: (_, context) => {
       context.startZoom = zoom.value
     },
@@ -73,7 +93,12 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
         [-1, 0, 1],
         Extrapolate.CLAMP,
       )
-      zoom.value = interpolate(scale, [-1, 0, 1], [minZoom, startZoom, maxZoom], Extrapolate.CLAMP)
+      zoom.value = interpolate(
+        scale,
+        [-1, 0, 1],
+        [minZoom, startZoom, maxZoom],
+        Extrapolate.CLAMP,
+      )
     },
   })
 
@@ -84,7 +109,7 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
       Dialog({
         title: `相机权限未开启`,
         message: '请到设置中开启权限，允许星桥货柜访问您的摄像头和麦克风',
-      }).then(async (action) => {
+      }).then(async action => {
         if (action === 'confirm') {
           const permission = await Camera.requestCameraPermission()
           if (permission === 'denied') await Linking.openSettings()
@@ -99,7 +124,9 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
   }, [device?.formats])
 
   const fps = useMemo(() => {
-    const supports60Fps = formats?.some((f) => f.frameRateRanges.some((r) => frameRateIncluded(r, 60)))
+    const supports60Fps = formats?.some(f =>
+      f.frameRateRanges.some(r => frameRateIncluded(r, 60)),
+    )
     if (!supports60Fps) {
       return 30
     }
@@ -107,7 +134,7 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
   }, [formats])
 
   const onFlashPressed = useCallback(() => {
-    setFlash((f) => (f === 'off' ? 'on' : 'off'))
+    setFlash(f => (f === 'off' ? 'on' : 'off'))
   }, [])
 
   const cameraAnimatedProps = useAnimatedProps(() => {
@@ -120,7 +147,9 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
   const format = useMemo(() => {
     let result = formats
 
-    return result.find((f) => f.frameRateRanges.some((r) => frameRateIncluded(r, fps)))
+    return result.find(f =>
+      f.frameRateRanges.some(r => frameRateIncluded(r, fps)),
+    )
   }, [formats, fps])
 
   function onPhotoConfirm(photo: ImageInfo) {
@@ -143,7 +172,9 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
     <View style={styles.container}>
       {device && (
         <>
-          <PinchGestureHandler onGestureEvent={onPinchGesture} enabled={isActive}>
+          <PinchGestureHandler
+            onGestureEvent={onPinchGesture}
+            enabled={isActive}>
             <Reanimated.View style={styles.captureContent}>
               <ReanimatedCamera
                 ref={camera}
@@ -163,11 +194,19 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
               />
               <View style={styles.rightButton}>
                 {supportsFlash ? (
-                  <TouchableOpacity activeOpacity={0.5} onPress={onFlashPressed}>
+                  <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={onFlashPressed}>
                     {flash === 'on' ? (
-                      <Image style={styles.flashLightIcon} source={require('../../images/light.png')} />
+                      <Image
+                        style={styles.flashLightIcon}
+                        source={require('../../images/light.png')}
+                      />
                     ) : (
-                      <Image style={styles.flashLightIcon} source={require('../../images/light_close.png')} />
+                      <Image
+                        style={styles.flashLightIcon}
+                        source={require('../../images/light_close.png')}
+                      />
                     )}
                   </TouchableOpacity>
                 ) : null}
@@ -192,7 +231,12 @@ const CameraCom: React.FC<CameraComProps> = ({ onPhotoSubmit, count, maxCount, e
         </>
       )}
 
-      <PhotoConfirm img={currentPhoto} visible={visible} onCancel={() => setVisible(false)} onSubmit={onPhotoConfirm} />
+      <PhotoConfirm
+        img={currentPhoto}
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        onSubmit={onPhotoConfirm}
+      />
     </View>
   )
 }

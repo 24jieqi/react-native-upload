@@ -1,13 +1,29 @@
 import { Dialog, Toast } from '@fruits-chain/react-native-xiaoshu'
 import type { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { isFunction } from '@fruits-chain/utils'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import type { ViewProps } from 'react-native'
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
-import Reanimated, { useAnimatedStyle, withSpring, useSharedValue } from 'react-native-reanimated'
-import type { Camera, PhotoFile, TakePhotoOptions, TakeSnapshotOptions } from 'react-native-vision-camera'
+import Reanimated, {
+  useAnimatedStyle,
+  withSpring,
+  useSharedValue,
+} from 'react-native-reanimated'
+import type {
+  Camera,
+  PhotoFile,
+  TakePhotoOptions,
+  TakeSnapshotOptions,
+} from 'react-native-vision-camera'
+
 import { printWatermark } from '../../../../utils'
 import { StateContext } from '../../context/state-context'
-import { isFunction } from '@fruits-chain/utils'
 
 /**
  * 拍照按钮，动态变化小尺寸
@@ -84,7 +100,10 @@ const _CaptureButton: React.FC<Props> = ({
         : shouldPrintWatermark
       if (shouldPrint && watermark.length > 0) {
         // 在此加上水印
-        photo.path = await printWatermark(photo.path, watermark, { width: photo.width, height: photo.height })
+        photo.path = await printWatermark(photo.path, watermark, {
+          width: photo.width,
+          height: photo.height,
+        })
       }
       onMediaCaptured(photo)
     } catch (e) {
@@ -104,7 +123,9 @@ const _CaptureButton: React.FC<Props> = ({
     // 先进行数量判断，再禁用按钮
     if (maxCount - existCount <= count) {
       Dialog({
-        title: `${existCount > 0 ? `已上传${existCount}个图片或视频，` : ''} 最多拍${maxCount - existCount}张`,
+        title: `${
+          existCount > 0 ? `已上传${existCount}个图片或视频，` : ''
+        } 最多拍${maxCount - existCount}张`,
       }).then(() => {})
       return
     }
@@ -151,7 +172,10 @@ const _CaptureButton: React.FC<Props> = ({
   }, [])
 
   return (
-    <TouchableOpacity onPress={handlePress} activeOpacity={1} disabled={!enabled || loading}>
+    <TouchableOpacity
+      onPress={handlePress}
+      activeOpacity={1}
+      disabled={!enabled || loading}>
       <Reanimated.View {...props} style={style}>
         <Reanimated.View style={styles.flex}>
           <View style={styles.shadow} />

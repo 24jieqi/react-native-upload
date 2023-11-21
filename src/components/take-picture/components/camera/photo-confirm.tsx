@@ -14,7 +14,12 @@ interface PhotoConfirmProps {
   onCancel: () => void
 }
 
-const PhotoConfirm: React.FC<PhotoConfirmProps> = ({ img, visible, onSubmit, onCancel }) => {
+const PhotoConfirm: React.FC<PhotoConfirmProps> = ({
+  img,
+  visible,
+  onSubmit,
+  onCancel,
+}) => {
   const insets = useSafeAreaInsets()
   return (
     <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.container}>
@@ -35,7 +40,10 @@ const PhotoConfirm: React.FC<PhotoConfirmProps> = ({ img, visible, onSubmit, onC
             重拍
           </Button>
           {/* @ts-ignore */}
-          <Button type="primary" style={[styles.btn, { marginLeft: 12 }]} onPress={() => onSubmit(img)}>
+          <Button
+            type="primary"
+            style={[styles.btn, styles.confirmBtn]}
+            onPress={() => onSubmit(img)}>
             确定
           </Button>
         </Flex>
@@ -52,10 +60,6 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
-  img: {
-    width: '100%',
-    height: '100%',
-  },
   button: {
     marginVertical: 16,
     paddingHorizontal: 14,
@@ -64,6 +68,9 @@ const styles = StyleSheet.create({
   btn: {
     borderRadius: 50,
     flex: 1,
+  },
+  confirmBtn: {
+    marginLeft: 12,
   },
 })
 

@@ -1,10 +1,10 @@
-// eslint-disable-next-line import/no-named-as-default,import/namespace,import/no-named-as-default-member
-import ReactNativeBlobUtil from 'react-native-blob-util'
-import * as RNFS from 'react-native-fs'
-import { Image, Video } from 'react-native-compressor'
-import { DocumentPickerResponse } from 'react-native-document-picker'
-import { IUploadTempSource } from '../interface'
 import { isDef } from '@fruits-chain/utils'
+import ReactNativeBlobUtil from 'react-native-blob-util'
+import { Image, Video } from 'react-native-compressor'
+import type { DocumentPickerResponse } from 'react-native-document-picker'
+import * as RNFS from 'react-native-fs'
+
+import type { IUploadTempSource } from '../interface'
 
 // path 是指 / 开头的文件路径
 // uri 是指 file:// 开头的文件路径
@@ -33,9 +33,11 @@ export const buildCachePath = async (filename: string) => {
   return path
 }
 
-export const buildUri = (p: string) => (/^file:\/\//.test(p) ? p : `file://${p}`)
+export const buildUri = (p: string) =>
+  /^file:\/\//.test(p) ? p : `file://${p}`
 
-export const normalizePath = (p: string) => decodeURIComponent((p || '').replace(/^file:\/\//, ''))
+export const normalizePath = (p: string) =>
+  decodeURIComponent((p || '').replace(/^file:\/\//, ''))
 
 const getMiniFilename = (filename: string) => {
   const filenames = filename.split('.')
@@ -51,7 +53,11 @@ const getMiniFilename = (filename: string) => {
  * @param compressorFile 特定类型文件压缩动作
  * @returns
  */
-const compressorAction = async (filePath: string, clear: boolean, compressorFile: () => Promise<string>) => {
+const compressorAction = async (
+  filePath: string,
+  clear: boolean,
+  compressorFile: () => Promise<string>,
+) => {
   const _path = normalizePath(filePath)
   const hasFile = await fs.exists(_path)
 
@@ -119,7 +125,11 @@ export const compressorVideo = (filePath: string, clear: boolean) => {
  * @param param0
  * @returns
  */
-export const getResolvedPath = async ({ uri, name, type }: DocumentPickerResponse): Promise<IUploadTempSource> => {
+export const getResolvedPath = async ({
+  uri,
+  name,
+  type,
+}: DocumentPickerResponse): Promise<IUploadTempSource> => {
   const base64 = await fs.readFile(uri, 'base64')
   const path = await buildCachePath(name)
   await fs.writeFile(path, base64, 'base64')

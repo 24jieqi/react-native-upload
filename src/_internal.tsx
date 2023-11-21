@@ -1,24 +1,38 @@
-/* eslint-disable @typescript-eslint/no-shadow */
+import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
+import type { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
+import type { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
+import { isDef, isPromise } from '@fruits-chain/utils'
+import cloneDeep from 'lodash/cloneDeep'
+import isBoolean from 'lodash/isBoolean'
+import type { ForwardRefRenderFunction, PropsWithChildren } from 'react'
 import React, {
   forwardRef,
-  ForwardRefRenderFunction,
-  PropsWithChildren,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react'
-import { Toast, Uploader } from '@fruits-chain/react-native-xiaoshu'
-import { ToastMethods } from '@fruits-chain/react-native-xiaoshu/lib/typescript/toast/interface'
-import { cloneDeep, isBoolean } from 'lodash'
-import { exec, WatermarkOperations } from './utils'
-import { CropMediaType, FileVO, IUploadTempSource, PickerType, PrintWaterMarkFn, UploadItem } from './interface'
+
+import type {
+  CustomPreview,
+  PreviewInstance,
+} from './components/preview/Preview'
+import Preview from './components/preview/Preview'
 import useUploadResume from './hooks/useUploadResume'
-import { ISource } from '.'
-import { RegularCount } from '@fruits-chain/react-native-xiaoshu/lib/typescript/uploader/interface'
-import Preview, { CustomPreview, PreviewInstance } from './components/preview/Preview'
-import { BasicUploadOptions, composedPicker } from './picker'
-import { isDef, isPromise } from '@fruits-chain/utils'
+import type {
+  CropMediaType,
+  FileVO,
+  IUploadTempSource,
+  PickerType,
+  PrintWaterMarkFn,
+  UploadItem,
+} from './interface'
+import type { BasicUploadOptions } from './picker'
+import { composedPicker } from './picker'
+import type { WatermarkOperations } from './utils'
+import { exec } from './utils'
+
+import type { ISource } from '.'
 interface OverrideUploadConfig {
   pickerType: PickerType
   cropMediaType?: CropMediaType
@@ -36,7 +50,10 @@ export interface UploadActionParams {
   resume: boolean
 }
 
-export type UploadAction = ({ data, file }: UploadActionParams) => Promise<FileVO>
+export type UploadAction = ({
+  data,
+  file,
+}: UploadActionParams) => Promise<FileVO>
 
 export interface UploadProps {
   list?: UploadItem[]
@@ -195,7 +212,9 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     progressAction,
     allowResume,
   })
-  const [value, setValue] = useState<UploadItem[]>(typeof list === 'undefined' ? defaultList : list)
+  const [value, setValue] = useState<UploadItem[]>(
+    typeof list === 'undefined' ? defaultList : list,
+  )
   const valueCopy = useRef<UploadItem[]>([]) // 组件内资源备份
   // 对外暴露接口
   useImperativeHandle(ref, () => ({
@@ -209,20 +228,19 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     }
   }, [list])
   // 受控模式下不再设置内部value
-  function setValueIfNeeded(value: UploadItem[]) {
+  function setValueIfNeeded(_value: UploadItem[]) {
     if (typeof list === 'undefined') {
-      setValue(cloneDeep(value))
+      setValue(cloneDeep(_value))
     }
   }
   function removeImage(item: UploadItem) {
-    const targetIndex = valueCopy.current.findIndex((it) => it?.key === item.key)
+    const targetIndex = valueCopy.current.findIndex(it => it?.key === item.key)
     let results = [...valueCopy.current]
     if (isDef(count)) {
       results[targetIndex] = null
     } else {
       results.splice(targetIndex, 1)
     }
-    console.log(results, targetIndex, count)
     valueCopy.current = results
     setValueIfNeeded(results)
     onChange && onChange(results)
@@ -231,8 +249,8 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
    * 删除文件
    * @param item
    */
-  function handleDelete(item: UploadItem, index: number, list: UploadItem[]) {
-    const res = beforeDelete?.(item, index, list)
+  function handleDelete(item: UploadItem, index: number, _list: UploadItem[]) {
+    const res = beforeDelete?.(item, index, _list)
     // 1. 如果没有传入beforeDelete，则直接执行默认的delete操作
     if (!isDef(res)) {
       removeImage(item)
@@ -240,7 +258,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
     }
     // 2. 如果是异步函数
     if (isPromise(res)) {
-      res.then((val) => {
+      res.then(val => {
         // 2.1 如果===true，则表示执行默认delete操作
         if (isBoolean(val)) {
           if (val) {
@@ -295,7 +313,9 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         shouldPrintWatermark,
       }
       const files = await action(options)
-      const filesResumed = await Promise.all(files.map((item) => getFileBeforeUpload(item)))
+      const filesResumed = await Promise.all(
+        files.map(item => getFileBeforeUpload(item)),
+      )
       setTimeout(() => {
         toastKey?.close?.()
       }, 0)
@@ -310,13 +330,17 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
         setValueIfNeeded(valueCopy.current)
         exec(onChange, cloneDeep(valueCopy.current))
       }
-      const filesToUpload = valueCopy.current.filter((f) => f?.status === 'loading')
+      const filesToUpload = valueCopy.current.filter(
+        f => f?.status === 'loading',
+      )
       for (const file of filesToUpload) {
         const uploadRes = await uploadFile(file, backUpload)
         if (uploadRes.status === 'error') {
           exec(onUploadError, '文件上传失败')
         }
-        const idx = valueCopy.current.findIndex((file) => file?.key === uploadRes.key)
+        const idx = valueCopy.current.findIndex(
+          _file => _file?.key === uploadRes.key,
+        )
         if (~idx) {
           valueCopy.current[idx] = uploadRes
         }
@@ -366,7 +390,7 @@ const _UploadInternal: ForwardRefRenderFunction<UploadInstance, UploadProps> = (
    * @returns
    */
   async function handleReupload(item: ISource) {
-    const currIndex = valueCopy.current.findIndex((one) => one.key === item.key)
+    const currIndex = valueCopy.current.findIndex(one => one.key === item.key)
     if (!~currIndex) {
       return
     }

@@ -1,5 +1,5 @@
-import { PhotoFile } from 'react-native-vision-camera'
-import { Image } from 'react-native-image-crop-picker'
+import type { Image } from 'react-native-image-crop-picker'
+import type { PhotoFile } from 'react-native-vision-camera'
 export interface FileVO {
   /** 文件ID */
   fileId?: string
@@ -88,7 +88,12 @@ export type CropMediaType = 'photo' | 'video' | 'any'
 /**
  * 调用选择器类型
  */
-export type PickerType = 'cropPicker' | 'cropCameraPhoto' | 'cropCameraVideo' | 'visionCamera' | 'documentPicker'
+export type PickerType =
+  | 'cropPicker'
+  | 'cropCameraPhoto'
+  | 'cropCameraVideo'
+  | 'visionCamera'
+  | 'documentPicker'
 
 export type PrintWaterMarkFn = (
   image: Image | PhotoFile,

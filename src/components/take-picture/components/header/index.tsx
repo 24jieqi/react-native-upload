@@ -1,7 +1,14 @@
 import { Flex } from '@fruits-chain/react-native-xiaoshu'
 import type { ReactNode } from 'react'
 import React from 'react'
-import { Image, Platform, Text, TouchableNativeFeedback, View, StyleSheet } from 'react-native'
+import {
+  Image,
+  Platform,
+  Text,
+  TouchableNativeFeedback,
+  View,
+  StyleSheet,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface IProps {
@@ -13,10 +20,17 @@ interface IProps {
 const Header: React.FC<IProps> = ({ title, onClose, onSubmit }) => {
   const insets = useSafeAreaInsets()
   return (
-    <View style={[styles.container, { marginTop: Platform.OS === 'ios' ? insets.top : insets.top + 16 }]}>
+    <View
+      style={[
+        styles.container,
+        { marginTop: Platform.OS === 'ios' ? insets.top : insets.top + 16 },
+      ]}>
       <Flex justify="between" align="center">
         <TouchableNativeFeedback onPress={onClose}>
-          <Image style={styles.closeBtn} source={require('../../images/close.png')} />
+          <Image
+            style={styles.closeBtn}
+            source={require('../../images/close.png')}
+          />
         </TouchableNativeFeedback>
         <View style={styles.titleWrap}>
           <Text style={styles.title} ellipsizeMode="tail" numberOfLines={1}>

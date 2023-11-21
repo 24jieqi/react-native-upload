@@ -1,16 +1,18 @@
 import { Dialog, Popup } from '@fruits-chain/react-native-xiaoshu'
-import { ReactNode } from 'react'
-import React, { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import React, { useMemo, useEffect, useRef, useState } from 'react'
 import type { StatusBarProps } from 'react-native'
 import { Platform, StatusBar, StyleSheet } from 'react-native'
+
+import type { PrintWaterMarkFn } from '../../interface'
+import type { WatermarkOperations } from '../../utils'
 
 import CameraCom from './components/camera'
 import Header from './components/header'
 import PhotoView from './components/photo-view'
+import type { StateType } from './context/state-context'
+import { StateContext } from './context/state-context'
 import type { ImageInfo } from './interface'
-import { WatermarkOperations } from '../../utils'
-import { StateContext, StateType } from './context/state-context'
-import { PrintWaterMarkFn } from '../../interface'
 
 export interface TakePictureViewProps {
   /**
@@ -80,7 +82,7 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
     }
   }
   const onPhotoSubmit = (photo: ImageInfo) => {
-    setPhotoList((value) => {
+    setPhotoList(value => {
       return [...value, photo]
     })
   }
@@ -92,7 +94,14 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
       setPhotoList([])
     }
   }
-
+  const value = useMemo(() => {
+    return {
+      state,
+      setState,
+      watermark,
+      shouldPrintWatermark,
+    }
+  }, [state, setState, watermark, shouldPrintWatermark])
   useEffect(() => {
     stackPropsRef.current = StatusBar.pushStackEntry({
       barStyle: 'light-content',
@@ -100,15 +109,18 @@ const TakePictureView: React.FC<TakePictureViewProps> = ({
     })
     Platform.OS === 'android' && StatusBar.setBackgroundColor('transparent')
   }, [])
-
   useEffect(() => {
     setVisible(true)
   }, [])
   return (
-    <Popup.Page visible={visible} safeAreaInsetTop={0} style={styles.page} onClosed={() => onClosed(photoList)}>
+    <Popup.Page
+      visible={visible}
+      safeAreaInsetTop={0}
+      style={styles.page}
+      onClosed={() => onClosed(photoList)}>
       <Header title={title} onClose={handleClose} onSubmit={handleConfirm} />
 
-      <StateContext.Provider value={{ state, setState, watermark, shouldPrintWatermark }}>
+      <StateContext.Provider value={value}>
         {state === 'photograph' ? (
           <CameraCom
             onPhotoSubmit={onPhotoSubmit}
@@ -129,59 +141,5 @@ export default TakePictureView
 const styles = StyleSheet.create({
   page: {
     backgroundColor: '#000',
-  },
-
-  content: {
-    flex: 1,
-  },
-
-  tabWrap: {
-    width: 200,
-    height: 40,
-    borderRadius: 20,
-    borderColor: '#fff',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 2,
-  },
-
-  bottom: {
-    marginTop: 16,
-    alignItems: 'center',
-    height: 180,
-    backgroundColor: '#000',
-  },
-  activeTab: {
-    backgroundColor: '#fff',
-  },
-  activeText: {
-    color: '#000',
-  },
-  tabItem: {
-    borderRadius: 17,
-    height: 34,
-    paddingHorizontal: 6,
-    textAlign: 'center',
-    minWidth: 76,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabText: {
-    color: '#fff',
-    fontSize: 16,
-    lineHeight: 22,
-  },
-  tabCount: {
-    backgroundColor: '#0065fe',
-    paddingHorizontal: 7,
-    height: 16,
-    lineHeight: 16,
-    borderRadius: 16,
-    color: '#fff',
-  },
-  tabCountText: {
-    color: '#fff',
-    fontSize: 12,
   },
 })

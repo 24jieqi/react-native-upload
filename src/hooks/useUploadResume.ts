@@ -1,8 +1,13 @@
 import ReactNativeBlobUtil from 'react-native-blob-util'
+
+import type { UploadAction } from '../_internal'
+import type { IUploadTempSource, UploadItem } from '../interface'
+import {
+  getDocumentPlaceholderIconByMimeType,
+  getFileExt,
+  getFileKey,
+} from '../utils'
 import { buildCachePath, buildUri, normalizePath } from '../utils/helper'
-import { IUploadTempSource, UploadItem } from '../interface'
-import { UploadAction } from '../_internal'
-import { getDocumentPlaceholderIconByMimeType, getFileExt, getFileKey } from '../utils'
 
 const { fs } = ReactNativeBlobUtil
 interface UploadResumeProps {
@@ -21,7 +26,11 @@ function fileShouldResume(size: number, allowResume: number | boolean) {
   return size > (allowResume as number)
 }
 
-const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: UploadResumeProps) => {
+const useUploadResume = ({
+  progressAction,
+  uploadAction,
+  allowResume = false,
+}: UploadResumeProps) => {
   async function getFileBeforeUpload(f: IUploadTempSource) {
     const file: UploadItem = {
       key: getFileKey(),
@@ -41,7 +50,9 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
     }
     // 请求上传进度，如果请求失败，则当作新文件重新上传
     try {
-      uploadedInfo = await progressAction(`${file.hash}${getFileExt(file.name)}`)
+      uploadedInfo = await progressAction(
+        `${file.hash}${getFileExt(file.name)}`,
+      )
     } catch (error) {
       uploadedInfo = {
         fileUrl: '',
@@ -67,7 +78,9 @@ const useUploadResume = ({ progressAction, uploadAction, allowResume = false }: 
       return file
     }
     // 需要断点续传
-    file.sliceUri = buildUri(await buildCachePath(`_${file.offset}_${file.name}`))
+    file.sliceUri = buildUri(
+      await buildCachePath(`_${file.offset}_${file.name}`),
+    )
     file.status = 'loading'
     await fs.slice(file.uri, file.sliceUri, file.offset, file.size)
     return file

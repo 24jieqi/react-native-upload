@@ -1,9 +1,10 @@
 import { ActionSheet } from '@fruits-chain/react-native-xiaoshu'
-import { Action } from '@fruits-chain/react-native-xiaoshu/lib/typescript/action-sheet/interface'
+import type { Action } from '@fruits-chain/react-native-xiaoshu/lib/typescript/action-sheet/interface'
 import { isType } from '@fruits-chain/utils'
 import { useMemo, useRef } from 'react'
-import { CropMediaType, PickerType } from '../interface'
-import { UploadInstance } from '../_internal'
+
+import type { UploadInstance } from '../_internal'
+import type { CropMediaType, PickerType } from '../interface'
 
 interface ExtendedAction extends Action {
   onPress?: (index?: number) => void

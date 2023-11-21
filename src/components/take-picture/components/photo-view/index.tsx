@@ -4,8 +4,20 @@ import { Image, Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 
 import type { ImageInfo } from '../../interface'
-import TabBar from '../tab-bar'
 import ImageViewCom from '../image-view'
+import TabBar from '../tab-bar'
+
+const EmptyImage = () => {
+  return (
+    <View style={[styles.imageView, styles.defaultWrap]}>
+      <Image
+        source={require('../../images/default_photo.png')}
+        style={styles.defaultImg}
+      />
+      <Text style={styles.defaultText}>暂无照片</Text>
+    </View>
+  )
+}
 
 interface PhotoViewProps {
   photoList: ImageInfo[]
@@ -32,15 +44,6 @@ const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photoList])
-
-  const EmptyImage = () => {
-    return (
-      <View style={[styles.imageView, styles.defaultWrap]}>
-        <Image source={require('../../images/default_photo.png')} style={styles.defaultImg} />
-        <Text style={styles.defaultText}>暂无照片</Text>
-      </View>
-    )
-  }
   const handleChangeView = (index: number) => {
     setTimeout(() => {
       setCurrentIndex(index)
@@ -50,7 +53,11 @@ const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
     <View style={styles.container}>
       {photoList.length > 0 ? (
         <View style={styles.imageView}>
-          <ImageViewCom onChange={handleChangeView} index={currentIndex} imageList={photoList} />
+          <ImageViewCom
+            onChange={handleChangeView}
+            index={currentIndex}
+            imageList={photoList}
+          />
         </View>
       ) : (
         EmptyImage()
@@ -62,15 +69,28 @@ const PhotoView: React.FC<PhotoViewProps> = ({ photoList, onChange }) => {
         <ScrollView horizontal contentContainerStyle={styles.wrap}>
           {photoList.map((ele, index) => {
             return (
-              <TouchableOpacity activeOpacity={1} key={index} onPress={() => handlePhotoClick(index)}>
-                <View style={[styles.imageWrap, currentIndex === index ? styles.activeImageWrap : null]}>
-                  <Image style={styles.img} source={{ uri: `file://${ele?.path}` }} />
+              <TouchableOpacity
+                activeOpacity={1}
+                key={index}
+                onPress={() => handlePhotoClick(index)}>
+                <View
+                  style={[
+                    styles.imageWrap,
+                    currentIndex === index ? styles.activeImageWrap : null,
+                  ]}>
+                  <Image
+                    style={styles.img}
+                    source={{ uri: `file://${ele?.path}` }}
+                  />
                   <View style={styles.imgCloseWrap}>
                     <TouchableOpacity
                       activeOpacity={1}
                       hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
                       onPress={() => handlePhotoDelete(index)}>
-                      <Image source={require('../../images/img_close.png')} style={styles.imgClose} />
+                      <Image
+                        source={require('../../images/img_close.png')}
+                        style={styles.imgClose}
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -126,11 +146,6 @@ const styles = StyleSheet.create({
     height: 16,
     width: 16,
   },
-  content: {
-    flex: 1,
-    position: 'relative',
-  },
-
   defaultWrap: {
     alignItems: 'center',
     justifyContent: 'center',

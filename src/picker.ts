@@ -1,14 +1,17 @@
-import { openPicker, Options, ImageOrVideo, openCamera } from 'react-native-image-crop-picker'
-import { CropMediaType, IUploadTempSource, PickerType } from './interface'
-import { UploadProps } from './_internal'
-import DocumentPicker from 'react-native-document-picker'
-import { Platform } from 'react-native'
-import { getResolvedPath } from './utils/helper'
-import openPictureVisionPicker from './components/take-picture/open'
-import { compressImageOrVideo, isImage, printWatermark } from './utils'
 import { isFunction } from '@fruits-chain/utils'
+import { Platform } from 'react-native'
+import { pick } from 'react-native-document-picker'
+import type { Options, ImageOrVideo } from 'react-native-image-crop-picker'
+import { openPicker, openCamera } from 'react-native-image-crop-picker'
 
-export interface BasicUploadOptions extends Partial<Omit<UploadProps, 'pickerType'>> {
+import type { UploadProps } from './_internal'
+import openPictureVisionPicker from './components/take-picture/open'
+import type { CropMediaType, IUploadTempSource, PickerType } from './interface'
+import { compressImageOrVideo, isImage, printWatermark } from './utils'
+import { getResolvedPath } from './utils/helper'
+
+export interface BasicUploadOptions
+  extends Partial<Omit<UploadProps, 'pickerType'>> {
   /**
    * pickerType 为crop* mediaType
    */
@@ -44,7 +47,9 @@ export async function openCropPicker(_options: BasicUploadOptions) {
     compressImageQuality: isAndroid ? 0.6 : 0.8,
   }
   const filelist: ImageOrVideo | ImageOrVideo[] = await openPicker(options)
-  let files = options.multiple ? [...(filelist as unknown as ImageOrVideo[])] : [filelist as ImageOrVideo]
+  let files = options.multiple
+    ? [...(filelist as unknown as ImageOrVideo[])]
+    : [filelist as ImageOrVideo]
   if (_options.currentCount + files.length > _options.maxCount) {
     files = files.slice(0, _options.maxCount - _options.currentCount)
   }
@@ -61,7 +66,10 @@ export async function openCropPicker(_options: BasicUploadOptions) {
       if (!shouldPrint || !_options.watermark.length) {
         continue
       }
-      file.path = await printWatermark(file.path, _options.watermark, { width: file.width, height: file.height })
+      file.path = await printWatermark(file.path, _options.watermark, {
+        width: file.width,
+        height: file.height,
+      })
     }
   }
   return compressImageOrVideo(files, _options.compress)
@@ -91,10 +99,18 @@ export async function openCropCamera(_options: BasicUploadOptions) {
     if (isImage(file.mime)) {
       const shouldPrintWatermark = _options.shouldPrintWatermark
       const shouldPrint = isFunction(shouldPrintWatermark)
-        ? shouldPrintWatermark(file, _options.cropMediaType === 'photo' ? 'cropCameraPhoto' : 'cropCameraVideo')
+        ? shouldPrintWatermark(
+            file,
+            _options.cropMediaType === 'photo'
+              ? 'cropCameraPhoto'
+              : 'cropCameraVideo',
+          )
         : shouldPrintWatermark
       if (shouldPrint && _options.watermark.length) {
-        file.path = await printWatermark(file.path, _options.watermark, { width: file.width, height: file.height })
+        file.path = await printWatermark(file.path, _options.watermark, {
+          width: file.width,
+          height: file.height,
+        })
       }
     }
   }
@@ -110,11 +126,13 @@ const isAndroid = Platform.OS === 'android'
  */
 export async function openDocumentPicker(options: BasicUploadOptions) {
   // 1. 选择文件
-  const files = await DocumentPicker.pick({
+  const files = await pick({
     allowMultiSelection: options.multiple,
   })
   // 2. 文件另存
-  let resolvedFiles = await Promise.all(files.map((item) => (isAndroid ? getResolvedPath(item) : item)))
+  let resolvedFiles = await Promise.all(
+    files.map(item => (isAndroid ? getResolvedPath(item) : item)),
+  )
   // 3. 最大值切分
   if (options.currentCount + resolvedFiles.length > options.maxCount) {
     resolvedFiles = files.slice(0, options.maxCount - options.currentCount)
@@ -142,7 +160,9 @@ export async function openVisionCamera(options: BasicUploadOptions) {
 }
 
 export const composedPicker: {
-  [key in PickerType]: (config: BasicUploadOptions) => Promise<IUploadTempSource[]>
+  [key in PickerType]: (
+    config: BasicUploadOptions,
+  ) => Promise<IUploadTempSource[]>
 } = {
   cropCameraPhoto: openCropCamera,
   cropCameraVideo: openCropCamera,

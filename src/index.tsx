@@ -1,14 +1,19 @@
-import React, { FC } from 'react'
-import UploadInternal, { UploadProps, UploadActionParams, UploadAction } from './_internal'
-import UploadPreview from './Prev'
-import UploadWrapper from './Wrapper'
-import { UploadItem, FileVO, IUploadTempSource } from './interface'
-import useUploadTypeSelect from './hooks/useUploadTypeSelect'
-import { WatermarkOperations, formatUploadList } from './utils'
+import type { FC } from 'react'
+import React from 'react'
+
+import type { UploadProps, UploadActionParams, UploadAction } from './_internal'
+import UploadInternal from './_internal'
+import type { ImageInfo } from './components/take-picture/interface'
 import openPictureVisionPicker from './components/take-picture/open'
-import { ImageInfo } from './components/take-picture/interface'
+import useUploadTypeSelect from './hooks/useUploadTypeSelect'
+import type { UploadItem, FileVO, IUploadTempSource } from './interface'
+import UploadPreview from './Prev'
+import type { WatermarkOperations } from './utils'
+import { formatUploadList } from './utils'
+import type { CacheDirStat } from './utils/caches'
+import { clearCache, cacheDirStat } from './utils/caches'
 import { UPLOAD_CACHE_DIR } from './utils/helper'
-import { clearCache, cacheDirStat, CacheDirStat } from './utils/caches'
+import UploadWrapper from './Wrapper'
 
 export interface ISource extends UploadItem {}
 interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
@@ -16,9 +21,18 @@ interface IUpload extends FC<Omit<UploadProps, 'useCamera' | 'onPressAdd'>> {
   Wrapper: typeof UploadWrapper
 }
 
-const Upload: IUpload = (props) => {
-  const { uploadInstance, handlePressAdd } = useUploadTypeSelect(props.pickerType, props.cropPickerMediaType)
-  return <UploadInternal {...props} ref={uploadInstance} onPressAdd={handlePressAdd} />
+const Upload: IUpload = props => {
+  const { uploadInstance, handlePressAdd } = useUploadTypeSelect(
+    props.pickerType,
+    props.cropPickerMediaType,
+  )
+  return (
+    <UploadInternal
+      {...props}
+      ref={uploadInstance}
+      onPressAdd={handlePressAdd}
+    />
+  )
 }
 
 Upload.Preview = UploadPreview
@@ -35,6 +49,12 @@ export type {
   CacheDirStat,
   WatermarkOperations,
 }
-export { formatUploadList, openPictureVisionPicker, UPLOAD_CACHE_DIR, clearCache, cacheDirStat }
+export {
+  formatUploadList,
+  openPictureVisionPicker,
+  UPLOAD_CACHE_DIR,
+  clearCache,
+  cacheDirStat,
+}
 
 export default Upload

@@ -1,6 +1,8 @@
-import ReactNativeBlobUtil, { ReactNativeBlobUtilStat } from 'react-native-blob-util'
-import { UPLOAD_CACHE_DIR } from './helper'
 import { plus } from '@fruits-chain/utils'
+import type { ReactNativeBlobUtilStat } from 'react-native-blob-util'
+import ReactNativeBlobUtil from 'react-native-blob-util'
+
+import { UPLOAD_CACHE_DIR } from './helper'
 
 interface ClearCacheResult {
   status: 'error' | 'done' | 'undo'
@@ -16,7 +18,9 @@ export interface CacheDirStat extends ReactNativeBlobUtilStat {
 
 const { fs } = ReactNativeBlobUtil
 
-async function _cacheDirStat(traverse: (filePath: string) => Promise<void>): Promise<CacheDirStat> {
+async function _cacheDirStat(
+  traverse: (filePath: string) => Promise<void>,
+): Promise<CacheDirStat> {
   const stat = await fs.stat(UPLOAD_CACHE_DIR)
   const result: CacheDirStat = {
     ...stat,
@@ -25,7 +29,7 @@ async function _cacheDirStat(traverse: (filePath: string) => Promise<void>): Pro
   }
   const files = await fs.ls(UPLOAD_CACHE_DIR)
   await Promise.all(
-    files.map(async (file) => {
+    files.map(async file => {
       const filePath = `${UPLOAD_CACHE_DIR}/${file}`
       const fstat = await fs.stat(filePath)
       result.fileCount = plus(result.fileCount, 1)
@@ -68,7 +72,7 @@ export async function clearCache() {
       return result
     }
     // 3. 删除文件
-    const stat = await _cacheDirStat(async (filePath) => {
+    const stat = await _cacheDirStat(async filePath => {
       await fs.unlink(filePath)
     })
     result.fileCount = stat.fileCount

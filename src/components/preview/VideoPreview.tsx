@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import Video from 'react-native-video'
-import { BasicPreviewProps } from './interface'
+
+import type { BasicPreviewProps } from './interface'
 
 interface VideoPreviewProps extends BasicPreviewProps {}
 
@@ -11,7 +12,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ target }) => {
     <View style={styles.container}>
       <Video
         controls
-        style={{ flex: 1 }}
+        style={styles.flex1}
         resizeMode="contain"
         playWhenInactive
         source={{
@@ -47,5 +48,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  flex1: {
+    flex: 1,
   },
 })

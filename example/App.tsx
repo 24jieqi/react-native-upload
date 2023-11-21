@@ -230,7 +230,7 @@ const MainComponent = () => {
                   {
                     filename: '发票.pdf',
                     fileUrl:
-                      'https://hjfruit-2.hjgpscm.com/0f/0fedf7dcb234375e438d0b253df5aef2cd77bf6ed58d4695b7e7b1ee2360c5ba.pdf?dsa=971',
+                      'https://hjfruit-2.hjgpscm.com/0f/0fedf7dcb234375e438d0b253df5aef2cd77bf6ed58d4695b7e7b1ee2360c5ba.pdf?asda=123',
                   },
                   {
                     filename: 'xx.png',

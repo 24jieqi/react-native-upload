@@ -14,11 +14,11 @@ export type OpenOptions = Omit<TakePictureViewProps, 'onSubmit'>
  * @returns
  */
 function openPictureVisionPicker(options: OpenOptions): Promise<ImageInfo[]> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const id = Portal.add(
       <TakePictureView
         {...options}
-        onClosed={(photoList) => {
+        onClosed={photoList => {
           resolve(photoList)
           Portal.remove(id)
         }}

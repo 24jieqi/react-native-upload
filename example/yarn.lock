@@ -947,10 +947,10 @@
     "@babel/runtime" "*"
     lodash "*"
 
-"@fruits-chain/react-native-upload@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-2.3.0.tgz#1c954b402e39aa1d37130f4319efd96f3420d1ce"
-  integrity sha512-E5irgbWepvI17SgN6cLEg6Vj+BKdI+WMIWppBvld3KzmrB3rOb3NFiEUmJu/m3xkZCU/Wf/coEXLBHeLBSHTVg==
+"@fruits-chain/react-native-upload@^2.4.3":
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-2.4.3.tgz#b163fe0b68914018cd9832ee84a3dc289c3b233f"
+  integrity sha512-5LbIGawutocrbJKK43qquPJR4JU9AI/4aD2jIutdcoNUMoExS1y1y500+Z0Jb/Fq0jelvyOGYgNIjKe9KsYYAA==
   dependencies:
     "@fruits-chain/utils" "^1.0.1"
     lodash "^4.17.21"
@@ -971,9 +971,9 @@
     rn-placeholder "^3.0.3"
 
 "@fruits-chain/utils@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/utils/-/utils-1.0.1.tgz#01da9321835b91d6508722007d9fa6a23d5f260e"
-  integrity sha512-OZyVrHiNOQzA2HukrYTu1aj46r1q0Wrn89ehHGEDp72CN5t8N9UTZYQj9b6bFgYDVofBO2js40C1LGiWJhk5EA==
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/utils/-/utils-1.0.5.tgz#878177008f61c1c471c813a08ea63f176745461e"
+  integrity sha512-vmqUWUD/CCfwM5Tveg7K3e2aD7nuO4KpytXenXK7mwCFSlSc2I7Qc8JySZhcupAyhFq1hf/mM9YvmjfPst5tPA==
   dependencies:
     decimal.js-light "^2.5.1"
 
@@ -6148,10 +6148,10 @@ react-native-gradle-plugin@^0.70.3:
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz#cbcf0619cbfbddaa9128701aa2d7b4145f9c4fc8"
   integrity sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A==
 
-react-native-image-crop-picker@^0.38.0:
-  version "0.38.0"
-  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.38.0.tgz#3f67a0ec40618e3cd6e05d3e7b90e70d01eaddf8"
-  integrity sha512-FaLASXOP7R23pi20vMiVlXl0Y7cwTdl7y7yBqrlrsSH9gl9ibsU5y4mYWPYRbe8x9F/3zPGUE+1F0Gj/QF/peg==
+react-native-image-crop-picker@^0.40.2:
+  version "0.40.2"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.40.2.tgz#be9098435504b8a2083f7cad553dfeedc442a804"
+  integrity sha512-u9iceozX8985vtZV5ozLMfNuCDjtm00GivExSxKwZmwv2wZYyv30VJkKhVJffVYsujvIzMfSCaWJPBsb5nSfZg==
 
 react-native-image-pan-zoom@^2.1.12:
   version "2.1.12"

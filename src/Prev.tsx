@@ -1,9 +1,14 @@
 import { Uploader } from '@fruits-chain/react-native-xiaoshu'
 import React, { useRef } from 'react'
+
+import type { UploadProps } from './_internal'
+import type {
+  CustomPreview,
+  PreviewInstance,
+} from './components/preview/Preview'
+import Preview from './components/preview/Preview'
+import type { FileVO, UploadItem } from './interface'
 import { formatUploadList } from './utils'
-import Preview, { CustomPreview, PreviewInstance } from './components/preview/Preview'
-import { FileVO, UploadItem } from './interface'
-import { UploadProps } from './_internal'
 
 interface IUploadPreview extends Pick<UploadProps, 'imagesPerRow'> {
   list: FileVO[]
@@ -13,7 +18,11 @@ interface IUploadPreview extends Pick<UploadProps, 'imagesPerRow'> {
   customPreview?: CustomPreview
 }
 
-const UploadPreview: React.FC<IUploadPreview> = ({ list = [], customPreview, imagesPerRow = 4 }) => {
+const UploadPreview: React.FC<IUploadPreview> = ({
+  list = [],
+  customPreview,
+  imagesPerRow = 4,
+}) => {
   const previewRef = useRef<PreviewInstance>()
   function handlePreview(file: UploadItem) {
     previewRef.current.preview(file)

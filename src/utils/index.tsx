@@ -1,14 +1,28 @@
+import {
+  ceilWith,
+  div,
+  isArray,
+  isFunction,
+  isType,
+  mul,
+  plus,
+} from '@fruits-chain/utils'
 import { Image } from 'react-native'
-import { ImageOrVideo } from 'react-native-image-crop-picker'
-import { FileVO, IUploadTempSource, UploadItem } from '../interface'
-import { compress } from './helper'
-import { ImageSource, PhotoBatchOperations, Point, TextOptions } from 'react-native-photo-manipulator'
+import type { ImageOrVideo } from 'react-native-image-crop-picker'
+import type {
+  ImageSource,
+  PhotoBatchOperations,
+  Point,
+  TextOptions,
+} from 'react-native-photo-manipulator'
 import RNPhotoManipulator from 'react-native-photo-manipulator'
-import { ceilWith, div, isArray, isFunction, isType, mul, plus } from '@fruits-chain/utils'
-import { buildUri } from './helper'
 import { URL } from 'react-native-url-polyfill'
 
-export function getThumbnailImageUrl(url: string = '', width = 80, height = 80) {
+import type { FileVO, IUploadTempSource, UploadItem } from '../interface'
+
+import { compress, buildUri } from './helper'
+
+export function getThumbnailImageUrl(url = '', width = 80, height = 80) {
   if (!url || url.includes('.mp4')) {
     return url
   }
@@ -37,7 +51,10 @@ export function getFileExt(filePath: string) {
   return /.*(\..*)$/.exec(pathName)?.[1]
 }
 
-export function exec(func: ((...param: any) => any) | undefined, ...params: any[]) {
+export function exec(
+  func: ((...param: any) => any) | undefined,
+  ...params: any[]
+) {
   if (typeof func === 'function') {
     return func(...params)
   }
@@ -93,7 +110,7 @@ export function getFileKey() {
  * 上传列表格式化（一般用于远程资源列表在上传中回显）
  */
 export function formatUploadList(list: FileVO[]) {
-  return list.map((item) => {
+  return list.map(item => {
     const ext = getFileExt(item.fileUrl)
     const filePath = getDocumentPlaceholderIconByMimeType(ext)
     return {
@@ -114,7 +131,10 @@ export function formatUploadList(list: FileVO[]) {
  * @param shouldCompress
  * @returns
  */
-export async function compressImageOrVideo(images: Partial<ImageOrVideo>[], shouldCompress?: boolean) {
+export async function compressImageOrVideo(
+  images: Partial<ImageOrVideo>[],
+  shouldCompress?: boolean,
+) {
   const result: IUploadTempSource[] = []
   if (!images || !images.length) {
     return result
@@ -152,7 +172,9 @@ interface ImageSize {
 
 type WatermarkText = string | TextOptions
 
-type GetWatermarkMethod = (size?: ImageSize) => Promise<Array<WatermarkText> | WatermarkText>
+type GetWatermarkMethod = (
+  size?: ImageSize,
+) => Promise<Array<WatermarkText> | WatermarkText>
 
 interface Overlay {
   overlay: ImageSource
@@ -161,7 +183,9 @@ interface Overlay {
 
 type GetOverlayMethod = (size?: ImageSize) => Promise<Array<Overlay> | Overlay>
 
-export type WatermarkOperations = Array<WatermarkText | GetWatermarkMethod | Overlay | GetOverlayMethod>
+export type WatermarkOperations = Array<
+  WatermarkText | GetWatermarkMethod | Overlay | GetOverlayMethod
+>
 
 type WatermarkRawOperations = Array<WatermarkText | Overlay>
 
@@ -177,7 +201,11 @@ function makeItemAsArray(item: any): any[] {
  * @param watermark
  * @returns
  */
-export async function printWatermark(image: ImageSource, watermark: WatermarkOperations = [], size?: ImageSize) {
+export async function printWatermark(
+  image: ImageSource,
+  watermark: WatermarkOperations = [],
+  size?: ImageSize,
+) {
   const heightSize = size?.height ? ceilWith(size.height * 0.1) : 30 // 10行
   const widthSize = size?.width ? ceilWith(size.width * 0.025) : 30 // 每行40个字（等宽字体）
   const adjustTextSize = Math.min(heightSize, widthSize) // 取最小值
@@ -190,7 +218,7 @@ export async function printWatermark(image: ImageSource, watermark: WatermarkOpe
     }
   }
   let rawTextIndex = 0
-  const operations: PhotoBatchOperations[] = rawOperations.map((item) => {
+  const operations: PhotoBatchOperations[] = rawOperations.map(item => {
     // 图片类型的水印
     if ((item as Overlay).overlay) {
       return {
@@ -205,7 +233,10 @@ export async function printWatermark(image: ImageSource, watermark: WatermarkOpe
         options: {
           position: {
             x: div(adjustTextSize, 2),
-            y: plus(div(adjustTextSize, 2), mul(adjustTextSize, rawTextIndex++)),
+            y: plus(
+              div(adjustTextSize, 2),
+              mul(adjustTextSize, rawTextIndex++),
+            ),
           },
           textSize: adjustTextSize,
           color: '#FFFFFF',
