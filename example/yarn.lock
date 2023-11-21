@@ -947,12 +947,12 @@
     "@babel/runtime" "*"
     lodash "*"
 
-"@fruits-chain/react-native-upload@^2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-2.4.3.tgz#b163fe0b68914018cd9832ee84a3dc289c3b233f"
-  integrity sha512-5LbIGawutocrbJKK43qquPJR4JU9AI/4aD2jIutdcoNUMoExS1y1y500+Z0Jb/Fq0jelvyOGYgNIjKe9KsYYAA==
+"@fruits-chain/react-native-upload@^2.4.5":
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-2.4.5.tgz#6d1668c8885bc5b117de17ecf06b67aeb1bd2bc0"
+  integrity sha512-9p9mLAymmjrDskoriDD+ZX/tGHTaMM+E1nSBbcZD0halvwquOPZr1l6lCbrwdG/UAWAJe3nYbF6rDRD+qpKlSA==
   dependencies:
-    "@fruits-chain/utils" "^1.0.1"
+    "@fruits-chain/utils" "^1.0.5"
     lodash "^4.17.21"
     react-native-image-zoom-viewer "^3.0.1"
     react-native-url-polyfill "^1.3.0"
@@ -970,7 +970,7 @@
     react-native-popover-view "^5.1.7"
     rn-placeholder "^3.0.3"
 
-"@fruits-chain/utils@^1.0.1":
+"@fruits-chain/utils@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@fruits-chain/utils/-/utils-1.0.5.tgz#878177008f61c1c471c813a08ea63f176745461e"
   integrity sha512-vmqUWUD/CCfwM5Tveg7K3e2aD7nuO4KpytXenXK7mwCFSlSc2I7Qc8JySZhcupAyhFq1hf/mM9YvmjfPst5tPA==
