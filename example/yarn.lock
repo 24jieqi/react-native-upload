@@ -947,10 +947,10 @@
     "@babel/runtime" "*"
     lodash "*"
 
-"@fruits-chain/react-native-upload@^2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-2.4.5.tgz#6d1668c8885bc5b117de17ecf06b67aeb1bd2bc0"
-  integrity sha512-9p9mLAymmjrDskoriDD+ZX/tGHTaMM+E1nSBbcZD0halvwquOPZr1l6lCbrwdG/UAWAJe3nYbF6rDRD+qpKlSA==
+"@fruits-chain/react-native-upload@^2.4.6":
+  version "2.4.6"
+  resolved "https://registry.yarnpkg.com/@fruits-chain/react-native-upload/-/react-native-upload-2.4.6.tgz#426c903a54da68ecd3bf4e47c4a69ecbe6b5f2b6"
+  integrity sha512-E/WLfzIbfzeMZ8dms3s/RTunCF1RiqboTPgCm5ub42U4WIHH2/N3ja8+HUhFk1cJL2uk7Y3Fn97wgmY1iX3MIA==
   dependencies:
     "@fruits-chain/utils" "^1.0.5"
     lodash "^4.17.21"
