@@ -57,6 +57,14 @@ interface Props extends ViewProps {
   existCount: number
 }
 
+function getActualPhotoSize(photo: PhotoFile) {
+  const { width, height } = photo
+  return {
+    width: width <= height ? width : height,
+    height: height >= width ? height : width,
+  }
+}
+
 const _CaptureButton: React.FC<Props> = ({
   camera,
   onMediaCaptured,
@@ -99,10 +107,11 @@ const _CaptureButton: React.FC<Props> = ({
         ? shouldPrintWatermark(photo, 'visionCamera')
         : shouldPrintWatermark
       if (shouldPrint && watermark.length > 0) {
-        // 在此加上水印
+        // 打水印 由于已经设置了输出的图像为竖向，所以宽度一定小于高度
+        const { width, height } = getActualPhotoSize(photo)
         photo.path = await printWatermark(photo.path, watermark, {
-          width: photo.width,
-          height: photo.height,
+          width,
+          height,
         })
       }
       onMediaCaptured(photo)

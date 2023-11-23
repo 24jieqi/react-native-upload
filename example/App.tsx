@@ -123,9 +123,9 @@ const MainComponent = () => {
                 <Upload
                   uploadAction={uploadImage}
                   watermark={['测试时间，地点', '测试经纬度']}
-                  shouldPrintWatermark={(_, type) => {
-                    return type === 'visionCamera';
-                  }}
+                  // shouldPrintWatermark={(_, type) => {
+                  //   return type === 'visionCamera';
+                  // }}
                 />
               </Form.Item>
             </Card>
